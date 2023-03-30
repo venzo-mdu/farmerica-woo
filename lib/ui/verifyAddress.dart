@@ -20,6 +20,8 @@ class VerifyAddress extends BasePage {
       country,
       mobile,
       mail;
+  final String deliveryDate;
+  final String deliveryTime;
 
   List<CartProducts> cartProducts;
 
@@ -37,7 +39,9 @@ class VerifyAddress extends BasePage {
       this.last,
       this.postcode,
       this.state,
-      this.cartProducts});
+      this.cartProducts,
+      this.deliveryDate,
+      this.deliveryTime});
   @override
   _VerifyAddressState createState() => _VerifyAddressState();
 }
@@ -65,6 +69,47 @@ class _VerifyAddressState extends BasePageState<VerifyAddress> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Row(
+                  children: [
+                    Flexible(
+                      fit: FlexFit.tight,
+                      flex: 1,
+                      child: FormHelper.fieldLabel("Delivery Date"),
+                    ),
+                    Flexible(
+                      fit: FlexFit.tight,
+                      flex: 1,
+                      child: FormHelper.fieldLabel("Delivery Time"),
+                    )
+                  ],
+                ),
+
+
+
+                Row(
+                  children: [
+                    Flexible(
+                      fit: FlexFit.tight,
+                      flex: 1,
+                      child: Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: FormHelper.fieldLabelValu(context, widget.deliveryDate),
+                      ),
+                    ),
+                    Flexible(
+                      fit: FlexFit.tight,
+                      flex: 1,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: FormHelper.fieldLabelValu(context, widget.deliveryTime),
+                      ),
+                    ),
+                  ],
+                ),
+
+
+
+
                 Row(
                   children: [
                     Flexible(
@@ -205,7 +250,9 @@ class _VerifyAddressState extends BasePageState<VerifyAddress> {
                                   apartmnt: widget.apartmnt,
                                   state: widget.state,
                                   flat: widget.flat,
-                                  mail: "aswaaaapppppp@gmail.com",
+                                  mail: widget.mail,
+                                  deliveryDate: widget.deliveryDate,
+                                  deliveryTime: widget.deliveryTime,
                                   mobile: "",
                                   product: widget.product,
                                 )));

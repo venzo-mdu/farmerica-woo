@@ -166,6 +166,7 @@ class _ProductDetailState extends BasePageState<ProductDetail> {
   ];
   var pincodeController = TextEditingController();
   bool flag = false;
+  bool flags = true;
   // BasePage basePage = BasePage();
   @override
   void initState() {
@@ -239,126 +240,168 @@ class _ProductDetailState extends BasePageState<ProductDetail> {
                 SizedBox(height: 10),
 
                 Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
+                    SizedBox(
+                      width: 250,
+                      child: TextFormField(
+                        controller: pincodeController,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          hintText: "Postcode / ZIP",
+                          border: OutlineInputBorder(
+                              borderRadius:
+                              BorderRadius.all(Radius.circular(0))),
+                        ),
+                      ),
+                    ),
+
                     ElevatedButton(
                       // shape: RoundedRectangleBorder(
                       //   borderRadius: BorderRadius.circular(4.0),
                       // ),
+                      style: ElevatedButton.styleFrom(backgroundColor: Color(0xffFBB241)),
                       onPressed: () {
-                        cart.add(widget.product);
-                        Provider.of<CartModel>(context, listen: false)
-                            .addCartProduct(widget.product.id, 1);
-                        Fluttertoast.showToast(
-                            msg:
-                            "${widget.product.name} successfully added to cart",
-                            toastLength: Toast.LENGTH_SHORT,
-                            gravity: ToastGravity.BOTTOM,
-                            timeInSecForIosWeb: 1,
-                            backgroundColor: Colors.black,
-                            textColor: Colors.white,
-                            fontSize: 16.0);
+                        switch (pincodeController.text) {
+                          case '751001':
+                            setState(() {
+                              flag = true;
+                              flags = false;
+                              // print('shippingVisibility: $shippingVisibility');
+                            });
+                            break;
+                          case '751002':
+                            setState(() {
+                              flag = true;
+                              flags = false;
+                              // print('shippingVisibility: $shippingVisibility');
+                            });
+                            break;
+                          case '751003':
+                            setState(() {
+                              flag = true;
+                              flags = false;
+                              // print('shippingVisibility: $shippingVisibility');
+                            });
+                            break;
+                          case '751022':
+                            setState(() {
+                              flag = true;
+                              flags = false;
+                              // print('shippingVisibility: $shippingVisibility');
+                            });
+                            break;
+                          case '751019':
+                            setState(() {
+                              flag = true;
+                              flags = false;
+                              // print('shippingVisibility: $shippingVisibility');
+                            });
+                            break;
+                          case '751020':
+                            setState(() {
+                              flag = true;
+                              flags = false;
+                              // print('shippingVisibility: $shippingVisibility');
+                            });
+                            break;
+                          case '751009':
+                            setState(() {
+                              flag = true;
+                              flags = false;
+                              // print('shippingVisibility: $shippingVisibility');
+                            });
+                            break;
+                          case '752101':
+                            setState(() {
+                              flag = true;
+                              flags = false;
+                              // print('shippingVisibility: $shippingVisibility');
+                            });
+                            break;
+                          case '751022':
+                            setState(() {
+                              flag = true;
+                              flags = false;
+                              // print('shippingVisibility: $shippingVisibility');
+                            });
+                            break;
+
+
+                          default:
+                            setState(() {
+                              flag = false;
+                              flags = false;
+                              // print('shippingVisibility: $shippingVisibility');
+                            });
+                            break;
+                        }
                       },
                       // color: product.color,
-                      child: Padding(
+                      child: Container(
                         padding: EdgeInsets.all(10),
                         child: Text(
-                          "add to cart",
-                          style: TextStyle(fontSize: 15),
+                          "CHECK",
+                          style: TextStyle(
+                              fontSize: 15,
+
+                          ),
                         ),
                       ),
                     ),
-                    // SizedBox(
-                    //   width: 250,
-                    //   child: TextFormField(
-                    //     controller: pincodeController,
-                    //     keyboardType: TextInputType.number,
-                    //     decoration: InputDecoration(
-                    //         hintText: "Postcode / ZIP",
-                    //         border: OutlineInputBorder(
-                    //             borderRadius:
-                    //                 BorderRadius.all(Radius.circular(0))),
-                    //     ),
-                    //   ),
-                    // ),
 
-                    // ElevatedButton(
-                    //   // shape: RoundedRectangleBorder(
-                    //   //   borderRadius: BorderRadius.circular(4.0),
-                    //   // ),
-                    //   onPressed: () {
-                    //     switch (pincodeController.text) {
-                    //       case '751001':
-                    //         setState(() {
-                    //           flag = true;
-                    //           // print('shippingVisibility: $shippingVisibility');
-                    //         });
-                    //         break;
-                    //       case '751002':
-                    //         setState(() {
-                    //           flag = true;
-                    //           // print('shippingVisibility: $shippingVisibility');
-                    //         });
-                    //         break;
-                    //       default:
-                    //         setState(() {
-                    //           flag = false;
-                    //           // print('shippingVisibility: $shippingVisibility');
-                    //         });
-                    //         break;
-                    //     }
-                    //
-                    //   },
-                    //   // color: product.color,
-                    //   child: Padding(
-                    //     padding: EdgeInsets.all(10),
-                    //     child: Text(
-                    //       "CHECK",
-                    //       style: TextStyle(fontSize: 15),
-                    //     ),
-                    //   ),
-                    // ),
                   ],
                 ),
+                SizedBox(height: 10),
 
-                flag ? Container(
-                  child: Column(
-                    children: [
-                      Text('Shipping methods available for your location:'),
-                      Text('Free shipping'),
-                      Text('Midnight Delivery 11pm to 12am: 200.00'),
-                      Text('Early morning Delivery 6:30am to 7am : 75.00'),
-                      Center(
-                          child: ElevatedButton(
-                            // shape: RoundedRectangleBorder(
-                            //   borderRadius: BorderRadius.circular(4.0),
-                            // ),
-                            onPressed: () {
-                              cart.add(widget.product);
-                              Provider.of<CartModel>(context, listen: false)
-                                  .addCartProduct(widget.product.id, 1);
-                              Fluttertoast.showToast(
-                                  msg:
-                                  "${widget.product.name} successfully added to cart",
-                                  toastLength: Toast.LENGTH_SHORT,
-                                  gravity: ToastGravity.BOTTOM,
-                                  timeInSecForIosWeb: 1,
-                                  backgroundColor: Colors.black,
-                                  textColor: Colors.white,
-                                  fontSize: 16.0);
-                            },
-                            // color: product.color,
-                            child: Padding(
-                              padding: EdgeInsets.all(10),
-                              child: Text(
-                                "add to cart",
-                                style: TextStyle(fontSize: 15),
-                              ),
+                flag
+                    ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text('Shipping methods available for your location:'),
+                        Text('Free shipping'),
+                        Text('Midnight Delivery 11pm to 12am: 200.00'),
+                        Text('Early morning Delivery 6:30am to 7am : 75.00'),
+                        ElevatedButton(
+
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Color(0xff55C68A),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(4.0),
                             ),
-                          )),
-                    ],
-                  ),
-                ):  Center(child: Text('Enter the Valid Pin-Code.', style: TextStyle(color: Colors.red),),),
+                          ),
+                          onPressed: () {
+                            cart.add(widget.product);
+                            Provider.of<CartModel>(context, listen: false)
+                                .addCartProduct(widget.product.id, 1);
+                            Fluttertoast.showToast(
+                                msg:
+                                "${widget.product.name} successfully added to cart",
+                                toastLength: Toast.LENGTH_SHORT,
+                                gravity: ToastGravity.BOTTOM,
+                                timeInSecForIosWeb: 1,
+                                backgroundColor: Colors.black,
+                                textColor: Colors.white,
+                                fontSize: 16.0);
+                          },
+                          // color: product.color,
+                          child: Padding(
+                            padding: EdgeInsets.all(10),
+                            child: Text(
+                              "Buy Now",
+                              style: TextStyle(fontSize: 15),
+                            ),
+                          ),
+                        ),
+
+                      ],
+                    )
+                    : Center(child: flags
+                      ? Text('Please enter a valid postcode / ZIP.', style: TextStyle(color: Colors.red))
+                      : Text('Delivery not available', style: TextStyle(color: Colors.red))),
+
               ],
             ),
           ),
@@ -393,16 +436,16 @@ class _ProductDetailState extends BasePageState<ProductDetail> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text("Price: ₹${widget.product.price}", style: largeText),
-        RatingBarIndicator(
-          rating: 3.75,
-          itemBuilder: (context, index) => Icon(
-            Icons.star,
-            color: Colors.amberAccent,
-          ),
-          itemCount: 5,
-          itemSize: 25.0,
-          direction: Axis.horizontal,
-        ),
+        // RatingBarIndicator(
+        //   rating: 3.75,
+        //   itemBuilder: (context, index) => Icon(
+        //     Icons.star,
+        //     color: Colors.amberAccent,
+        //   ),
+        //   itemCount: 5,
+        //   itemSize: 25.0,
+        //   direction: Axis.horizontal,
+        // ),
       ],
     );
   }

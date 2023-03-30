@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'dart:convert';
 import 'package:safira_woocommerce_app/form_helper.dart';
 import 'package:safira_woocommerce_app/models/CartRequest.dart';
 import 'package:safira_woocommerce_app/models/Customers.dart';
@@ -12,7 +14,8 @@ class CreateOrder extends BasePage {
   List<CartProducts> cartProducts;
   List<Product> product = [];
   final int id;
-  CreateOrder({this.cartProducts, this.product, this.id});
+  var shippingFee;
+  CreateOrder({this.cartProducts, this.product, this.id, this.shippingFee});
   @override
   _CreateOrderState createState() => _CreateOrderState();
 }
@@ -33,12 +36,15 @@ class _CreateOrderState extends BasePageState<CreateOrder> {
       mail;
   int selected = 2;
   String title = "Create Order";
+  String dropDownValue;
   // BasePage basePage = BasePage();
   @override
   void initState() {
     super.initState();
     // basePage.title = "Checkout Page";
     // basePage.selected = 2;
+    print('objectUser: ${widget.id}');
+    print('widget.shipping: ${widget.shippingFee}');
   }
   TextEditingController datePickerController = TextEditingController();
 
@@ -66,17 +72,47 @@ class _CreateOrderState extends BasePageState<CreateOrder> {
                     child: TextFormField(
                       keyboardType: TextInputType.datetime,
                       controller: datePickerController,
-                      inputFormatters: [
-
-                      ],
                       decoration: InputDecoration(
-                        labelText: "Dates",
-                        hintText: "Dates",
+                        labelText: 'Dates',
+                        hintText: DateFormat.yMd().format(DateTime.now()),
                       ),
-                      onChanged: (value) {},
-                      onTap: () async {
 
+                      onChanged: (value) async {},
+
+                      onTap: () async {
                         DateTime dateTime = DateTime.now();
+                        DateTime now = DateTime.now();
+                        dynamic hours = DateFormat.jm().format(now);
+                        print('${DateFormat.jm().format(now)}');
+
+                        if(widget.shippingFee == 75) {
+                          print('objectError: ${hours.runtimeType}');
+
+                          // 12.00 am      // 7
+                          // if(hours <= Convert.ToDateTime('5:30 AM') && hours <= '18') {
+                          //   print(hours);
+                          //   print("Good Morning");
+                          //   print("Deliverable");
+                          //
+                          // } else {
+                          //   print("Not Deliverable");
+                          // }
+                          ///
+                          // else if(hours <= 6 && hours >= 7) {
+                          //   print('objectDeliver');
+                          // }
+
+
+                          // else if(hours>=12 && hours<=16) {
+                          //   print("Good Afternoon");
+                          // } else if(hours>=16 && hours<=21) {
+                          //   print("Good Evening");
+                          // } else if(hours>=21 && hours<=24){
+                          //   print("Good Night");
+                          // }
+                        }
+
+
                         final DateTime picked = await showDatePicker(
                             context: context,
                             initialDate: dateTime,
@@ -86,17 +122,19 @@ class _CreateOrderState extends BasePageState<CreateOrder> {
                         if (picked != null) {
                           dateTime = picked;
                           //assign the chosen date to the controller
-                          // datePickerController.text = DateFormat.yMd().format(dateTime);
+                          datePickerController.text = DateFormat.yMd().format(dateTime);
+                          print('objectDatePickerController: ${datePickerController.text}');
                         }
-
                       },
                     ),
                   )
                 ],
               ),
-              Row(
+
+              widget.shippingFee == 0 ? Row(
                 children: [
                   DropdownButton<String>(
+                    value: dropDownValue,
                     items: <String>[
                       '08:00 AM - 01:00 PM',
                       '01:00 PM - 06:00 PM',
@@ -107,17 +145,18 @@ class _CreateOrderState extends BasePageState<CreateOrder> {
                         child: Text(value),
                       );
                     }).toList(),
-                    onChanged: (_) {
+                    onChanged: (onChangedValue) {
                       setState(() {
-
+                        dropDownValue = onChangedValue;
                       });
                     },
                   )
                 ],
-              ),
+              ) : Container(),
 
               Row(
                 children: [
+
                   Flexible(
                     fit: FlexFit.tight,
                     flex: 1,
@@ -464,24 +503,49 @@ class _CreateOrderState extends BasePageState<CreateOrder> {
               Center(
                 child: FormHelper.saveButton("Next", () {
                   if (_formKey.currentState.validate()) {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => VerifyAddress(
-                                  product: widget.product,
-                                  id: widget.id,
-                                  first: first,
-                                  last: last,
-                                  address: address,
-                                  apartmnt: apartmnt,
-                                  state: state,
-                                  city: city,
-                                  country: country,
-                                  postcode: postcode,
-                                  cartProducts: widget.cartProducts,
-                                  mobile: mobile,
-                                  mail: mail,
-                                )));
+
+
+
+
+                    var data = '2023-03-31';
+                    var day = data.substring(8, 10);
+                    var month = data.substring(5, 7);
+                    var year = data.substring(0, 4);
+                    final intDay = int.parse(day);
+                    final intMonth = int.parse(month);
+                    final intYear = int.parse(year);
+                    final formattedDate = DateTime.utc(intYear, intMonth, intDay);
+                    print("formattedDate:$formattedDate");
+                    final format = DateFormat.yMd().format(formattedDate);
+                    print('format:$format');
+
+
+                    if(datePickerController.text == DateFormat('EEEE').format(DateTime.now())) {
+                      print('objectError');
+                    } else {
+
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => VerifyAddress(
+                                    product: widget.product,
+                                    id: widget.id,
+                                    first: first,
+                                    last: last,
+                                    address: address,
+                                    apartmnt: apartmnt,
+                                    state: state,
+                                    city: city,
+                                    country: country,
+                                    postcode: postcode,
+                                    cartProducts: widget.cartProducts,
+                                    mobile: mobile,
+                                    mail: mail,
+                                    deliveryDate: datePickerController.text,
+                                    deliveryTime: dropDownValue,
+
+                                  )));
+                    }
                   }
                 }),
               )

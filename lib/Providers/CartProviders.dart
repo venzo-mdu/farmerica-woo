@@ -4,18 +4,22 @@ import 'package:safira_woocommerce_app/models/CartRequest.dart';
 import 'package:safira_woocommerce_app/networks/ApiServices.dart';
 
 class CartModel extends ChangeNotifier {
+
   List<CartProducts> cartProducts = [];
   Api_Services api_services = Api_Services();
 
   addCartProduct(int id, int quantity) {
+
     bool alreadyExist = cartProducts.any((element) => element.product_id == id);
     CartProducts cartProduct = CartProducts(
       product_id: id,
       quantity: quantity,
     );
-    print(alreadyExist);
+    print('calling cartmodel19: ${cartProduct.product_id}');
+    print('calling cartmodel17');
+    print('alreadyExist: $alreadyExist');
     alreadyExist ? updateQuantity(id, quantity) : cartProducts.add(cartProduct);
-
+    print('cart: ${cartProducts.length}');
     notifyListeners();
   }
 

@@ -93,9 +93,9 @@ class _CategoryPageState extends BasePageState<CategoryPage> {
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
     List<p.ParentCategory> catergories = widget.catergories;
-    print('catergories.length: ${catergories.length}');
-    print("ww");
-    print(widget.catergories);
+    // print('catergories.length: ${catergories.length}');
+    // print("ww");
+    // print(widget.catergories);
     return categories.length == null
         ? Center(
             child: CircularProgressIndicator(),
@@ -121,8 +121,8 @@ class _CategoryPageState extends BasePageState<CategoryPage> {
                   return GestureDetector(
                     onTap: () {
                       if (i == 0) {
-                        print(i);
-                        print('widget.productCategory: ${widget.product}');
+                        // print(i);
+                        // print('widget.productCategory: ${widget.product}');
 
                         Navigator.push(
                             context,
@@ -132,7 +132,7 @@ class _CategoryPageState extends BasePageState<CategoryPage> {
                                     )));
                       }
                       if (i == 1) {
-                        print(i);
+                        // print(i);
                         Navigator.push(
                             context,
                             new MaterialPageRoute(

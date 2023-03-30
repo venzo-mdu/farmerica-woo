@@ -27,7 +27,7 @@ class WelcomePage extends StatelessWidget {
                           child: Container(
                             width: MediaQuery.of(context).size.width * 0.8,
                             child: Image(
-                              image: AssetImage('assets/team_illustration.png'),
+                              image: NetworkImage('https://www.farmerica.in/new/wp-content/uploads/2023/01/farmerica-logo.png'),
                             ),
                           ),
                         ),
@@ -35,8 +35,8 @@ class WelcomePage extends StatelessWidget {
                           height: 20,
                         ),
                         Text(
-                          "Enterprise team\ncollaboration.",
-                          style: kHeadline,
+                          "Farmerica",
+                          style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold, fontSize: 26),
                           textAlign: TextAlign.center,
                         ),
                         SizedBox(
@@ -45,7 +45,7 @@ class WelcomePage extends StatelessWidget {
                         Container(
                           width: MediaQuery.of(context).size.width * 0.8,
                           child: Text(
-                            "Bring together your files, your tools, project and people.Including a new mobile and desktop application.",
+                            "We are Farmerica: value added and natural grown agriculture and horticulture Solutions Provider.",
                             style: kBodyText,
                             textAlign: TextAlign.center,
                           ),

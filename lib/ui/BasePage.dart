@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:safira_woocommerce_app/models/Customers.dart';
 import 'package:safira_woocommerce_app/models/ParentCategory.dart';
 import 'package:safira_woocommerce_app/models/Products.dart';
+import 'package:safira_woocommerce_app/models/global.dart' as Globals;
 import 'package:safira_woocommerce_app/networks/ApiServices.dart';
 import 'package:safira_woocommerce_app/ui/CartPage.dart';
 
@@ -27,26 +28,28 @@ class BasePageState<T extends BasePage> extends State<T> {
   Api_Services api_services = Api_Services();
 
   List<ParentCategory> categories = [];
-  List<int> category = [
-
-  ];
   List<Widget> list;
-  Future getList() async {
-    categories = await api_services.getCategoryById(45);
-    print('categoriesLength: ${categories.length}');
+  int selected = 0;
 
-    response = await api_services.getProducts(45);
-    print("categoriesResponse+${response.toString()}");
+
+
+  Future getList() async {
+    print('insideGetList37: ${Globals.globalInt}');
+
+    print('insideGetList39: ${Globals.globalInt}');
+    categories = await api_services.getCategoryById(Globals.globalInt);
+    // print('categoriesLength: ${categories.length}');
+    response = await api_services.getProducts(Globals.globalInt);
+    // print("categoriesResponse+${response.toString()}");
   }
 
-  int selected = 0;
   @override
   void initState() {
     super.initState();
     // selected = widget.selected;
+    ///
     getList().then((value) {
-      print('list: $list');
-      print('categories: $categories');
+
       list = [
         Dashboard(
           product: response,
@@ -65,32 +68,6 @@ class BasePageState<T extends BasePage> extends State<T> {
         )
       ];
     });
-  }
-
-  Widget body(BuildContext context) {
-    //String title = widget.title;
-
-    List<Widget> list = [
-      Dashboard(
-        product: response,
-        category: categories,
-      ),
-      CategoryPage(
-        catergories: categories,
-        product: response,
-      ),
-      CartScreen(
-        product: response,
-        details: widget.customer,
-      ),
-      CompleteProfileScreen(
-        customer: widget.customer,
-        product: response,
-      )
-    ];
-    print(categories);
-    print("aw+$response");
-    return list[selected];
   }
 
   Customers customer;
@@ -115,19 +92,19 @@ class BasePageState<T extends BasePage> extends State<T> {
         product: response,
       )
     ];
-    print("ll+${response}");
-    print("ll+${response.toString()}");
+
+    // print("ll+${response.toString()}");
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.green,
         title: Image.network(
-            'https://www.farmerica.in/new/wp-content/uploads/2023/01/farmerica-logo.png',
+            'https://www.farmerica.in/wp-content/uploads/2023/01/farmerica-logo.png',
           color: Colors.white,
         ),
         actions: [
           IconButton(
             onPressed: (){
-              print('Shopping Cart');
+              // print('Shopping Cart');
             },
             icon: Icon(Icons.shopping_bag_outlined),
           )
@@ -167,10 +144,38 @@ class BasePageState<T extends BasePage> extends State<T> {
               icon: Icon(
                 Icons.person,
               ),
-              label: "My Account")
+              label: "My Account",
+          )
         ],
         type: BottomNavigationBarType.shifting,
       ),
     );
+  }
+
+
+  Widget body(BuildContext context) {
+    //String title = widget.title;
+
+    List<Widget> list = [
+      Dashboard(
+        product: response,
+        category: categories,
+      ),
+      CategoryPage(
+        catergories: categories,
+        product: response,
+      ),
+      CartScreen(
+        product: response,
+        details: widget.customer,
+      ),
+      CompleteProfileScreen(
+        customer: widget.customer,
+        product: response,
+      )
+    ];
+    // print(categories);
+    // print("aw+$response");
+    return list[selected];
   }
 }

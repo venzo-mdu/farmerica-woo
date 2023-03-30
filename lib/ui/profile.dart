@@ -89,11 +89,11 @@ class _BodyState extends State<Body> {
             icon: Icons.add_business_outlined,
             press: () {},
           ),
-          ProfileMenu(
-            text: "Help Center",
-            icon: Icons.help_center,
-            press: () {},
-          ),
+          // ProfileMenu(
+          //   text: "Help Center",
+          //   icon: Icons.help_center,
+          //   press: () {},
+          // ),
           ProfileMenu(
             text: "Log Out",
             icon: Icons.logout,
@@ -307,11 +307,11 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
                 icon: Icons.add_business_outlined,
                 press: () {},
               ),
-              ProfileMenu(
-                text: "Help Center",
-                icon: Icons.help_center,
-                press: () {},
-              ),
+              // ProfileMenu(
+              //   text: "Help Center",
+              //   icon: Icons.help_center,
+              //   press: () {},
+              // ),
               ProfileMenu(
                 text: "Log Out",
                 icon: Icons.logout,

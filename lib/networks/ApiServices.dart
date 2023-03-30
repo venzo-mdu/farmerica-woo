@@ -49,7 +49,7 @@ class Api_Services {
       String email,
       String username}) async {
     http.Response response = await http.post(
-        Uri.parse('https://www.farmerica.in/new/wp-json/wc/v3/customers?consumer_key=ck_eedc4b30808be5c1110691e5b29f16280ebd3b72&consumer_secret=cs_2313913bc74d5e096c91d308745b50afee52e61c'),
+        Uri.parse('https://www.farmerica.in/wp-json/wc/v3/customers?consumer_key=ck_eedc4b30808be5c1110691e5b29f16280ebd3b72&consumer_secret=cs_2313913bc74d5e096c91d308745b50afee52e61c'),
         body: {
           "email": email,
           "first_name": firstName,
@@ -87,7 +87,7 @@ class Api_Services {
   Future<Customers> getCustomersByMail(String mail) async {
     // var url="${Config.customerUrl}?email=$mail";
     // var url="${Config.customerUrl}?email=$mail";
-    var url = "${Config.urlfor}" "/customers?email=$mail";
+    var url = "${Config.urlfor}" "customers?email=$mail";
     print('getCustomersByMail: $url');
     var response = await api.getAsync(url);
 
@@ -119,7 +119,7 @@ class Api_Services {
   }
 
   Future getToken(String username, String password) async {
-    var url = "https://www.farmerica.in/new/wp-json/jwt-auth/v1/token";
+    var url = "https://www.farmerica.in/wp-json/jwt-auth/v1/token";
     print('getToken: $url');
     var response = await http.post(
       Uri.http(url),
@@ -132,7 +132,7 @@ class Api_Services {
   }
 
   Future getTokenDetails(String username, String password) async {
-    var url = "https://www.farmerica.in/new/wp-json/jwt-auth/v1/token";
+    var url = "https://www.farmerica.in/wp-json/jwt-auth/v1/token";
     var response = await http.post(
       Uri.http(url),
       body: {"username": username, "password": password},
@@ -145,7 +145,7 @@ class Api_Services {
 
   Future authenicateViaJWT(String username, String password) async {
     String token = "";
-    var url = "https://www.farmerica.in/new/wp-json/jwt-auth/v1/token";
+    var url = "https://www.farmerica.in/wp-json/jwt-auth/v1/token";
     http.Response response = await http.get(
       Uri.http(url),
       headers: {
@@ -187,8 +187,8 @@ class Api_Services {
     return product;
   }
 
-  Future<List<ParentCategory>> getCategory() async {
-    var url = "${Config.urlfor}" "${Config.categoriesUrl}?per_page=500";
+  Future<List<ParentCategory>> getCategory(int parentId) async {
+    var url = "${Config.urlfor}" "${Config.categoriesUrl}/$parentId";
     print('getCategory: $url');
     var response = await api.getAsync(url);
 
@@ -200,15 +200,20 @@ class Api_Services {
   }
 
   Future<List<Product>> getProducts(int id) async {
-    var url = "${Config.urlfor}" "${Config.productUrl}?category=$id" "&consumer_key=${Config.key}" "&consumer_secret=${Config.secret}";
+    var url = "${Config.urlfor}" "${Config.productUrl}?category=$id&per_page=100" "&consumer_key=${Config.key}" "&consumer_secret=${Config.secret}";
 
-    print('getProducts: $url');
     var response = await api.getAsync(url);
     print(response);
     List<Product> productList = [];
+    print('getProducts: $url}');
+    print('getProducts: ${response.length}');
+    print('getProducts: ${productList.length}');
     for (var item in response) {
       // print('getProductss: ${Product.fromJson(item)}');
-      productList.add(Product.fromJson(item));
+      if(Product.fromJson(item).catalogVisibility == 'visible') {
+      print('objectItem: $item');
+        productList.add(Product.fromJson(item));
+      }
     }
     print('productList: ${productList.toList().toString()}');
     return productList;
@@ -233,12 +238,11 @@ class Api_Services {
         // "${Config.parentforCategory}$id";
     print('getCategoryById: $url');
     var response = await api.getAsync(url);
-    print('getCategoryByIdResponse: ${response.toList()}');
     List<ParentCategory> categoryList = [];
     for (var item in response) {
       categoryList.add(ParentCategory.fromJson(item));
     }
-    print('returnCategory: ${categoryList.toList()}');
+    // print('returnCategory: ${categoryList.toList()}');
     return categoryList;
   }
 
@@ -256,16 +260,16 @@ class Api_Services {
     return orderList;
   }
 
-  Future<List<Orders>> getOrdersByUserId(String id) async {
+  Future<List<Orders>> getOrdersByUserId(int id) async {
     var url = "${Config.urlfor}" "${Config.orderUrl}?customers=$id";
-    print(url);
+    print('orderUrl: $url');
     var response = await api.getAsync(url);
     print(response);
     List<Orders> orderList = [];
     for (var item in response) {
       orderList.add(Orders.fromJson(item));
     }
-    print(orderList);
+    print('orderList: $orderList');
 
     return orderList;
   }
@@ -318,6 +322,8 @@ class Api_Services {
     country,
     paymentMethod,
     paymentMethodTitle,
+    deliveryDate,
+    deliveryTime,
     bool setPaid,
     int id,
     List<CartProducts> cartProducts,
@@ -340,7 +346,8 @@ class Api_Services {
         "postcode": postcode,
         "country": country,
         "email": mail,
-        "phone": mobile
+        "phone": mobile,
+
       },
       "shipping": {
         "first_name": first,
@@ -350,7 +357,9 @@ class Api_Services {
         "city": city,
         "state": state,
         "postcode": postcode,
-        "country": country
+        "country": country,
+        "deliveryDate": deliveryDate,
+        "deliveryTime": deliveryTime,
       },
       "line_items": cartProducts
     });

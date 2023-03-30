@@ -1,34 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:safira_woocommerce_app/Providers/CartProviders.dart';
 import 'package:safira_woocommerce_app/models/Products.dart';
+import 'package:safira_woocommerce_app/networks/ApiServices.dart';
 import 'package:safira_woocommerce_app/ui/BasePage.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:safira_woocommerce_app/ui/CartPage.dart';
 import 'package:safira_woocommerce_app/ui/productDetails.dart';
 import 'package:safira_woocommerce_app/ui/widgets/component.dart';
 import 'package:provider/provider.dart';
+import 'package:safira_woocommerce_app/models/global.dart' as Globals;
+
 
 class ProductsHorizontal extends StatefulWidget {
-  final List<Product> product;
-  ProductsHorizontal({this.product});
+  // final List<Product> product;
+  // ProductsHorizontal({this.product});
 
   @override
   _ProductsHorizontalState createState() => _ProductsHorizontalState();
 }
 
 class _ProductsHorizontalState extends State<ProductsHorizontal> {
-  int selected = 1;
-  String title = "";
+  // int selected = 1;
+  // String title = "";
   int addtoCart = 0;
   bool loa = false;
   List<Product> cart = [];
   List<Product> product = [];
-  getList() {
-    product = widget.product;
+  Api_Services api_services = Api_Services();
+  List<Product> response;
+
+  getList() async {
+    response = await api_services.getProducts(Globals.globalInt);
+    product = response;
     setState(() {
       print('objectCard: $cart');
-      print('objectCard: ${product.sublist(9)}');
-      cart = product.sublist(9);
+      // print('objectCard: ${product.sublist(20)}');
+      cart = response; //.sublist(20);
     });
   }
 
@@ -36,14 +43,16 @@ class _ProductsHorizontalState extends State<ProductsHorizontal> {
   void initState() {
     setState(() {
       getList();
-      cart = product.sublist(6);
+      cart = response;  //.sublist(9);
     });
+    print('objectCard: $cart');
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    print("am+$product");
+    print('productHorizontal: ${cart.length}');
+    print('productHorizontal: ${response.toList().toString()}');
     if (product == []) {
       return Center(
         child: CircularProgressIndicator(),
@@ -54,8 +63,10 @@ class _ProductsHorizontalState extends State<ProductsHorizontal> {
           itemCount: cart.length,
           scrollDirection: Axis.horizontal,
           itemBuilder: (BuildContext context, int id) {
+            print('cart.length: ${cart.length}');
             var width = MediaQuery.of(context).size.width;
-            cart = product.sublist(9);
+            cart = product;  //.sublist(9);
+            // print('subList: ${product.sublist(9).toList()}');
 
             return GestureDetector(
                 child: Container(
@@ -66,6 +77,7 @@ class _ProductsHorizontalState extends State<ProductsHorizontal> {
                     child: Column(
                       mainAxisSize: MainAxisSize.max,
                       children: <Widget>[
+
                         Container(
                           // width: width * 0.30,
                           height: width * 0.22,
@@ -73,7 +85,7 @@ class _ProductsHorizontalState extends State<ProductsHorizontal> {
                             image: DecorationImage(
                                 fit: BoxFit.fill,
                                 image: NetworkImage(
-                                  cart[id].images[0].src,
+                                  cart[id].images[0].src ?? 'https://www.farmerica.in/wp-content/uploads/2023/01/ae-1-2048x2048.jpg'
 
                                   // width: width * 0.3,
                                 )),
@@ -93,7 +105,7 @@ class _ProductsHorizontalState extends State<ProductsHorizontal> {
                           height: 5,
                         ),
                         Text(
-                          "₹" + '1000',//cart[id].salePrice.toString(),
+                          "₹" + cart[id].price,
                           overflow: TextOverflow.clip,
                           maxLines: 1,
                           style: TextStyle(fontSize: 12),

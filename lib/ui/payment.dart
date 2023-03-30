@@ -26,6 +26,9 @@ class PaymentGateway extends BasePage {
       mail,
       address,
       country;
+  final String deliveryDate;
+  final String deliveryTime;
+
   final int id;
   List<Product> product = [];
   List<CartProducts> cartProducts;
@@ -43,7 +46,9 @@ class PaymentGateway extends BasePage {
       this.mobile,
       this.postcode,
       this.cartProducts,
-      this.state});
+      this.state,
+      this.deliveryDate,
+      this.deliveryTime});
 
   @override
   _PaymentGatewayState createState() => _PaymentGatewayState();
@@ -66,6 +71,8 @@ class _PaymentGatewayState extends BasePageState<PaymentGateway> {
 
   @override
   void initState() {
+    // print('deliveryDate: ${widget.deliveryDate}');
+    // print('deliveryTime: ${widget.deliveryTime}');
     // basePage.title = "My Cart";
     // basePage.selected = 2;
     razorPaymentService.initPaymentGateway(context);
@@ -82,8 +89,8 @@ class _PaymentGatewayState extends BasePageState<PaymentGateway> {
   Future<UpiResponse> initiateTransaction(UpiApp app) async {
     return _upiIndia.startTransaction(
       app: app,
-      receiverUpiId: "8337976828@ybl",
-      receiverName: 'Md Azharuddin',
+      receiverUpiId: "KARTHEEC2011@OKHDFCBANK",
+      receiverName: 'KARTHEEC2011',
       transactionRefId: 'TestingUpiIndiaPlugin',
       transactionNote: 'Not actual. Just an example.',
       amount: 1.00,
@@ -94,77 +101,80 @@ class _PaymentGatewayState extends BasePageState<PaymentGateway> {
   // String title = "";
   @override
   Widget body(BuildContext context) {
-    print("paym+${widget.product}");
+    // print("paym+${widget.product}");
     List<PayCard> _getPaymentCards() {
       List<PayCard> cards = [];
 
-      cards.add(new PayCard(
-          title: "Razor pay",
-          description: "Pay bill using card",
-          image: "assets/paycard.png",
-          setPaid: true,
-          onPressed: () async {
-            razorPaymentService.getPayment(context);
-
-            Orders orders = await api_services.createOrder(
-                first: widget.first,
-                setPaid: true,
-                paymentMethod: "Razor pay",
-                paymentMethodTitle: "Pay bill using card",
-                last: widget.last,
-                address: widget.address,
-                apartmnt: widget.apartmnt,
-                city: widget.city,
-                country: widget.country,
-                id: widget.id,
-                postcode: widget.postcode,
-                cartProducts: widget.cartProducts,
-                state: widget.state,
-                flat: widget.flat,
-                mail: widget.mail,
-                mobile: widget.mobile);
-            // .then((value) => Navigator.push(
-            //     context,
-            //     MaterialPageRoute(
-            //         builder: (context) =>
-            //             CheckoutWrapper(
-            //               state: value,
-            //               product: widget.product,
-            //             ))));
-          }));
-
-      cards.add(new PayCard(
-          title: "Upi pay",
-          description: "Pay bill using UpiPay",
-          image: "assets/paycard.png",
-          setPaid: true,
-          onPressed: () async {
-            print("aahh");
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => UpiPay()));
-            Orders orders = await api_services.createOrder(
-                first: widget.first,
-                setPaid: true,
-                paymentMethod: "Upi pay",
-                paymentMethodTitle: "Pay after recieving",
-                last: widget.last,
-                address: widget.address,
-                apartmnt: widget.apartmnt,
-                city: widget.city,
-                country: widget.country,
-                id: widget.id,
-                postcode: widget.postcode,
-                cartProducts: widget.cartProducts,
-                state: widget.state,
-                flat: widget.flat,
-                mail: widget.mail,
-                mobile: widget.mobile);
-
-            setState(() {});
-          }));
+      // cards.add(new PayCard(
+      //     title: "QR Scan",
+      //     description: "Pay bill using card",
+      //     image: "assets/paycard.png",
+      //     setPaid: true,
+      //     onPressed: () async {
+      //       razorPaymentService.getPayment(context);
+      //
+      //       Orders orders = await api_services.createOrder(
+      //           first: widget.first,
+      //           setPaid: true,
+      //           paymentMethod: "QR Scan",
+      //           paymentMethodTitle: "Pay bill using card",
+      //           last: widget.last,
+      //           address: widget.address,
+      //           apartmnt: widget.apartmnt,
+      //           city: widget.city,
+      //           country: widget.country,
+      //           id: widget.id,
+      //           postcode: widget.postcode,
+      //           cartProducts: widget.cartProducts,
+      //           state: widget.state,
+      //           flat: widget.flat,
+      //           mail: widget.mail,
+      //           mobile: widget.mobile,
+      //           deliveryDate: widget.deliveryDate,
+      //           deliveryTime: widget.deliveryTime);
+      //       // .then((value) => Navigator.push(
+      //       //     context,
+      //       //     MaterialPageRoute(
+      //       //         builder: (context) =>
+      //       //             CheckoutWrapper(
+      //       //               state: value,
+      //       //               product: widget.product,
+      //       //             ))));
+      //     }));
+      ///
+      // cards.add(new PayCard(
+      //     title: "QR Scan",
+      //     description: "Pay bill using UpiPay",
+      //     image: "assets/paycard.png",
+      //     setPaid: true,
+      //     onPressed: () async {
+      //       print("aahh");
+      //       Navigator.push(
+      //           context, MaterialPageRoute(builder: (context) => UpiPay()));
+      //       Orders orders = await api_services.createOrder(
+      //           first: widget.first,
+      //           setPaid: true,
+      //           paymentMethod: "Upi pay",
+      //           paymentMethodTitle: "Pay after recieving",
+      //           last: widget.last,
+      //           address: widget.address,
+      //           apartmnt: widget.apartmnt,
+      //           city: widget.city,
+      //           country: widget.country,
+      //           id: widget.id,
+      //           postcode: widget.postcode,
+      //           cartProducts: widget.cartProducts,
+      //           state: widget.state,
+      //           flat: widget.flat,
+      //           mail: widget.mail,
+      //           mobile: widget.mobile);
+      //
+      //       setState(() {});
+      //     }));
+      ///
       cards.add(new PayCard(
           title: "Cash on Delivery",
-          description: "Pay after recieving ",
+          description: "Pay after receiving ",
           image: "assets/paycard.png",
           setPaid: false,
           onPressed: () async {

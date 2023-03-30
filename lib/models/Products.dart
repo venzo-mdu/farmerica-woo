@@ -180,19 +180,19 @@ class Product {
     parentId = json['parent_id'];
     purchaseNote = json['purchase_note'];
     if (json['categories'] != null) {
-      categories = new List<Categories>();
+      categories = <Categories>[];
       json['categories'].forEach((v) {
         categories.add(new Categories.fromJson(v));
       });
     }
     if (json['tags'] != null) {
-      tags = new List<Tags>();
+      tags = <Tags>[];
       json['tags'].forEach((v) {
         tags.add(new Tags.fromJson(v));
       });
     }
     if (json['images'] != null) {
-      images = new List<Images>();
+      images = <Images>[];
       json['images'].forEach((v) {
         images.add(new Images.fromJson(v));
       });
@@ -202,7 +202,7 @@ class Product {
     priceHtml = json['price_html'];
     relatedIds = json['related_ids'].cast<int>();
     if (json['meta_data'] != null) {
-      metaData = new List<MetaData>();
+      metaData = <MetaData>[];
       json['meta_data'].forEach((v) {
         metaData.add(new MetaData.fromJson(v));
       });
@@ -327,7 +327,7 @@ class Categories {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = Map<String, dynamic>();
     data['id'] = this.id;
     data['name'] = this.name;
     data['slug'] = this.slug;
@@ -412,7 +412,7 @@ class Links {
 
   Links.fromJson(Map<String, dynamic> json) {
     if (json['self'] != null) {
-      self = new List<Self>();
+      self = <Self>[];
       json['self'].forEach((v) {
         self.add(new Self.fromJson(v));
       });
@@ -459,7 +459,7 @@ class Tags {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = Map<String, dynamic>();
     data['id'] = this.id;
     data['name'] = this.name;
     data['slug'] = this.slug;

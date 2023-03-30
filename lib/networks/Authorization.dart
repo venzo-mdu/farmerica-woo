@@ -144,13 +144,13 @@ class WooCommerceAPI {
   Future<dynamic> getAsync(String endPoint, {Map data}) async {
 
     print('endPoint: $endPoint');
-    print('endPointData: ${data}');
+    // print('endPointData: ${data}');
     var url = this.getOAuthURL("GET", endPoint);
     print('getAsync: $url');
     // print(url);
     final response = await http.get(Uri.parse(url));
-    print('responseBody');
-    print(response.body);
+    // print('responseBody');
+    // print(response.body);
     return json.decode(response.body);
   }
 
