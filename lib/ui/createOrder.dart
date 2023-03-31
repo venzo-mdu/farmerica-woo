@@ -43,8 +43,8 @@ class _CreateOrderState extends BasePageState<CreateOrder> {
     super.initState();
     // basePage.title = "Checkout Page";
     // basePage.selected = 2;
-    print('objectUser: ${widget.id}');
-    print('widget.shipping: ${widget.shippingFee}');
+    // print('objectUser: ${widget.id}');
+    // print('widget.shipping: ${widget.shippingFee}');
   }
   TextEditingController datePickerController = TextEditingController();
 
@@ -123,7 +123,7 @@ class _CreateOrderState extends BasePageState<CreateOrder> {
                           dateTime = picked;
                           //assign the chosen date to the controller
                           datePickerController.text = DateFormat.yMd().format(dateTime);
-                          print('objectDatePickerController: ${datePickerController.text}');
+                          // print('objectDatePickerController: ${datePickerController.text}');
                         }
                       },
                     ),
@@ -515,13 +515,13 @@ class _CreateOrderState extends BasePageState<CreateOrder> {
                     final intMonth = int.parse(month);
                     final intYear = int.parse(year);
                     final formattedDate = DateTime.utc(intYear, intMonth, intDay);
-                    print("formattedDate:$formattedDate");
+                    // print("formattedDate:$formattedDate");
                     final format = DateFormat.yMd().format(formattedDate);
-                    print('format:$format');
+                    // print('format:$format');
 
 
                     if(datePickerController.text == DateFormat('EEEE').format(DateTime.now())) {
-                      print('objectError');
+                      // print('objectError');
                     } else {
 
                       Navigator.push(

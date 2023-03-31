@@ -31,11 +31,12 @@ class _ProductsHorizontalState extends State<ProductsHorizontal> {
 
   getList() async {
     response = await api_services.getProducts(Globals.globalInt);
+
     product = response;
     setState(() {
-      print('objectCard: $cart');
+      // print('objectCard: $cart');
       // print('objectCard: ${product.sublist(20)}');
-      cart = response; //.sublist(20);
+      // cart = response; //.sublist(20);
     });
   }
 
@@ -45,14 +46,14 @@ class _ProductsHorizontalState extends State<ProductsHorizontal> {
       getList();
       cart = response;  //.sublist(9);
     });
-    print('objectCard: $cart');
+    // print('objectCard: $cart');
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    print('productHorizontal: ${cart.length}');
-    print('productHorizontal: ${response.toList().toString()}');
+    // print('productHorizontal: ${cart.length}');
+    // print('productHorizontal: ${response.toList().toString()}');
     if (product == []) {
       return Center(
         child: CircularProgressIndicator(),
@@ -63,7 +64,7 @@ class _ProductsHorizontalState extends State<ProductsHorizontal> {
           itemCount: cart.length,
           scrollDirection: Axis.horizontal,
           itemBuilder: (BuildContext context, int id) {
-            print('cart.length: ${cart.length}');
+            // print('cart.length: ${cart.length}');
             var width = MediaQuery.of(context).size.width;
             cart = product;  //.sublist(9);
             // print('subList: ${product.sublist(9).toList()}');

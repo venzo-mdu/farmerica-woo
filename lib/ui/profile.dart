@@ -40,7 +40,7 @@ class _BodyState extends State<Body> {
             text: "My Account",
             icon: Icons.person,
             press: () {
-              print(widget.customer);
+              // print(widget.customer);
               Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -167,7 +167,7 @@ class _ProfilePicState extends State<ProfilePic> {
       if (pickedFile != null) {
         _image = File(pickedFile.path);
       } else {
-        print('No image selected.');
+        // print('No image selected.');
       }
     });
   }
@@ -319,7 +319,7 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
                   Navigator.pushReplacement(context,
                       MaterialPageRoute(builder: (context) => WelcomePage()));
                   sharedServices.logOut();
-                  print(sharedServices.loginDetails());
+                  // print(sharedServices.loginDetails());
                 },
               ),
             ])));

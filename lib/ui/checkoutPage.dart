@@ -20,7 +20,7 @@ class CheckoutScreen extends BasePage {
 class _CheckoutScreenState extends BasePageState<CheckoutScreen> {
   @override
   Widget body(BuildContext context) {
-    print(widget.product);
+    // print(widget.product);
     return MaterialApp(
         theme: OpenFlutterEcommerceTheme.of(context),
         debugShowCheckedModeBanner: false,
@@ -84,7 +84,7 @@ class _CheckoutWrapperState extends BasePageState<CheckoutWrapper> {
   String title = "Order ";
   @override
   Widget body(BuildContext context) {
-    print("as+${widget.product}");
+    // print("as+${widget.product}");
     return MaterialApp(
       theme: OpenFlutterEcommerceTheme.of(context),
       debugShowCheckedModeBanner: false,
@@ -368,12 +368,12 @@ class _CartViewState extends State<CartView> {
     var _theme = Theme.of(context);
     var width = MediaQuery.of(context).size.width - AppSizes.sidePadding * 2;
     o.Orders state = widget.state;
-    print("am+${widget.product}");
+    // print("am+${widget.product}");
 
     for (var item in demoCarts) {
       for (var it in state.lineItems) {
         if (it.productId == item.id) {
-          print(item);
+          // print(item);
           cart.add(item);
         }
       }

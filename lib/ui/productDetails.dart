@@ -26,7 +26,7 @@ class _ProductDetailState extends BasePageState<ProductDetail> {
   String parsHtml(String as) {
     final htmls = parse(as);
     final String pars = parse(htmls.body.text).documentElement.text;
-    print(pars);
+    // print(pars);
     setState(() {
       loa = false;
     });
@@ -171,11 +171,11 @@ class _ProductDetailState extends BasePageState<ProductDetail> {
   @override
   void initState() {
     super.initState();
-    print(widget.product.shortDescription);
+    // print(widget.product.shortDescription);
     shortDes = parsHtml(widget.product.shortDescription);
     // basePage.title = "Checkout Page";
     // basePage.selected = 2;
-    print("pincode:${pincodeController.text}");
+    // print("pincode:${pincodeController.text}");
   }
 
   @override

@@ -27,7 +27,7 @@ class WelcomePage extends StatelessWidget {
                           child: Container(
                             width: MediaQuery.of(context).size.width * 0.8,
                             child: Image(
-                              image: NetworkImage('https://www.farmerica.in/new/wp-content/uploads/2023/01/farmerica-logo.png'),
+                              image: NetworkImage('https://www.farmerica.in/wp-content/uploads/2023/01/farmerica-logo.png'),
                             ),
                           ),
                         ),

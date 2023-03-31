@@ -74,7 +74,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                       },
                       onChanged: (text) {
                         mail = text;
-                        print(mail);
+                        // print(mail);
                         setState(() {});
                       },
                       decoration: InputDecoration(

@@ -59,7 +59,7 @@ class _VerifyAddressState extends BasePageState<VerifyAddress> {
 
   @override
   Widget body(BuildContext context) {
-    print(widget.product);
+    // print(widget.product);
     return SingleChildScrollView(
       child: Padding(
         padding: EdgeInsets.all(10),

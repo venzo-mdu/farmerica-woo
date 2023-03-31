@@ -14,7 +14,6 @@ import 'package:safira_woocommerce_app/Providers/CartProviders.dart';
 import 'package:safira_woocommerce_app/ui/productDetails.dart';
 import 'package:safira_woocommerce_app/models/global.dart' as Globals;
 
-
 class AddtoCart {
   int addtoCart;
   AddtoCart({this.addtoCart});

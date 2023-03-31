@@ -37,7 +37,7 @@ class Api_Services {
       "last_name": lastName,
       "username": username
     });
-    print(response);
+    // print(response);
     Customers customer = Customers.fromJson(response);
 
     return customer;
@@ -61,8 +61,8 @@ class Api_Services {
     if (response.statusCode == 200) {
       WrongCredential wrongCredential =
           WrongCredential.fromJson(jsonDecode(response.body));
-      print('wrongCredential.message: ${wrongCredential.message}');
-      print(wrongCredential.message);
+      // print('wrongCredential.message: ${wrongCredential.message}');
+      // print(wrongCredential.message);
       msg = wrongCredential.message;
       return msg;
     }
@@ -70,7 +70,7 @@ class Api_Services {
       msg = "Signup successful";
 
       var customerDetails = Customers.fromJson(jsonDecode(response.body));
-      print(customerDetails.email);
+      // print(customerDetails.email);
     } else {
       msg = "Your Email-ID is already exists.";
     }
@@ -87,32 +87,32 @@ class Api_Services {
   Future<Customers> getCustomersByMail(String mail) async {
     // var url="${Config.customerUrl}?email=$mail";
     // var url="${Config.customerUrl}?email=$mail";
-    var url = "${Config.urlfor}" "customers?email=$mail";
-    print('getCustomersByMail: $url');
+    var url = "${Config.urlfor}customers?email=$mail";
+    // print('getCustomersByMail: $url');
     var response = await api.getAsync(url);
 
     Customers customer = Customers.fromJson(response[0]);
-    print('fromJson: ${response[0]}');
+    // print('fromJson: ${response[0]}');
     return customer;
   }
 
   Future getUsernameByMail(String mail) async {
-    var url= "${Config.urlfor}" "${Config.customerUrl}?email=$mail";
+    var url= "${Config.urlfor}${Config.customerUrl}?email=$mail";
     // var url = "${Config.customerUrl}" "customers?email=$mail";
-    print('getUsernameByMail: $url');
+    // print('getUsernameByMail: $url');
     String username;
     var response = await api.getAsync(url);
-    print(response);
+    // print(response);
     if (response.length == 0) {
-      print("invalid");
+      // print("invalid");
       username = null;
     } else {
-      print("valid");
-      print('response: ${response[0]}');
+      // print("valid");
+      // print('response: ${response[0]}');
       // Customers customer = Customers.fromJson(response[0]);
-      Customers customer = Customers.fromJson(response);
-      print('username: ${username}');
-      print('username: ${customer.username}');
+      Customers customer = Customers.fromJson(response[0]);
+      // print('username: ${username}');
+      // print('username: ${customer.username}');
       username = customer.username;
     }
     return username;
@@ -122,12 +122,17 @@ class Api_Services {
     var url = "https://www.farmerica.in/wp-json/jwt-auth/v1/token";
     print('getToken: $url');
     var response = await http.post(
-      Uri.http(url),
+      Uri.parse(url),
       body: {"username": username, "password": password},
-    );
-    TokenResponses data = TokenResponses.fromJson(jsonDecode(response.body));
 
-    print(data.token);
+    );
+    // print('objectPassword: $username');
+    // print('objectPassword: $password');
+    TokenResponses data = TokenResponses.fromJson(jsonDecode(response.body));
+    // print('objectPassword: ${data}');
+    print('objectToken: ${response.body}');
+
+    // print(data.token);
     return data.token;
   }
 
@@ -139,7 +144,7 @@ class Api_Services {
     );
     TokenResponses data = TokenResponses.fromJson(jsonDecode(response.body));
 
-    print(data.token);
+    // print(data.token);
     return data;
   }
 
@@ -156,15 +161,15 @@ class Api_Services {
     );
 
     TokenResponses data = TokenResponses.fromJson(jsonDecode(response.body));
-    print(data.userEmail);
-    print(response.body);
+    // print(data.userEmail);
+    // print(response.body);
   }
 
   Future retrieveUserDetails(String email) async {
     var auth =
         "Basic" + base64Encode(utf8.encode("${Config.key}:${Config.secret}"));
     var url = "${Config.url}" "${Config.emailurl}$email";
-    print('retrieveUserDetails: ${url}');
+    // print('retrieveUserDetails: ${url}');
     http.Response response = await http.get(
       Uri.http(url),
       headers: {
@@ -174,12 +179,12 @@ class Api_Services {
       },
     );
 
-    print(response.body);
+    // print(response.body);
   }
 
   Future getProductsById(int id) async {
     var url =  "${Config.url}" "${Config.urlfor}" "${Config.productUrl}/$id";
-    print('getProductsById: $url');
+    // print('getProductsById: $url');
     var response = await api.getAsync(url);
 
     Product product = Product.fromJson(response);
@@ -189,7 +194,7 @@ class Api_Services {
 
   Future<List<ParentCategory>> getCategory(int parentId) async {
     var url = "${Config.urlfor}" "${Config.categoriesUrl}/$parentId";
-    print('getCategory: $url');
+    // print('getCategory: $url');
     var response = await api.getAsync(url);
 
     List<ParentCategory> categoryList = [];
@@ -203,26 +208,26 @@ class Api_Services {
     var url = "${Config.urlfor}" "${Config.productUrl}?category=$id&per_page=100" "&consumer_key=${Config.key}" "&consumer_secret=${Config.secret}";
 
     var response = await api.getAsync(url);
-    print(response);
+    // print(response);
     List<Product> productList = [];
-    print('getProducts: $url}');
-    print('getProducts: ${response.length}');
-    print('getProducts: ${productList.length}');
+    // print('getProducts: $url}');
+    // print('getProducts: ${response.length}');
+    // print('getProducts: ${productList.length}');
     for (var item in response) {
       // print('getProductss: ${Product.fromJson(item)}');
       if(Product.fromJson(item).catalogVisibility == 'visible') {
-      print('objectItem: $item');
+      // print('objectItem: $item');
         productList.add(Product.fromJson(item));
       }
     }
-    print('productList: ${productList.toList().toString()}');
+    // print('productList: ${productList.toList().toString()}');
     return productList;
   }
 
   Future<List<Orders>> getOrders() async {
     var url = "${Config.urlfor}" "${Config.orderUrl}?per_page=100";
     var response = await api.getAsync(url);
-    print(response);
+    // print(response);
     List<Orders> orderList = [];
     for (var item in response) {
       orderList.add(Orders.fromJson(item));
@@ -236,7 +241,7 @@ class Api_Services {
         "${Config.productUrl}"
         "?categories=$id";
         // "${Config.parentforCategory}$id";
-    print('getCategoryById: $url');
+    // print('getCategoryById: $url');
     var response = await api.getAsync(url);
     List<ParentCategory> categoryList = [];
     for (var item in response) {
@@ -248,28 +253,28 @@ class Api_Services {
 
   Future<List<Orders>> getOrdersById(int id) async {
     var url = "${Config.urlfor}" "${Config.orderUrl}/$id";
-    print(url);
+    // print(url);
     var response = await api.getAsync(url);
-    print(response);
+    // print(response);
     List<Orders> orderList = [];
     for (var item in response) {
       orderList.add(Orders.fromJson(item));
     }
-    print(orderList);
+    // print(orderList);
 
     return orderList;
   }
 
   Future<List<Orders>> getOrdersByUserId(int id) async {
     var url = "${Config.urlfor}" "${Config.orderUrl}?customers=$id";
-    print('orderUrl: $url');
+    // print('orderUrl: $url');
     var response = await api.getAsync(url);
-    print(response);
+    // print(response);
     List<Orders> orderList = [];
     for (var item in response) {
       orderList.add(Orders.fromJson(item));
     }
-    print('orderList: $orderList');
+    // print('orderList: $orderList');
 
     return orderList;
   }
@@ -277,15 +282,15 @@ class Api_Services {
   Future addToCart(int id) async {
     var url = "/?${Config.addtoCartUrl}" "=$id";
     var response = await api.getAsync(url);
-    print(response);
+    // print(response);
     return response;
   }
 
   Future deleteAccount(int id) async {
     var url = "${Config.urlfor}" "${Config.customerUrl}/$id?force=true";
-    print(url);
+    // print(url);
     var response = await api.deleteAsync(url);
-    print(response);
+    // print(response);
   }
 
   Future updateCustomers(
@@ -302,10 +307,10 @@ class Api_Services {
       "last_name": lastName,
     }));
     var response = await api.putAsync(url, jsonDecode(body));
-    print(response);
+    // print(response);
 
     var customerDetails = Customers.fromJson(response);
-    print(customerDetails.email);
+    // print(customerDetails.email);
   }
 
   Future<Orders> createOrder({
@@ -330,7 +335,7 @@ class Api_Services {
   }) async {
     // CreateOrderModel model = CreateOrderModel();
     var url = "${Config.urlfor}" "${Config.orderUrl}";
-    print(address);
+    // print(address);
     var body = jsonEncode({
       "payment_method": paymentMethod,
       "payment_method_title": paymentMethodTitle,
@@ -363,10 +368,10 @@ class Api_Services {
       },
       "line_items": cartProducts
     });
-    print(body);
+    // print(body);
     var response = await api.postAsync(url, jsonDecode(body));
     Orders order = Orders.fromJson(response);
-    print(order);
+    // print(order);
     return order;
   }
 

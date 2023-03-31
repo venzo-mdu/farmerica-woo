@@ -109,16 +109,16 @@ class _UpiPayState extends State<UpiPay> {
   void _checkTxnStatus(String status) {
     switch (status) {
       case UpiPaymentStatus.SUCCESS:
-        print('Transaction Successful');
+        // print('Transaction Successful');
         break;
       case UpiPaymentStatus.SUBMITTED:
-        print('Transaction Submitted');
+        // print('Transaction Submitted');
         break;
       case UpiPaymentStatus.FAILURE:
-        print('Transaction Failed');
+        // print('Transaction Failed');
         break;
       default:
-        print('Received an Unknown transaction status');
+        // print('Received an Unknown transaction status');
     }
   }
 

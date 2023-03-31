@@ -75,7 +75,7 @@ class _MyHomePageState extends BasePageState<MyHomePage> {
   Widget body(BuildContext context) {
     getList();
     Customers customer = widget.customer;
-    print('customer: $customer');
+    // print('customer: $customer');
     List<Widget> list = [
       Dashboard(),
       CategoryPage(

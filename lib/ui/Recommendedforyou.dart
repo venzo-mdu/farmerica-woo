@@ -34,14 +34,14 @@ class _RecommendationsState extends State<Recommendations> {
 
   @override
   Widget build(BuildContext context) {
-    print("am+${product.toString()}");
+    // print("am+${product.toString()}");
     if (product == null) {
-      print('products: $product');
+      // print('products: $product');
       return Center(
         child: CircularProgressIndicator(),
       );
     } else {
-      print(product);
+      // print(product);
       return ListView.builder(
           itemCount: product.length - 13,
           scrollDirection: Axis.horizontal,
@@ -119,7 +119,7 @@ class _RecommendationsState extends State<Recommendations> {
                   ),
                 ),
                 onTap: () {
-                  print('productRate: ${product[id].salePrice}');
+                  // print('productRate: ${product[id].salePrice}');
                   Navigator.push(
                       context,
                       MaterialPageRoute(

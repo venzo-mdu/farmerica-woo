@@ -34,9 +34,9 @@ class BasePageState<T extends BasePage> extends State<T> {
 
 
   Future getList() async {
-    print('insideGetList37: ${Globals.globalInt}');
+    // print('insideGetList37: ${Globals.globalInt}');
 
-    print('insideGetList39: ${Globals.globalInt}');
+    // print('insideGetList39: ${Globals.globalInt}');
     categories = await api_services.getCategoryById(Globals.globalInt);
     // print('categoriesLength: ${categories.length}');
     response = await api_services.getProducts(Globals.globalInt);

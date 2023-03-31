@@ -33,7 +33,7 @@ class _GroceryState extends BasePageState<Grocery> {
   @override
   Widget body(BuildContext context) {
     List<Product> product = widget.product;
-    print('grocery: ${widget.product.length}');
+    // print('grocery: ${widget.product.length}');
 
     List dummyProduct = product;
     lowToHigh() {
@@ -42,70 +42,70 @@ class _GroceryState extends BasePageState<Grocery> {
           // print('dummyProductPrice: ${double.parse((dummyProduct[j].price))}');
           // print('dummyProductPriceType: ${double.parse((dummyProduct[j].price)).runtimeType}');
           if (double.parse((dummyProduct[j].price)) > double.parse(dummyProduct[j+1].price)) {
-            print('insideSwap:');
+            // print('insideSwap:');
 
             var temp = dummyProduct[j];
             dummyProduct[j] = dummyProduct[j+1];
             dummyProduct[j+1] = temp;
-            print('temp: $temp');
+            // print('temp: $temp');
           }
         }
       }
-      print('calling GridList53:${dummyProduct.length}');
+      // print('calling GridList53:${dummyProduct.length}');
       // print('objectDummyProduct: ${dummyProduct.length}');
       for(int i =0; i<dummyProduct.length; i++) {
-        print('objectDummyProduct: ${dummyProduct[i].price.toString()}');
+        // print('objectDummyProduct: ${dummyProduct[i].price.toString()}');
       }
       GridViewList(product: dummyProduct);
     }
 
     highToLow() {
       // List dummyProduct = product;
-      print('dummyProduct: $dummyProduct');
+      // print('dummyProduct: $dummyProduct');
 
       for (int i = 0; i < dummyProduct.length - 1; i++){
         for (int j = 0; j < dummyProduct.length - i -1; j++){
-          print('dummyProductPrice: ${double.parse((dummyProduct[j].price))}');
-          print('dummyProductPriceType: ${double.parse((dummyProduct[j].price)).runtimeType}');
+          // print('dummyProductPrice: ${double.parse((dummyProduct[j].price))}');
+          // print('dummyProductPriceType: ${double.parse((dummyProduct[j].price)).runtimeType}');
           if (double.parse((dummyProduct[j].price)) < double.parse(dummyProduct[j+1].price)) {
             var temp = dummyProduct[j];
 
             dummyProduct[j] = dummyProduct[j+1];
             dummyProduct[j+1] = temp;
-            print('temp: $temp');
+            // print('temp: $temp');
           }
         }
       }
-      print('calling GridList75:${dummyProduct.length}');
+      // print('calling GridList75:${dummyProduct.length}');
 
       // print('objectDummyProduct: ${dummyProduct.length}');
-      print('objectDummyProduct: ${dummyProduct[0].price.toString()}');
+      // print('objectDummyProduct: ${dummyProduct[0].price.toString()}');
       GridViewList(product: dummyProduct);
     }
 
 
     latest() {
       // List dummyProduct = product;
-      print('CallingLatest: $dummyProduct');
+      // print('CallingLatest: $dummyProduct');
       for (int i = 0; i < dummyProduct.length - 1; i++){
         for (int j = 0; j < dummyProduct.length - i -1; j++){
           // print('dummyProductPrice: ${double.parse((dummyProduct[j].price))}');
           // print('dummyProductPriceType: ${double.parse((dummyProduct[j].dateModified)).runtimeType}');
           // if (dummyProduct[j].dateModified < dummyProduct[j+1].dateModified) {
           if(dummyProduct[j].dateModified.compareTo(dummyProduct[j+1].dateModified) < 0) {
-            print('callingLastestInsideIf');
+            // print('callingLastestInsideIf');
             var temp = dummyProduct[j];
 
             dummyProduct[j] = dummyProduct[j+1];
             dummyProduct[j+1] = temp;
-            print('temp: $temp');
+            // print('temp: $temp');
           }
         }
       }
-      print('calling GridList75:${dummyProduct.length}');
+      // print('calling GridList75:${dummyProduct.length}');
 
       // print('objectDummyProduct: ${dummyProduct.length}');
-      print('objectDummyProduct: ${dummyProduct[0].price.toString()}');
+      // print('objectDummyProduct: ${dummyProduct[0].price.toString()}');
       GridViewList(product: dummyProduct);
     }
 
@@ -151,9 +151,9 @@ class _GroceryState extends BasePageState<Grocery> {
                         }).toList(),
                         onChanged: (value) {
                           setState(() {
-                            print('isSelectedDropDown: $isSelectedDropDown');
-                            print('isSelectedDropDown: ${isSelectedDropDown.runtimeType}');
-                            print('isSelectedDropDown: $value');
+                            // print('isSelectedDropDown: $isSelectedDropDown');
+                            // print('isSelectedDropDown: ${isSelectedDropDown.runtimeType}');
+                            // print('isSelectedDropDown: $value');
 
                             if(value == 'Sort by Low to High') {
                               setState(() {

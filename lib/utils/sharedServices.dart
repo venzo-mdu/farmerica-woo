@@ -15,7 +15,7 @@ class SharedServices {
 
   Future<Customers> loginDetails() async {
     final prefs = await SharedPreferences.getInstance();
-    print("as+${prefs.getString("login_details")})");
+    // print("as+${prefs.getString("login_details")})");
     return prefs.getString("login_details") != null
         ? Customers.fromJson(jsonDecode(prefs.getString("login_details")))
         : null;
@@ -23,7 +23,7 @@ class SharedServices {
 
   Future<void> setLoginDetails(Customers loginResponseModel) async {
     final prefs = await SharedPreferences.getInstance();
-    print(prefs.getString("login_details"));
+    // print(prefs.getString("login_details"));
     return prefs.setString(
         "login_details",
         loginResponseModel != null
