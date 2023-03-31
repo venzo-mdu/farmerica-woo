@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ffi';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -77,13 +78,15 @@ class _CartScreenState extends BasePageState<CartScreen> {
 
   Timer timer;
   var shippingFee = 0;
+  int checkOutVariable;
 
   bool intFlag = false;
   TextEditingController _couponCodeController = TextEditingController();
 
+
   @override
   void initState() {
-    print('CartLength85: ${widget.product.length}');
+    // print('CartLength85: ${widget.product.length}');
     super.initState();
   }
 
@@ -154,7 +157,8 @@ class _CartScreenState extends BasePageState<CartScreen> {
     }
 
     List<p.Product> demoCarts = widget.product;
-    List<p.Product> cart = [];
+    // List<p.Product> cart = [];
+    List cart = [];
 
     // print('demoCarts: ${demoCarts.toList().toString()}');
 
@@ -176,15 +180,27 @@ class _CartScreenState extends BasePageState<CartScreen> {
       } else {
         // if(intFlag == false ) {
         totalSubtotal = 0;
-        print('demoCarts.length: ${demoCarts.length}');
-        for (var item in demoCarts) {
-          for (var it in cartModel.cartProducts) {
-            if (it.product_id == item.id) {
-              cart.add(item);
+        // print('demoCarts.length: ${demoCarts.length}');
+        // for (var item in demoCarts) {
+          for (dynamic it in cartModel.cartProducts) {
+            // if (it.product_id == item.id) {
+            print('objectIT: ${it.runtimeType}');
+            // price, name, images[0].src
+              cart.add({
+                'name': it.name,
+                'price': it.price,
+                'images': it.image,
+                'id': it.product_id,
+              });
+              // cart.add(it);
+            print('productID: ${it.name}');
+            print('productID: ${it.price.runtimeType}');
+            print('productID: ${subTotals.runtimeType}');
+
               addtoCart.add(AddtoCart(addtoCart: 1));
               if (intFlag == false) {
-                subTotals += double.parse(item.price);
-                finalTotal += double.parse(item.price);
+                subTotals += double.parse(it.price);
+                finalTotal += double.parse(it.price);
               }
               arraySize++;
               // }
@@ -217,10 +233,14 @@ class _CartScreenState extends BasePageState<CartScreen> {
               //   print('totalIndexPrice167: ${totalIndexPrice}');
               // });
 
-            }
+            // }
             intFlag = true;
           }
-        }
+        print('CartLength: ${cart.length}');
+          for(dynamic i in cart) {
+            print('cartLenth: $i');
+          }
+        // }
 
         return Scaffold(
           body: SingleChildScrollView(
@@ -233,6 +253,8 @@ class _CartScreenState extends BasePageState<CartScreen> {
                   child: ListView.builder(
                     itemCount: cart.length, //
                     itemBuilder: (context, index) {
+                      checkOutVariable = index;
+                      ///
                       // int pr = cart[index].price as int;
                       // totalIndexPrice = cart[index].price;
                       // print('objectTotal: ${totalIndexPrice}');
@@ -243,14 +265,14 @@ class _CartScreenState extends BasePageState<CartScreen> {
                       // print('totalIndexPrice: ${[index]}');
                       // totalSubtotal += double.parse(totalIndexPrice.toString());
                       // print('total Sub total: ${totalSubtotal}');
-                      //
                       // print('final: ${totalSubtotal.toString()}');
-
+                      ///
                       return Padding(
                         padding: EdgeInsets.symmetric(vertical: 10),
                         child: GestureDetector(
                             child: Dismissible(
-                              key: Key(cart[index].id.toString()),
+                                // cart[index]['images']
+                              key: Key(cart[index]['id'].toString()),
                               direction: DismissDirection.endToStart,
                               onDismissed: (direction) {
                                 setState(() {
@@ -291,7 +313,7 @@ class _CartScreenState extends BasePageState<CartScreen> {
                                                     BorderRadius.circular(15),
                                               ),
                                               child: Image.network(
-                                                  cart[index].images[0].src),
+                                                  cart[index]['images']),
                                             ),
                                           ),
                                         ),
@@ -304,16 +326,17 @@ class _CartScreenState extends BasePageState<CartScreen> {
                                               CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                              cart[index].name,
+                                              cart[index]['name'],
                                               style: TextStyle(
                                                   color: Colors.black,
                                                   fontSize: width * 0.04),
                                               maxLines: 2,
                                             ),
+                                            // price, name, images[0].src // cart[index]['images']
                                             SizedBox(height: 10),
                                             Text.rich(
                                               TextSpan(
-                                                text: "\₹${cart[index].price}",
+                                                text: "\₹${cart[index]['price']}",
                                                 style: TextStyle(
                                                     fontWeight: FontWeight.w600,
                                                     color: Color(0xFFFF7643)),
@@ -354,7 +377,7 @@ class _CartScreenState extends BasePageState<CartScreen> {
                                                         //     'counterArray343: ${cart[i].price}');
 
                                                         subTotals += int.parse(
-                                                                cart[i].price) *
+                                                                cart[i]['price']) *
                                                             counterArray[i];
                                                       }
                                                       finalTotal = shippingFee +
@@ -377,7 +400,7 @@ class _CartScreenState extends BasePageState<CartScreen> {
                                                         //     'counterArray343: ${cart[i].price}');
 
                                                         subTotals += int.parse(
-                                                                cart[i].price) *
+                                                                cart[i]['price']) *
                                                             counterArray[i];
                                                       }
                                                       finalTotal = shippingFee +
@@ -418,9 +441,13 @@ class _CartScreenState extends BasePageState<CartScreen> {
                             ),
                             onTap: () {}),
                       );
+
                     },
                   ),
                 ),
+
+
+
                 Container(
                   padding: EdgeInsets.symmetric(
                     vertical: 15,
@@ -510,7 +537,7 @@ class _CartScreenState extends BasePageState<CartScreen> {
                                         finalTotal = 0;
                                         for (int i = 0; i < cart.length; i++) {
                                           finalTotal +=
-                                              int.parse(cart[i].price) *
+                                              int.parse(cart[i]['price']) *
                                                   counterArray[i];
                                         }
                                         finalTotal = 0 + finalTotal;
@@ -531,7 +558,7 @@ class _CartScreenState extends BasePageState<CartScreen> {
                                         finalTotal = 0;
                                         for (int i = 0; i < cart.length; i++) {
                                           finalTotal +=
-                                              int.parse(cart[i].price) *
+                                              int.parse(cart[i]['price']) *
                                                   counterArray[i];
                                         }
                                         finalTotal = 200 + finalTotal;
@@ -558,7 +585,7 @@ class _CartScreenState extends BasePageState<CartScreen> {
                                         finalTotal = 0;
                                         for (int i = 0; i < cart.length; i++) {
                                           finalTotal +=
-                                              int.parse(cart[i].price) *
+                                              int.parse(cart[i]['price']) *
                                                   counterArray[i];
                                         }
                                         finalTotal = 75 + finalTotal;
@@ -637,15 +664,18 @@ class _CartScreenState extends BasePageState<CartScreen> {
                                     style: TextStyle(fontSize: 18)),
                               ),
                               onPressed: () {
+                                print('shippingFee: $shippingFee');
+                                print('widget.details.id: ${cart[checkOutVariable]['id'].toString()}');
+                                // print('cart: $cart}');
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => CreateOrder(
                                               shippingFee: shippingFee,
-                                              id: widget.details.id,
+                                              id: cart[checkOutVariable]['id'], // widget.details.id,
                                               cartProducts:
                                                   cartModel.cartProducts,
-                                              product: cart,
+                                              product: cart[checkOutVariable]['id'], // cart,
                                             )));
                               },
                             ),

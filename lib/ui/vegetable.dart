@@ -131,7 +131,11 @@ class _VegetableState extends BasePageState<Vegetable> {
                                                             context,
                                                             listen: false)
                                                         .addCartProduct(
-                                                            cart[id].id, 1);
+                                                            cart[id].id, 1,
+                                                        widget.product[id].name,
+                                                        widget.product[id].price,
+                                                        widget.product[id].images[0].src
+                                                    );
                                                     Fluttertoast.showToast(
                                                         msg:
                                                             "${cart[id].name} successfully added to cart",

@@ -30,10 +30,9 @@ class _ProductsHorizontalState extends State<ProductsHorizontal> {
   List<Product> response;
 
   getList() async {
-    response = await api_services.getProducts(Globals.globalInt);
-
+    response = await api_services.getProducts(45);
     product = response;
-    setState(() {
+    setState(()  {
       // print('objectCard: $cart');
       // print('objectCard: ${product.sublist(20)}');
       // cart = response; //.sublist(20);

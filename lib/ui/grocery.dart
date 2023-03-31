@@ -27,6 +27,7 @@ class _GroceryState extends BasePageState<Grocery> {
   // BasePage basePage = BasePage();
   @override
   void initState() {
+    print('groceryPage: ${widget.product.length}');
     super.initState();
   }
 
@@ -179,6 +180,7 @@ class _GroceryState extends BasePageState<Grocery> {
 
                     ],
                   ),
+
 
                   GridViewList(product: product,)
                   // Container(

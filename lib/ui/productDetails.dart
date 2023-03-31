@@ -373,9 +373,18 @@ class _ProductDetailState extends BasePageState<ProductDetail> {
                             ),
                           ),
                           onPressed: () {
+                            Provider.of<CartModel>(context,
+                                        listen: false)
+                                        ;
                             cart.add(widget.product);
                             Provider.of<CartModel>(context, listen: false)
-                                .addCartProduct(widget.product.id, 1);
+                                .addCartProduct(
+                                widget.product.id,
+                                1,
+                                widget.product.name,
+                                widget.product.price,
+                                widget.product.images[0].src
+                            );
                             Fluttertoast.showToast(
                                 msg:
                                 "${widget.product.name} successfully added to cart",

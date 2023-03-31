@@ -287,23 +287,36 @@ class _DashboardState extends State<Dashboard> {
                 itemBuilder: (context, index) {
                   return GestureDetector(
                       onTap: () async {
+
+                        // List<String> homeScreen = [
+                        //   'https://www.farmerica.in/wp-content/uploads/2023/03/exotic-vegetable-a-gift-basket.jpg',
+                        //   'https://www.farmerica.in/wp-content/uploads/2023/03/healthy-food-from-our-farm-1.jpg',
+                        // ];
+
                         if (homeScreen[index].toString() == 'https://www.farmerica.in/wp-content/uploads/2023/03/exotic-vegetable-a-gift-basket.jpg') {
                           Globals.globalInt = 68;
                           response = await api_services.getProducts(68);
+                          print('vegetable: $response');
                           Navigator.of(context).push(MaterialPageRoute(
                               builder: (context) => Grocery(
                                     product: response,
                                   )));
-                        } else if (homeScreen[index].toString() == 'https://www.farmerica.in/wp-content/uploads/2023/03/healthy-food-from-our-farm-1.jpg') {
+                        }
+
+                        else if (homeScreen[index].toString() == 'https://www.farmerica.in/wp-content/uploads/2023/03/healthy-food-from-our-farm-1.jpg') {
                           Globals.globalInt = 86;
                           response = await api_services.getProducts(86);
+                          print('healthy: $response');
                           Navigator.of(context).push(MaterialPageRoute(
                               builder: (context) => Grocery(
                                     product: response,
                                   )));
-                        } else {
+                        }
+
+                        else {
                           Globals.globalInt = 45;
                           response = await api_services.getProducts(45);
+                          print('category45: $response');
                           Navigator.of(context).push(MaterialPageRoute(
                               builder: (context) =>
                                   Grocery(

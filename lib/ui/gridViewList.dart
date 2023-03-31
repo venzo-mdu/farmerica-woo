@@ -10,8 +10,6 @@ class GridViewList extends StatefulWidget {
 
   GridViewList({this.product});
 
-
-
   @override
   State<GridViewList> createState() => _GridViewListState();
 }
@@ -30,6 +28,7 @@ class _GridViewListState extends State<GridViewList> {
           itemCount: widget.product.length,
           itemBuilder: (BuildContext context, int id) {
             var width = MediaQuery.of(context).size.width;
+            // print('Grid; ${widget.product.length}');
             // final sortedItems = isDropDown ? product.reversed.toList() : product;
             // final item = sortedItems[id];
             // print('sortedItems: ${item.price.toString()}');
@@ -70,34 +69,40 @@ class _GridViewListState extends State<GridViewList> {
                                 fontWeight: FontWeight.bold,
                                 fontSize: width * 0.05),
                           ),
-                          TextButton(
-                            onPressed: () {
-                              setState(() {
-                                addtoCart = 1;
-                              });
-
-                              print('CardDetails78: ${widget.product[id].id}');
-                              print('CardDetails79: ${widget.product[id].price}');
-
-
-                              Provider.of<CartModel>(context,
-                                  listen: false)
-                                  .addCartProduct(widget.product[id].id, 1);
-                              // .addCartProduct(widget.product);
-                              Fluttertoast.showToast(
-                                  msg:
-                                  "${widget.product[id].name} successfully added to cart",
-                                  toastLength: Toast.LENGTH_SHORT,
-                                  gravity: ToastGravity.BOTTOM,
-                                  timeInSecForIosWeb: 1,
-                                  backgroundColor: Colors.black,
-                                  textColor: Colors.white,
-                                  fontSize: 16.0);
-                            },
-                            child: Text("View"),
-                            // color: Colors.blueAccent,
-                            // textColor: Colors.white,
-                          )
+                          // TextButton(
+                          //   onPressed: () {
+                          //     setState(() {
+                          //       addtoCart = 1;
+                          //     });
+                          //
+                          //     print('CardDetails78: ${widget.product[id].id}');
+                          //
+                          //
+                          //
+                          //     Provider.of<CartModel>(context,
+                          //         listen: false)
+                          //         .addCartProduct(
+                          //         widget.product[id].id,
+                          //         1,
+                          //         widget.product[id].name,
+                          //         widget.product[id].price,
+                          //         widget.product[id].images[0].src
+                          //     );
+                          //     // .addCartProduct(widget.product);
+                          //     Fluttertoast.showToast(
+                          //         msg:
+                          //         "${widget.product[id].name} successfully added to cart",
+                          //         toastLength: Toast.LENGTH_SHORT,
+                          //         gravity: ToastGravity.BOTTOM,
+                          //         timeInSecForIosWeb: 1,
+                          //         backgroundColor: Colors.black,
+                          //         textColor: Colors.white,
+                          //         fontSize: 16.0);
+                          //   },
+                          //   child: Text("View"),
+                          //   // color: Colors.blueAccent,
+                          //   // textColor: Colors.white,
+                          // )
                         ],
                       )),
                 ),

@@ -95,7 +95,12 @@ class _RecommendationsState extends State<Recommendations> {
                             });
 
                             Provider.of<CartModel>(context, listen: false)
-                                .addCartProduct(product[id].id, 1);
+                                .addCartProduct(
+                              product[id].id, 1,
+                                widget.product[id].name,
+                                widget.product[id].price,
+                                widget.product[id].images[0].src
+                            );
                             Fluttertoast.showToast(
                                 msg:
                                     "${product[id].name} successfully added to cart",

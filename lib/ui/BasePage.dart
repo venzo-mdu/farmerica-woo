@@ -34,13 +34,13 @@ class BasePageState<T extends BasePage> extends State<T> {
 
 
   Future getList() async {
-    // print('insideGetList37: ${Globals.globalInt}');
+    print('insideGetList37: ${Globals.globalInt}');
 
-    // print('insideGetList39: ${Globals.globalInt}');
+    print('insideGetList39: ${Globals.globalInt}');
     categories = await api_services.getCategoryById(Globals.globalInt);
-    // print('categoriesLength: ${categories.length}');
+    print('categoriesLength: ${categories.length}');
     response = await api_services.getProducts(Globals.globalInt);
-    // print("categoriesResponse+${response.toString()}");
+    print("categoriesResponse+${response.toString()}");
   }
 
   @override
@@ -93,7 +93,7 @@ class BasePageState<T extends BasePage> extends State<T> {
       )
     ];
 
-    // print("ll+${response.toString()}");
+    print("ll+${response.toString()}");
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.green,
@@ -158,20 +158,20 @@ class BasePageState<T extends BasePage> extends State<T> {
 
     List<Widget> list = [
       Dashboard(
-        product: response,
-        category: categories,
+        // product: response,
+        // category: categories,
       ),
       CategoryPage(
-        catergories: categories,
-        product: response,
+        // catergories: categories,
+        // product: response,
       ),
       CartScreen(
-        product: response,
-        details: widget.customer,
+        // product: response,
+        // details: widget.customer,
       ),
       CompleteProfileScreen(
-        customer: widget.customer,
-        product: response,
+        // customer: widget.customer,
+        // product: response,
       )
     ];
     // print(categories);

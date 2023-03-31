@@ -60,8 +60,9 @@ class _MyHomePageState extends BasePageState<MyHomePage> {
 
   @override
   void initState() {
+    print('homepage: ${widget}');
     super.initState();
-    getList();
+    // getList();
   }
 
   // List<Widget> _list = [
@@ -73,17 +74,17 @@ class _MyHomePageState extends BasePageState<MyHomePage> {
   //String title = "HomePage";
   @override
   Widget body(BuildContext context) {
-    getList();
+    // getList();
     Customers customer = widget.customer;
     // print('customer: $customer');
     List<Widget> list = [
       Dashboard(),
       CategoryPage(
-        catergories: categories,
-        product: response,
+        // catergories: categories,
+        // product: response,
       ),
       CartScreen(
-        product: response,
+        // product: response,
       ),
       CompleteProfileScreen(
         customer: widget.customer,
