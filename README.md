@@ -1,4 +1,4 @@
-# safira_woocommerce_app
+# woocommerce_app
 
 A new Flutter application.
 
