@@ -666,16 +666,15 @@ class _CartScreenState extends BasePageState<CartScreen> {
                               onPressed: () {
                                 print('shippingFee: $shippingFee');
                                 print('widget.details.id: ${cart[checkOutVariable]['id'].toString()}');
-                                // print('cart: $cart}');
+                                print('cart: $cart}');
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => CreateOrder(
                                               shippingFee: shippingFee,
-                                              id: cart[checkOutVariable]['id'], // widget.details.id,
-                                              cartProducts:
-                                                  cartModel.cartProducts,
-                                              product: cart[checkOutVariable]['id'], // cart,
+                                              id: cart[0]['id'], // widget.details.id,
+                                              cartProducts: cartModel.cartProducts,
+                                              product: cart,//cart[checkOutVariable],
                                             )));
                               },
                             ),

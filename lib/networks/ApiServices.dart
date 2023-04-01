@@ -88,8 +88,10 @@ class Api_Services {
     // var url="${Config.customerUrl}?email=$mail";
     // var url="${Config.customerUrl}?email=$mail";
     var url = "${Config.urlfor}customers?email=$mail";
-    // print('getCustomersByMail: $url');
+
     var response = await api.getAsync(url);
+
+    print('getCustomersByMail: $response');
 
     Customers customer = Customers.fromJson(response[0]);
     // print('fromJson: ${response[0]}');
@@ -132,8 +134,9 @@ class Api_Services {
     // print('objectPassword: ${data}');
     print('objectToken: ${response.body}');
 
-    // print(data.token);
-    return data.token;
+    print('Token from DB: ${data.token}');
+    return data;
+    // return data.token;
   }
 
   Future getTokenDetails(String username, String password) async {
@@ -144,7 +147,7 @@ class Api_Services {
     );
     TokenResponses data = TokenResponses.fromJson(jsonDecode(response.body));
 
-    // print(data.token);
+    print("data.token: ${data.token}");
     return data;
   }
 

@@ -12,8 +12,8 @@ import 'package:safira_woocommerce_app/models/global.dart' as Globals;
 
 
 class ProductsHorizontal extends StatefulWidget {
-  // final List<Product> product;
-  // ProductsHorizontal({this.product});
+  final List<Product> product;
+  ProductsHorizontal({this.product});
 
   @override
   _ProductsHorizontalState createState() => _ProductsHorizontalState();

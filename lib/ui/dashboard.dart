@@ -335,11 +335,11 @@ class _DashboardState extends State<Dashboard> {
             //       product: product,
             //     )),
             Container(height: 35, child: UpperHeading("Best Sellers Products")),
-            Container(
-              height: 180,
-              padding: EdgeInsets.symmetric(horizontal: 15),
-              child: ProductsHorizontal(),
-            )
+            // Container(
+            //   height: 180,
+            //   padding: EdgeInsets.symmetric(horizontal: 15),
+            //   child: ProductsHorizontal(product: widget.product),
+            // )
           ],
         )));
   }

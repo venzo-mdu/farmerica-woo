@@ -34,7 +34,6 @@ class _GroceryState extends BasePageState<Grocery> {
   @override
   Widget body(BuildContext context) {
     List<Product> product = widget.product;
-    // print('grocery: ${widget.product.length}');
 
     List dummyProduct = product;
     lowToHigh() {
@@ -84,7 +83,6 @@ class _GroceryState extends BasePageState<Grocery> {
       GridViewList(product: dummyProduct);
     }
 
-
     latest() {
       // List dummyProduct = product;
       // print('CallingLatest: $dummyProduct');
@@ -109,15 +107,6 @@ class _GroceryState extends BasePageState<Grocery> {
       // print('objectDummyProduct: ${dummyProduct[0].price.toString()}');
       GridViewList(product: dummyProduct);
     }
-
-    sorting() {
-      for (int i = 0; i < dummyProduct.length - 1; i++){
-        for (int j = 0; j < dummyProduct.length - i - 1; j++) {
-
-        }
-      }
-    }
-
 
     return product == []
         ? Center(
@@ -275,6 +264,7 @@ class _GroceryState extends BasePageState<Grocery> {
                 ],
               ),
             ),
+
           );
   }
 }
