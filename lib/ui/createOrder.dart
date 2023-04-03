@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'dart:convert';
 import 'package:safira_woocommerce_app/form_helper.dart';
 import 'package:safira_woocommerce_app/models/CartRequest.dart';
 import 'package:safira_woocommerce_app/models/Customers.dart';
 import 'package:safira_woocommerce_app/models/Products.dart';
+import 'package:safira_woocommerce_app/networks/ApiServices.dart';
 import 'package:safira_woocommerce_app/ui/BasePage.dart';
 import 'package:safira_woocommerce_app/ui/verifyAddress.dart';
 import 'package:string_validator/string_validator.dart';
@@ -12,10 +14,11 @@ import 'package:string_validator/string_validator.dart';
 
 class CreateOrder extends BasePage {
   List<CartProducts> cartProducts;
-  List<Product> product = [];
+  List product = [];
   final int id;
   var shippingFee;
-  CreateOrder({this.cartProducts, this.product, this.id, this.shippingFee});
+  var details;
+  CreateOrder({this.cartProducts, this.product, this.id, this.shippingFee, this.details});
   @override
   _CreateOrderState createState() => _CreateOrderState();
 }
@@ -38,18 +41,65 @@ class _CreateOrderState extends BasePageState<CreateOrder> {
   String title = "Create Order";
   String dropDownValue;
   // BasePage basePage = BasePage();
+  DateTime intialdate = DateTime.now();
+  DateTime selectedDate;
+  bool isCurrentDaySelected = false;
+
+  String firstName;
+  String lastName;
+  String emailId;
+  String phoneNumber;
+
+  String address1;
+  String address2;
+  String townCity;
+  String pinsCode;
+
+  Api_Services api_services = Api_Services();
+
+  getUser() async {
+    Customers customer = await api_services.getCustomersByMail(emailId);
+    return customer;
+  }
+
+  var userData;
+  getUserData() async {
+    userData = await getUser();
+    setState((){
+      phoneNumber = userData.billing.phone;
+      address1 = userData.billing.address1;
+      address2 = userData.billing.address2;
+      townCity = userData.billing.city;
+      pinsCode = userData.billing.postcode;
+    });
+
+      print('userData: ${phoneNumber}');
+      print('userData: ${address1}');
+  }
+
+  List<String> timeDropDownValuesT = [
+    '08:00 AM - 01:00 PM',
+    '01:00 PM - 06:00 PM',
+    '06:00 PM - 09:00 PM',
+  ];
+  List<String> timeDropDownValues = [];
+
   @override
   void initState() {
     super.initState();
-    // basePage.title = "Checkout Page";
-    // basePage.selected = 2;
-    // print('objectUser: ${widget.id}');
-    // print('widget.shipping: ${widget.shippingFee}');
+    firstName = widget.details.firstName;
+    lastName = widget.details.lastName;
+    emailId = widget.details.email;
+    // phoneNumber = widget.details.billing.phone;
+    getUserData();
+    print('getUserData(): ${getUserData()}');
   }
+
   TextEditingController datePickerController = TextEditingController();
 
   @override
   Widget body(BuildContext context) {
+
     print(widget.product);
     return SingleChildScrollView(
       child: Container(
@@ -76,87 +126,169 @@ class _CreateOrderState extends BasePageState<CreateOrder> {
                         labelText: 'Dates',
                         hintText: DateFormat.yMd().format(DateTime.now()),
                       ),
-
                       onChanged: (value) async {},
-
+                      // validator: (value) {
+                      //   if (value == null) {
+                      //     return "Select the Delivery Date";
+                      //   }
+                      //   return null;
+                      // },
                       onTap: () async {
-                        DateTime dateTime = DateTime.now();
                         DateTime now = DateTime.now();
-                        dynamic hours = DateFormat.jm().format(now);
-                        print('${DateFormat.jm().format(now)}');
+                        DateTime timeLimit = DateTime(now.year, now.month, now.day, 17, 0);
 
-                        if(widget.shippingFee == 75) {
-                          print('objectError: ${hours.runtimeType}');
+                        if (widget.shippingFee == 200) {
+                          final DateTime picked = await showDatePicker(
+                              context: context,
+                              initialDate: selectedDate,
+                              initialDatePickerMode: DatePickerMode.day,
+                              firstDate: DateTime.now(),
+                              lastDate: DateTime(2101));
+                          selectedDate = intialdate ?? DateTime.now();
 
-                          // 12.00 am      // 7
-                          // if(hours <= Convert.ToDateTime('5:30 AM') && hours <= '18') {
-                          //   print(hours);
-                          //   print("Good Morning");
-                          //   print("Deliverable");
-                          //
-                          // } else {
-                          //   print("Not Deliverable");
-                          // }
-                          ///
-                          // else if(hours <= 6 && hours >= 7) {
-                          //   print('objectDeliver');
-                          // }
+                          if (picked != null && picked != selectedDate) {
+                            selectedDate = picked;
+                            isCurrentDaySelected = selectedDate.year ==
+                                    DateTime.now().year &&
+                                selectedDate.month == DateTime.now().month &&
+                                selectedDate.day == DateTime.now().day;
+                            if (isCurrentDaySelected == true) {
+                              print(DateTime.now());
 
+                              if (intialdate.isAfter(timeLimit)) {
+                                Fluttertoast.showToast(
+                                    msg:
+                                        "Please order before 5PM to deliver the product in same day midnight. Kindly change the date.",
+                                    toastLength: Toast.LENGTH_SHORT,
+                                    gravity: ToastGravity.BOTTOM,
+                                    timeInSecForIosWeb: 3,
+                                    backgroundColor: Colors.black,
+                                    textColor: Colors.white,
+                                    fontSize: 16.0);
+                              }
+                            }
+                          }
+                        } else if(widget.shippingFee == 75) {
+                          final DateTime picked = await showDatePicker(
+                              context: context,
+                              initialDate: selectedDate,
+                              initialDatePickerMode: DatePickerMode.day,
+                              firstDate: DateTime.now(),
+                              lastDate: DateTime(2101));
+                          selectedDate = intialdate ?? DateTime.now();
 
-                          // else if(hours>=12 && hours<=16) {
-                          //   print("Good Afternoon");
-                          // } else if(hours>=16 && hours<=21) {
-                          //   print("Good Evening");
-                          // } else if(hours>=21 && hours<=24){
-                          //   print("Good Night");
-                          // }
-                        }
-
-
-                        final DateTime picked = await showDatePicker(
+                          if (picked != null && picked != selectedDate) {
+                            selectedDate = picked;
+                            isCurrentDaySelected = selectedDate.year ==
+                                DateTime.now().year &&
+                                selectedDate.month == DateTime.now().month &&
+                                selectedDate.day == DateTime.now().day;
+                            if (isCurrentDaySelected == true) {
+                              print(DateTime.now());
+                              DateTime timeLimit = DateTime(now.year, now.month, now.day, 17, 0);
+                              if (intialdate.isAfter(timeLimit)) {
+                                Fluttertoast.showToast(
+                                    msg:
+                                    "Early morning delivery is not available for today. Kindly change the date",
+                                    toastLength: Toast.LENGTH_SHORT,
+                                    gravity: ToastGravity.BOTTOM,
+                                    timeInSecForIosWeb: 3,
+                                    backgroundColor: Colors.black,
+                                    textColor: Colors.white,
+                                    fontSize: 16.0);
+                              }
+                            }
+                          }
+                        } else {
+                          DateTime picked = await showDatePicker(
                             context: context,
-                            initialDate: dateTime,
+                            initialDate: intialdate,
                             initialDatePickerMode: DatePickerMode.day,
                             firstDate: DateTime.now(),
-                            lastDate: DateTime(2101));
-                        if (picked != null) {
-                          dateTime = picked;
-                          //assign the chosen date to the controller
-                          datePickerController.text = DateFormat.yMd().format(dateTime);
-                          // print('objectDatePickerController: ${datePickerController.text}');
+                            lastDate: DateTime(2101),
+                          );
+                          // String datetime = DateFormat('H').format(DateTime.now());
+                          print('objectPicked: ${picked}');
+
+                          DateTime timeLimit13 = DateTime(now.year, now.month, now.day, 13, 0);
+                          DateTime timeLimit08 = DateTime(now.year, now.month, now.day, 08, 0);
+                          DateTime timeLimit18 = DateTime(now.year, now.month, now.day, 18, 0);
+                          final today = DateTime(now.year, now.month, now.day);
+                          final pickedDay = DateTime(picked.year, picked.month, picked.day);
+
+                         timeDropDownValues = List.from(timeDropDownValuesT);
+                          if(intialdate.isAfter(timeLimit08) && pickedDay == today) {
+                            timeDropDownValues.remove('08:00 AM - 01:00 PM');
+                          }
+                          if(intialdate.isAfter(timeLimit13) && pickedDay == today) {
+                            timeDropDownValues.remove('01:00 PM - 06:00 PM');
+                          }
+                          if(intialdate.isAfter(timeLimit18) && pickedDay == today) {
+                            timeDropDownValues.remove('06:00 PM - 09:00 PM');
+                          }
+
+
+
+
+                          final startTime06 = DateTime(now.year, now.month, now.day, 18, 0);
+                          final endTime09 = DateTime(now.year, now.month, now.day, 21, 0);
+                          final currentTime = DateTime.now();
+                          if(currentTime.isAfter(startTime06) || currentTime.isBefore(endTime09)) {
+                            print('object: $startTime06');
+
+                          }
+
+
+
+                          // if(int.parse(datetime) <= 18 && int.parse(datetime) > 13) {
+                          //   print('object: 6');
+                          //   // dropDownValue = dropDownValue[];
+                          // } else if(int.parse(datetime) <= 21 && int.parse(datetime) > 18) {
+                          //   print('object: 9');
+                          // } else {
+                          //   print('object: 8');
+                          // }
+
+
+
+                          if (picked != null) {
+                            setState(() {
+                              datePickerController.text =
+                                  DateFormat.yMd().format(picked);
+                            });
+                          }
                         }
                       },
                     ),
                   )
                 ],
               ),
+              widget.shippingFee == 0 && datePickerController.text.isNotEmpty
+                  ? Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('Delivery Time'),
+                        DropdownButton<String>(
+                          value: dropDownValue,
+                          items: timeDropDownValues.map((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
 
-              widget.shippingFee == 0 ? Row(
-                children: [
-                  DropdownButton<String>(
-                    value: dropDownValue,
-                    items: <String>[
-                      '08:00 AM - 01:00 PM',
-                      '01:00 PM - 06:00 PM',
-                      '06:00 PM - 09:00 PM',
-                    ].map((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value),
-                      );
-                    }).toList(),
-                    onChanged: (onChangedValue) {
-                      setState(() {
-                        dropDownValue = onChangedValue;
-                      });
-                    },
-                  )
-                ],
-              ) : Container(),
 
+                          onChanged: (onChangedValue) {
+                            setState(() {
+                              dropDownValue = onChangedValue;
+                            });
+                          },
+                        )
+                      ],
+                    )
+                  : Container(),
               Row(
                 children: [
-
                   Flexible(
                     fit: FlexFit.tight,
                     flex: 1,
@@ -175,16 +307,14 @@ class _CreateOrderState extends BasePageState<CreateOrder> {
                     fit: FlexFit.tight,
                     flex: 1,
                     child: TextFormField(
-                      initialValue: "",
+                      initialValue: firstName,
                       decoration: InputDecoration(
                         hintText: "First Name",
-                        labelText: "First Name",
-                        helperText: "Fist Name",
                       ),
                       maxLines: 1,
                       keyboardType: TextInputType.text,
                       onChanged: (String value) {
-                        first = value;
+                        firstName = value;
                         print(first);
                       },
                       validator: (value) {
@@ -203,18 +333,16 @@ class _CreateOrderState extends BasePageState<CreateOrder> {
                     fit: FlexFit.loose,
                     flex: 1,
                     child: TextFormField(
-                      initialValue: "",
+                      initialValue: lastName,
                       decoration: InputDecoration(
                         hintText: "Last Name",
-                        labelText: "Last Name",
-                        helperText: "Last Name",
                       ),
                       maxLines: 1,
                       keyboardType: TextInputType.text,
-                      onChanged: (String value) {
-                        print(value);
-                        last = value;
-                      },
+                      // onChanged: (String value) {
+                      //   print(value);
+                      //   last = value;
+                      // },
                       validator: (value) {
                         bool valid = isAlpha(value);
                         if (valid) {
@@ -231,16 +359,14 @@ class _CreateOrderState extends BasePageState<CreateOrder> {
               ),
               FormHelper.fieldLabel("Address"),
               TextFormField(
-                initialValue: "",
+                initialValue: userData.billing.address1,
                 decoration: InputDecoration(
                   hintText: "Address",
-                  labelText: "Address",
-                  helperText: "Address",
                 ),
                 maxLines: 2,
                 keyboardType: TextInputType.text,
                 onChanged: (String value) {
-                  address = value;
+                  flat = value;
                   print(address);
                 },
                 validator: (value) {
@@ -252,11 +378,9 @@ class _CreateOrderState extends BasePageState<CreateOrder> {
               ),
               FormHelper.fieldLabel("Apartmnt ,Flat"),
               TextFormField(
-                initialValue: "",
+                initialValue: address2,
                 decoration: InputDecoration(
                   hintText: "Apartmnt ,Flat",
-                  labelText: "Apartmnt ,Flat",
-                  helperText: "Apartmnt ,Flat",
                 ),
                 maxLines: 1,
                 keyboardType: TextInputType.text,
@@ -295,8 +419,6 @@ class _CreateOrderState extends BasePageState<CreateOrder> {
                       initialValue: "",
                       decoration: InputDecoration(
                         hintText: "Country",
-                        labelText: "Country",
-                        helperText: "Country",
                       ),
                       maxLines: 1,
                       keyboardType: TextInputType.text,
@@ -323,8 +445,6 @@ class _CreateOrderState extends BasePageState<CreateOrder> {
                       initialValue: "",
                       decoration: InputDecoration(
                         hintText: "State",
-                        labelText: "State",
-                        helperText: "State",
                       ),
                       maxLines: 1,
                       keyboardType: TextInputType.text,
@@ -366,11 +486,9 @@ class _CreateOrderState extends BasePageState<CreateOrder> {
                     fit: FlexFit.tight,
                     flex: 1,
                     child: TextFormField(
-                      initialValue: "",
+                      initialValue: townCity,
                       decoration: InputDecoration(
                         hintText: "City",
-                        labelText: "City",
-                        helperText: "City",
                       ),
                       maxLines: 1,
                       keyboardType: TextInputType.text,
@@ -394,11 +512,9 @@ class _CreateOrderState extends BasePageState<CreateOrder> {
                     fit: FlexFit.tight,
                     flex: 1,
                     child: TextFormField(
-                      initialValue: "",
+                      initialValue: pinsCode,
                       decoration: InputDecoration(
                         hintText: "PostCode",
-                        labelText: "PostCode",
-                        helperText: "Post Code",
                       ),
                       maxLines: 1,
                       keyboardType: TextInputType.number,
@@ -443,11 +559,9 @@ class _CreateOrderState extends BasePageState<CreateOrder> {
                     fit: FlexFit.tight,
                     flex: 1,
                     child: TextFormField(
-                      initialValue: "",
+                      initialValue: phoneNumber,
                       decoration: InputDecoration(
                         hintText: "Mobile",
-                        labelText: "Mobile",
-                        helperText: "Mobile",
                       ),
                       maxLines: 1,
                       keyboardType: TextInputType.number,
@@ -467,6 +581,7 @@ class _CreateOrderState extends BasePageState<CreateOrder> {
                         } else if (valid) {
                           return "Enter 10 digit No.";
                         }
+                        return null;
                       },
                     ),
                   ),
@@ -474,11 +589,9 @@ class _CreateOrderState extends BasePageState<CreateOrder> {
                     fit: FlexFit.tight,
                     flex: 1,
                     child: TextFormField(
-                      initialValue: "",
+                      initialValue: emailId,
                       decoration: InputDecoration(
                         hintText: "Mail Id",
-                        labelText: "Mail Id",
-                        helperText: "Mail Id",
                       ),
                       maxLines: 1,
                       keyboardType: TextInputType.emailAddress,
@@ -503,49 +616,39 @@ class _CreateOrderState extends BasePageState<CreateOrder> {
               Center(
                 child: FormHelper.saveButton("Next", () {
                   if (_formKey.currentState.validate()) {
-
-
-
-
-                    var data = '2023-03-31';
-                    var day = data.substring(8, 10);
-                    var month = data.substring(5, 7);
-                    var year = data.substring(0, 4);
-                    final intDay = int.parse(day);
-                    final intMonth = int.parse(month);
-                    final intYear = int.parse(year);
-                    final formattedDate = DateTime.utc(intYear, intMonth, intDay);
-                    // print("formattedDate:$formattedDate");
-                    final format = DateFormat.yMd().format(formattedDate);
-                    // print('format:$format');
-
-
-                    if(datePickerController.text == DateFormat('EEEE').format(DateTime.now())) {
-                      // print('objectError');
+                    if(dropDownValue == null) {
+                      Fluttertoast.showToast(
+                          msg: "Pick the another day for Delivery",
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.BOTTOM,
+                          timeInSecForIosWeb: 5,
+                          backgroundColor: Colors.black,
+                          textColor: Colors.white,
+                          fontSize: 16.0,
+                      );
                     } else {
-
                       Navigator.push(
                           context,
                           MaterialPageRoute(
                               builder: (context) => VerifyAddress(
-                                    product: widget.product,
-                                    id: widget.id,
-                                    first: first,
-                                    last: last,
-                                    address: address,
-                                    apartmnt: apartmnt,
-                                    state: state,
-                                    city: city,
-                                    country: country,
-                                    postcode: postcode,
-                                    cartProducts: widget.cartProducts,
-                                    mobile: mobile,
-                                    mail: mail,
-                                    deliveryDate: datePickerController.text,
-                                    deliveryTime: dropDownValue,
-
-                                  )));
+                                product: widget.product,
+                                id: widget.id,
+                                first: firstName,
+                                last: lastName,
+                                address: address1,
+                                apartmnt: address2,
+                                state: state,
+                                city: townCity,
+                                country: country,
+                                postcode: pinsCode,
+                                cartProducts: widget.cartProducts,
+                                mobile: phoneNumber,
+                                mail: emailId,
+                                deliveryDate: datePickerController.text,
+                                deliveryTime: dropDownValue,
+                              )));
                     }
+
                   }
                 }),
               )

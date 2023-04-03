@@ -16,6 +16,7 @@ import 'package:safira_woocommerce_app/ui/homepage.dart';
 import 'package:safira_woocommerce_app/ui/myaccounts.dart';
 import 'package:safira_woocommerce_app/ui/notificationPage.dart';
 import 'package:safira_woocommerce_app/ui/orderPage.dart';
+import 'package:safira_woocommerce_app/ui/savedaddress.dart';
 import 'package:safira_woocommerce_app/ui/success.dart';
 import 'package:safira_woocommerce_app/utils/notification.dart';
 import 'package:safira_woocommerce_app/utils/sharedServices.dart';
@@ -267,6 +268,18 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
                         fontSize: 16.0);
                   }),
               ProfileMenu(
+                text: "Saved Addresses",
+                icon: Icons.home,
+                press: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => SavedAddress(
+                            customer: widget.customer,
+                          )));
+                },
+              ),
+              ProfileMenu(
                 text: "Notifications",
                 icon: Icons.notifications,
                 press: () {
@@ -307,11 +320,6 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
                 icon: Icons.add_business_outlined,
                 press: () {},
               ),
-              // ProfileMenu(
-              //   text: "Help Center",
-              //   icon: Icons.help_center,
-              //   press: () {},
-              // ),
               ProfileMenu(
                 text: "Log Out",
                 icon: Icons.logout,

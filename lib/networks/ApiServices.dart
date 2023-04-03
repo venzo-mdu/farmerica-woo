@@ -301,19 +301,73 @@ class Api_Services {
       String lastName,
       String email,
       String username,
+      String phone,
+      String address_1,
+      String address_2,
+      String city,
+      String postcode,
       int id}) async {
-    var url = "${Config.urlfor}" "${Config.customerUrl}/$id";
-    // print(url);
-    var body = (jsonEncode({
+
+    print('email-$email, fName-$firstName, lName-$lastName, phone-$phone, address-1-$address_1, address-2-$address_2, city-$city, pincode-$postcode');
+
+    var headers = {
+      'Content-Type': 'application/json',
+      // 'Cookie': 'cxssh_status=off; mailpoet_page_view=%7B%22timestamp%22%3A1680481400%7D'
+    };
+    var request = http.Request('PUT', Uri.parse('https://www.farmerica.in/wp-json/wc/v3/customers/100?consumer_key=ck_eedc4b30808be5c1110691e5b29f16280ebd3b72&consumer_secret=cs_2313913bc74d5e096c91d308745b50afee52e61c'));
+    request.body = json.encode({
       "email": email,
       "first_name": firstName,
       "last_name": lastName,
-    }));
-    var response = await api.putAsync(url, jsonDecode(body));
-    // print(response);
+      "billing": {
+        "phone": phone,
+        "address_1": address_1,
+        "address_2": address_2,
+        "city": city,
+        "postcode": postcode
+      }
+    });
+    request.headers.addAll(headers);
 
-    var customerDetails = Customers.fromJson(response);
-    // print(customerDetails.email);
+    print('url: $request');
+    // http.StreamedResponse response = await request.send();
+    var streamedResponse = await request.send();
+    var response = await http.Response.fromStream(streamedResponse);
+
+
+    if (response.statusCode == 200) {
+      // print(await response.stream.bytesToString());
+      var result = json.decode(response.body) as Map<String,dynamic>;
+      var customerDetails = Customers.fromJson(result);
+      print(customerDetails.email);
+    }
+    else {
+      print(response.reasonPhrase);
+    }
+
+
+
+
+    // var url = "${Config.urlfor}" "${Config.customerUrl}/$id?consumer_key=${Config.key}&consumer_secret=${Config.secret}";
+    // print(url);
+    // var body = (json.encode({
+    //   "email": email,
+    //   "first_name": firstName,
+    //   "last_name": lastName,
+    //   "billing": {
+    //     "phone": phone,
+    //     "address_1": address_1,
+    //     "address_2": address_2,
+    //     "city": city,
+    //     "postcode": postcode,
+    //   }
+    //
+    // }));
+    // var response = await api.putAsync(url, jsonDecode(body));
+    // print(response);
+    //
+    // var customerDetails = Customers.fromJson(response);
+    // // print(customerDetails.email);
   }
 
   Future<Orders> createOrder({
@@ -337,8 +391,8 @@ class Api_Services {
     List<CartProducts> cartProducts,
   }) async {
     // CreateOrderModel model = CreateOrderModel();
-    var url = "${Config.urlfor}" "${Config.orderUrl}";
-    // print(address);
+    var url = "${Config.urlfor}" "${Config.orderUrl}" "?consumer_key=${Config.key}&consumer_secret=${Config.secret}";
+    print(url);
     var body = jsonEncode({
       "payment_method": paymentMethod,
       "payment_method_title": paymentMethodTitle,
@@ -366,6 +420,8 @@ class Api_Services {
         "state": state,
         "postcode": postcode,
         "country": country,
+      },
+      "delivery_details" : {
         "deliveryDate": deliveryDate,
         "deliveryTime": deliveryTime,
       },

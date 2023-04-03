@@ -183,7 +183,7 @@ class WooCommerceAPI {
   }
 
   Future<dynamic> putAsync(String endPoint, Map data) async {
-    var url = this.getOAuthURL("POST", endPoint);
+    var url = this.getOAuthURL("PUT", endPoint);
     // print(url);
     var client = new http.Client();
     Map<String, String> headers = HashMap();

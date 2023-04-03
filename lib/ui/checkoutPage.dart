@@ -11,7 +11,7 @@ import 'package:safira_woocommerce_app/ui/widgets/checkout_widget.dart';
 
 class CheckoutScreen extends BasePage {
   o.Orders state;
-  List<Product> product;
+  List product;
   CheckoutScreen({this.state, this.product});
   @override
   _CheckoutScreenState createState() => _CheckoutScreenState();
@@ -37,7 +37,7 @@ class _CheckoutScreenState extends BasePageState<CheckoutScreen> {
 
 class CheckoutWrapper extends BasePage {
   o.Orders state;
-  List<Product> product;
+  List product = [];
   CheckoutWrapper({this.state, this.product});
   @override
   _CheckoutWrapperState createState() => _CheckoutWrapperState();

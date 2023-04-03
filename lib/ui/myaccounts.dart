@@ -281,7 +281,8 @@ class _MyAccountState extends BasePageState<MyAccount> {
                   })
             ],
           ),
-        ));
+        )
+    );
   }
 }
 

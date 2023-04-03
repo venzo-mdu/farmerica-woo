@@ -158,7 +158,7 @@ class _CartScreenState extends BasePageState<CartScreen> {
 
     List<p.Product> demoCarts = widget.product;
     // List<p.Product> cart = [];
-    List cart = [];
+    List cartItem = [];
 
     // print('demoCarts: ${demoCarts.toList().toString()}');
 
@@ -186,7 +186,7 @@ class _CartScreenState extends BasePageState<CartScreen> {
             // if (it.product_id == item.id) {
             print('objectIT: ${it.runtimeType}');
             // price, name, images[0].src
-              cart.add({
+              cartItem.add({
                 'name': it.name,
                 'price': it.price,
                 'images': it.image,
@@ -236,8 +236,8 @@ class _CartScreenState extends BasePageState<CartScreen> {
             // }
             intFlag = true;
           }
-        print('CartLength: ${cart.length}');
-          for(dynamic i in cart) {
+        print('CartLength: ${cartItem.length}');
+          for(dynamic i in cartItem) {
             print('cartLenth: $i');
           }
         // }
@@ -251,7 +251,7 @@ class _CartScreenState extends BasePageState<CartScreen> {
                   height: 450,
                   color: Colors.white,
                   child: ListView.builder(
-                    itemCount: cart.length, //
+                    itemCount: cartItem.length, //
                     itemBuilder: (context, index) {
                       checkOutVariable = index;
                       ///
@@ -272,12 +272,12 @@ class _CartScreenState extends BasePageState<CartScreen> {
                         child: GestureDetector(
                             child: Dismissible(
                                 // cart[index]['images']
-                              key: Key(cart[index]['id'].toString()),
+                              key: Key(cartItem[index]['id'].toString()),
                               direction: DismissDirection.endToStart,
                               onDismissed: (direction) {
                                 setState(() {
-                                  cart.removeAt(index);
-                                  cartModel.removeCartProduct(cart[index].id);
+                                  cartItem.removeAt(index);
+                                  cartModel.removeCartProduct(cartItem[index].id);
                                 });
                               },
                               background: Container(
@@ -313,7 +313,7 @@ class _CartScreenState extends BasePageState<CartScreen> {
                                                     BorderRadius.circular(15),
                                               ),
                                               child: Image.network(
-                                                  cart[index]['images']),
+                                                  cartItem[index]['images']),
                                             ),
                                           ),
                                         ),
@@ -326,7 +326,7 @@ class _CartScreenState extends BasePageState<CartScreen> {
                                               CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                              cart[index]['name'],
+                                              cartItem[index]['name'],
                                               style: TextStyle(
                                                   color: Colors.black,
                                                   fontSize: width * 0.04),
@@ -336,7 +336,7 @@ class _CartScreenState extends BasePageState<CartScreen> {
                                             SizedBox(height: 10),
                                             Text.rich(
                                               TextSpan(
-                                                text: "\₹${cart[index]['price']}",
+                                                text: "\₹${cartItem[index]['price']}",
                                                 style: TextStyle(
                                                     fontWeight: FontWeight.w600,
                                                     color: Color(0xFFFF7643)),
@@ -369,7 +369,7 @@ class _CartScreenState extends BasePageState<CartScreen> {
                                                       var amount = 0;
                                                       subTotals = 0;
                                                       for (int i = 0;
-                                                          i < cart.length;
+                                                          i < cartItem.length;
                                                           i++) {
                                                         // print(
                                                         //     'counterArray342: ${counterArray[i]}');
@@ -377,7 +377,7 @@ class _CartScreenState extends BasePageState<CartScreen> {
                                                         //     'counterArray343: ${cart[i].price}');
 
                                                         subTotals += int.parse(
-                                                                cart[i]['price']) *
+                                                            cartItem[i]['price']) *
                                                             counterArray[i];
                                                       }
                                                       finalTotal = shippingFee +
@@ -392,7 +392,7 @@ class _CartScreenState extends BasePageState<CartScreen> {
                                                       var amount = 0;
                                                       subTotals = 0;
                                                       for (int i = 0;
-                                                          i < cart.length;
+                                                          i < cartItem.length;
                                                           i++) {
                                                         // print(
                                                         //     'counterArray342: ${counterArray[i]}');
@@ -400,7 +400,7 @@ class _CartScreenState extends BasePageState<CartScreen> {
                                                         //     'counterArray343: ${cart[i].price}');
 
                                                         subTotals += int.parse(
-                                                                cart[i]['price']) *
+                                                            cartItem[i]['price']) *
                                                             counterArray[i];
                                                       }
                                                       finalTotal = shippingFee +
@@ -434,7 +434,7 @@ class _CartScreenState extends BasePageState<CartScreen> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) => ProductDetail(
-                                                product: cart[index],
+                                                product: cartItem[index],
                                               )));
                                 },
                               ),
@@ -535,9 +535,9 @@ class _CartScreenState extends BasePageState<CartScreen> {
                                     onChanged: (shipping value) {
                                       setState(() {
                                         finalTotal = 0;
-                                        for (int i = 0; i < cart.length; i++) {
+                                        for (int i = 0; i < cartItem.length; i++) {
                                           finalTotal +=
-                                              int.parse(cart[i]['price']) *
+                                              int.parse(cartItem[i]['price']) *
                                                   counterArray[i];
                                         }
                                         finalTotal = 0 + finalTotal;
@@ -556,9 +556,9 @@ class _CartScreenState extends BasePageState<CartScreen> {
                                     onChanged: (shipping value) {
                                       setState(() {
                                         finalTotal = 0;
-                                        for (int i = 0; i < cart.length; i++) {
+                                        for (int i = 0; i < cartItem.length; i++) {
                                           finalTotal +=
-                                              int.parse(cart[i]['price']) *
+                                              int.parse(cartItem[i]['price']) *
                                                   counterArray[i];
                                         }
                                         finalTotal = 200 + finalTotal;
@@ -583,9 +583,9 @@ class _CartScreenState extends BasePageState<CartScreen> {
                                     onChanged: (shipping value) {
                                       setState(() {
                                         finalTotal = 0;
-                                        for (int i = 0; i < cart.length; i++) {
+                                        for (int i = 0; i < cartItem.length; i++) {
                                           finalTotal +=
-                                              int.parse(cart[i]['price']) *
+                                              int.parse(cartItem[i]['price']) *
                                                   counterArray[i];
                                         }
                                         finalTotal = 75 + finalTotal;
@@ -665,16 +665,17 @@ class _CartScreenState extends BasePageState<CartScreen> {
                               ),
                               onPressed: () {
                                 print('shippingFee: $shippingFee');
-                                print('widget.details.id: ${cart[checkOutVariable]['id'].toString()}');
-                                print('cart: $cart}');
+                                print('widget.details.id: ${cartItem[checkOutVariable]['id'].toString()}');
+                                print('cart: $cartItem}');
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => CreateOrder(
                                               shippingFee: shippingFee,
-                                              id: cart[0]['id'], // widget.details.id,
+                                              id: cartItem[0]['id'], // widget.details.id,
                                               cartProducts: cartModel.cartProducts,
-                                              product: cart,//cart[checkOutVariable],
+                                              product: cartItem,//cart[checkOutVariable],
+                                            details: widget.details,
                                             )));
                               },
                             ),

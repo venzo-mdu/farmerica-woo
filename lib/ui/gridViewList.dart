@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:safira_woocommerce_app/Providers/CartProviders.dart';
 import 'package:safira_woocommerce_app/models/Products.dart';
+import 'package:safira_woocommerce_app/networks/ApiServices.dart';
 import 'package:safira_woocommerce_app/ui/productDetails.dart';
 import 'package:provider/provider.dart';
 
@@ -16,6 +17,10 @@ class GridViewList extends StatefulWidget {
 
 class _GridViewListState extends State<GridViewList> {
   int addtoCart = 0;
+
+  Api_Services api_services = Api_Services();
+
+
 
   @override
   Widget build(BuildContext context) {

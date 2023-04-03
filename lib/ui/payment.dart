@@ -30,7 +30,7 @@ class PaymentGateway extends BasePage {
   final String deliveryTime;
 
   final int id;
-  List<Product> product = [];
+  List product = [];
   List<CartProducts> cartProducts;
   PaymentGateway(
       {this.address,
@@ -105,42 +105,42 @@ class _PaymentGatewayState extends BasePageState<PaymentGateway> {
     List<PayCard> _getPaymentCards() {
       List<PayCard> cards = [];
 
-      // cards.add(new PayCard(
-      //     title: "QR Scan",
-      //     description: "Pay bill using card",
-      //     image: "assets/paycard.png",
-      //     setPaid: true,
-      //     onPressed: () async {
-      //       razorPaymentService.getPayment(context);
-      //
-      //       Orders orders = await api_services.createOrder(
-      //           first: widget.first,
-      //           setPaid: true,
-      //           paymentMethod: "QR Scan",
-      //           paymentMethodTitle: "Pay bill using card",
-      //           last: widget.last,
-      //           address: widget.address,
-      //           apartmnt: widget.apartmnt,
-      //           city: widget.city,
-      //           country: widget.country,
-      //           id: widget.id,
-      //           postcode: widget.postcode,
-      //           cartProducts: widget.cartProducts,
-      //           state: widget.state,
-      //           flat: widget.flat,
-      //           mail: widget.mail,
-      //           mobile: widget.mobile,
-      //           deliveryDate: widget.deliveryDate,
-      //           deliveryTime: widget.deliveryTime);
-      //       // .then((value) => Navigator.push(
-      //       //     context,
-      //       //     MaterialPageRoute(
-      //       //         builder: (context) =>
-      //       //             CheckoutWrapper(
-      //       //               state: value,
-      //       //               product: widget.product,
-      //       //             ))));
-      //     }));
+      cards.add(new PayCard(
+          title: "QR Scan",
+          description: "Pay bill using card",
+          image: "assets/paycard.png",
+          setPaid: true,
+          onPressed: () async {
+            razorPaymentService.getPayment(context);
+
+            Orders orders = await api_services.createOrder(
+                first: widget.first,
+                setPaid: true,
+                paymentMethod: "QR Scan",
+                paymentMethodTitle: "Pay bill using card",
+                last: widget.last,
+                address: widget.address,
+                apartmnt: widget.apartmnt,
+                city: widget.city,
+                country: widget.country,
+                id: widget.id,
+                postcode: widget.postcode,
+                cartProducts: widget.cartProducts,
+                state: widget.state,
+                flat: widget.flat,
+                mail: widget.mail,
+                mobile: widget.mobile,
+                deliveryDate: widget.deliveryDate,
+                deliveryTime: widget.deliveryTime);
+            // .then((value) => Navigator.push(
+            //     context,
+            //     MaterialPageRoute(
+            //         builder: (context) =>
+            //             CheckoutWrapper(
+            //               state: value,
+            //               product: widget.product,
+            //             ))));
+          }));
       ///
       // cards.add(new PayCard(
       //     title: "QR Scan",

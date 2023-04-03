@@ -7,7 +7,7 @@ import 'package:safira_woocommerce_app/ui/payment.dart';
 
 // ignore: must_be_immutable
 class VerifyAddress extends BasePage {
-  List<Product> product = [];
+  List product = [];
   final int id;
   final String first,
       last,
@@ -52,6 +52,7 @@ class _VerifyAddressState extends BasePageState<VerifyAddress> {
   // BasePage basePage = BasePage();
   @override
   void initState() {
+    print('verifyPage: ${widget.product}');
     super.initState();
     // basePage.title = "Checkout Page";
     // basePage.selected = 2;
@@ -234,7 +235,7 @@ class _VerifyAddressState extends BasePageState<VerifyAddress> {
                   height: 20,
                 ),
                 Center(
-                  child: FormHelper.saveButton("Next", () {
+                  child: FormHelper.saveButton("Confirm", () {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
