@@ -14,7 +14,6 @@ import 'package:safira_woocommerce_app/ui/Recommendedforyou.dart';
 
 import 'package:safira_woocommerce_app/ui/gertProductfromapi.dart';
 import 'package:safira_woocommerce_app/ui/grocery.dart';
-import 'package:safira_woocommerce_app/ui/vegetable.dart';
 import 'package:http/http.dart' as http;
 
 class CategoryPage extends BasePage {
@@ -101,7 +100,7 @@ class _CategoryPageState extends BasePageState<CategoryPage> {
     // print('catergories.length: ${catergories.length}');
     // print("ww");
     // print(widget.catergories);
-    return categories.length == null
+    return catergories.length == null
         ? Center(
             child: CircularProgressIndicator(),
           )
@@ -117,14 +116,14 @@ class _CategoryPageState extends BasePageState<CategoryPage> {
                 itemCount: categoryView.length,
                 shrinkWrap: true,
                 itemBuilder: (context, i) {
-                  final category = catergories[i];
-                  final padding = (i == 0) ? 10.0 : 0.0;
+                  // final category = catergories[i];
+                  // final padding = (i == 0) ? 10.0 : 0.0;
                   return GestureDetector(
                     onTap: () async {
                       if (i == 0) {
                         // print(i);
                         // print('widget.productCategory: ${widget.product}');
-                        response = await api_services.getProducts(68);
+                        var response = await api_services.getProducts(68);
                         Navigator.push(
                             context,
                             new MaterialPageRoute(
@@ -134,7 +133,7 @@ class _CategoryPageState extends BasePageState<CategoryPage> {
                       }
                       if (i == 1) {
                         // print(i);
-                        response = await api_services.getProducts(68);
+                        var response = await api_services.getProducts(68);
                         Navigator.push(
                             context,
                             new MaterialPageRoute(
@@ -143,7 +142,7 @@ class _CategoryPageState extends BasePageState<CategoryPage> {
                                     )));
                       }
                       if (i == 2) {
-                        response = await api_services.getProducts(68);
+                        var response = await api_services.getProducts(68);
                         Navigator.push(
                             context,
                             MaterialPageRoute(

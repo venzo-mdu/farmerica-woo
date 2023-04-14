@@ -9,6 +9,7 @@ import 'package:safira_woocommerce_app/ui/CartPage.dart';
 import 'package:safira_woocommerce_app/ui/categories.dart';
 import 'package:safira_woocommerce_app/ui/dashboard.dart';
 import 'package:safira_woocommerce_app/ui/profile.dart';
+import 'package:flutter/cupertino.dart';
 
 class BasePage extends StatefulWidget {
   Customers customer;
@@ -31,25 +32,36 @@ class BasePageState<T extends BasePage> extends State<T> {
   List<Widget> list;
   int selected = 0;
 
+  /// not working
+  // List<Widget> _pages;
+  // List<BottomNavigationBarItem> _items = [
+  //   BottomNavigationBarItem(
+  //       icon: Icon(Icons.home),
+  //       label: "Home"),
+  //   BottomNavigationBarItem(
+  //       icon: Icon(Icons.category_rounded),
+  //       label: "Category"),
+  //   BottomNavigationBarItem(
+  //     icon: Icon(Icons.shopping_cart),
+  //     label: "My Cart",
+  //   ),
+  //   BottomNavigationBarItem(
+  //     icon: Icon(Icons.person),
+  //     label: "My Account",
+  //   )
+  // ];
+  // int _selectedPage;
+
 
 
   Future getList() async {
-    // print('insideGetList37: ${Globals.globalInt}');
-    //
-    // print('insideGetList39: ${Globals.globalInt}');
     categories = await api_services.getCategoryById(Globals.globalInt);
-    // print('categoriesLength: ${categories.length}');
     response = await api_services.getProducts(Globals.globalInt);
-    // print("categoriesResponse+${response.toString()}");
   }
 
   @override
   void initState() {
-    super.initState();
-    // selected = widget.selected;
-    ///
     getList().then((value) {
-
       list = [
         Dashboard(
           product: response,
@@ -68,14 +80,35 @@ class BasePageState<T extends BasePage> extends State<T> {
         )
       ];
     });
+
+    // Bottom NavigationBar
+    // _selectedPage = 0;
+    // _pages = [
+    //   Dashboard(
+    //     product: response,
+    //   ),
+    //   CategoryPage(
+    //     catergories: categories,
+    //     product: response,
+    //   ),
+    //   CartScreen(
+    //     product: response,
+    //     details: widget.customer,
+    //   ),
+    //   CompleteProfileScreen(
+    //     customer: widget.customer,
+    //     product: response,
+    //   )
+    // ];
+    super.initState();
   }
 
   Customers customer;
 
   @override
   Widget build(BuildContext context) {
-    String title = widget.title == null ? " " : widget.title;
-    List<Widget> list = [
+    // String title = widget.title == null ? " " : widget.title;
+    List<Widget> pages = [
       Dashboard(
         product: response,
         category: categories,
@@ -86,9 +119,10 @@ class BasePageState<T extends BasePage> extends State<T> {
       ),
       CartScreen(
         product: response,
+        details: widget.customer,
       ),
       CompleteProfileScreen(
-        customer: customer,
+        customer: widget.customer,
         product: response,
       )
     ];
@@ -96,7 +130,7 @@ class BasePageState<T extends BasePage> extends State<T> {
     // print("ll+${response.toString()}");
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.green,
+        backgroundColor: Color(0xff00ab55),
         title: Image.network(
             'https://www.farmerica.in/wp-content/uploads/2023/01/farmerica-logo.png',
           color: Colors.white,
@@ -104,19 +138,22 @@ class BasePageState<T extends BasePage> extends State<T> {
         actions: [
           IconButton(
             onPressed: (){
-              // print('Shopping Cart');
+              print('Shopping Cart');
             },
-            icon: Icon(Icons.shopping_bag_outlined),
+            icon: Icon(Icons.shopping_bag_outlined)
           )
         ],
       ),
-      body: body(context),
+      body: body(context), //list.elementAt(selected),  //list[selected], //body(context),
+      // body: pages[selected],
+      ///
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.black,
         currentIndex: selected,
         iconSize: 30,
         selectedItemColor: Color(0xff00AA55),
         unselectedItemColor: Colors.black,
+
         onTap: (inx) {
           print('Index: $inx');
           setState(() {

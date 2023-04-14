@@ -23,37 +23,38 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  http:
+  http: any
  
-  crypto:
-  oauth1:
- 
-  email_validator: 
+  crypto: any
+  oauth1: any
+
+  email_validator: any
    
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
+  upi_payment_qrcode_generator: any
   cupertino_icons: ^1.0.0
-  fluttertoast: 
-  razorpay_flutter:
-  animated_splash_screen: 
+  fluttertoast: any
+  razorpay_flutter: any
+  animated_splash_screen: any
   carousel_slider: ^3.0.0
 
-  flutter_search_bar: 
-  flutter_svg:
-  image_picker:
+  flutter_search_bar: any
+  flutter_svg: any
+  image_picker: any
   intl:
   flutter_local_notifications: 3.0.1+6
-  flutter_rating_bar:
-  html: 
-  shared_preferences:
-  string_validator:
-  connectivity: 
+  flutter_rating_bar: any
+  html: any
+  shared_preferences: any
+  string_validator: any
+  connectivity:  any
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  material_floating_search_bar:
-  upi_india:
-  provider:
+  material_floating_search_bar: any
+  upi_india: ^3.0.1
+  provider: any
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

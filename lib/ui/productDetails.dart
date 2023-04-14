@@ -35,134 +35,134 @@ class _ProductDetailState extends BasePageState<ProductDetail> {
 
   String shortDes;
   final pincode = 751001;
-  final List<int> pinCodes = [
-    751001,
-    752103,
-    751022,
-    751020,
-    752103,
-    751003,
-    751009,
-    752102,
-    751014,
-    751018,
-    752100,
-    752101,
-    752102,
-    752103,
-    751002,
-    751009,
-    751003,
-    752101,
-    752100,
-    752103,
-    752103,
-    751003,
-    751002,
-    751022,
-    751014,
-    751001,
-    751009,
-    751001,
-    752102,
-    752100,
-    752102,
-    751006,
-    751011,
-    752102,
-    751016,
-    752102,
-    752103,
-    752102,
-    751019,
-    751025,
-    752100,
-    752102,
-    751003,
-    751002,
-    751002,
-    751015,
-    751002,
-    752101,
-    752101,
-    752100,
-    751024,
-    752102,
-    751024,
-    751019,
-    751006,
-    751002,
-    752103,
-    751002,
-    751030,
-    751001,
-    751002,
-    752100,
-    751006,
-    751022,
-    752102,
-    752103,
-    751003,
-    751017,
-    751017,
-    751017,
-    752101,
-    751012,
-    752102,
-    751002,
-    751001,
-    751017,
-    752103,
-    751024,
-    751019,
-    751020,
-    752102,
-    752102,
-    751008,
-    751010,
-    751013,
-    751023,
-    751007,
-    751021,
-    751005,
-    751002,
-    752100,
-    751019,
-    752102,
-    752100,
-    751007,
-    752100,
-    751006,
-    751002,
-    751003,
-    752100,
-    752102,
-    751009,
-    751004,
-    751007,
-    752054,
-    752050,
-    752054,
-    752054,
-    752050,
-    752054,
-    752054,
-    752050,
-    752050,
-    752050,
-    752050,
-    752054,
-    752054,
-    752054,
-    752054,
-    752050,
-    752050,
-    752054,
-    752050,
-    752054,
-    752050,
-    752050,
-    753015,
+  final List<String> pinCodes = [
+    '751001',
+    '752103',
+    '751022',
+    '751020',
+    '752103',
+    '751003',
+    '751009',
+    '752102',
+    '751014',
+    '751018',
+    '752100',
+    '752101',
+    '752102',
+    '752103',
+    '751002',
+    '751009',
+    '751003',
+    '752101',
+    '752100',
+    '752103',
+    '752103',
+    '751003',
+    '751002',
+    '751022',
+    '751014',
+    '751001',
+    '751009',
+    '751001',
+    '752102',
+    '752100',
+    '752102',
+    '751006',
+    '751011',
+    '752102',
+    '751016',
+    '752102',
+    '752103',
+    '752102',
+    '751019',
+    '751025',
+    '752100',
+    '752102',
+    '751003',
+    '751002',
+    '751002',
+    '751015',
+    '751002',
+    '752101',
+    '752101',
+    '752100',
+    '751024',
+    '752102',
+    '751024',
+    '751019',
+    '751006',
+    '751002',
+    '752103',
+    '751002',
+    '751030',
+    '751001',
+    '751002',
+    '752100',
+    '751006',
+    '751022',
+    '752102',
+    '752103',
+    '751003',
+    '751017',
+    '751017',
+    '751017',
+    '752101',
+    '751012',
+    '752102',
+    '751002',
+    '751001',
+    '751017',
+    '752103',
+    '751024',
+    '751019',
+    '751020',
+    '752102',
+    '752102',
+    '751008',
+    '751010',
+    '751013',
+    '751023',
+    '751007',
+    '751021',
+    '751005',
+    '751002',
+    '752100',
+    '751019',
+    '752102',
+    '752100',
+    '751007',
+    '752100',
+    '751006',
+    '751002',
+    '751003',
+    '752100',
+    '752102',
+    '751009',
+    '751004',
+    '751007',
+    '752054',
+    '752050',
+    '752054',
+    '752054',
+    '752050',
+    '752054',
+    '752054',
+    '752050',
+    '752050',
+    '752050',
+    '752050',
+    '752054',
+    '752054',
+    '752054',
+    '752054',
+    '752050',
+    '752050',
+    '752054',
+    '752050',
+    '752054',
+    '752050',
+    '752050',
+    '753015',
   ];
   var pincodeController = TextEditingController();
   bool flag = false;
@@ -263,79 +263,37 @@ class _ProductDetailState extends BasePageState<ProductDetail> {
                       // ),
                       style: ElevatedButton.styleFrom(backgroundColor: Color(0xffFBB241)),
                       onPressed: () {
-                        switch (pincodeController.text) {
-                          case '751001':
-                            setState(() {
-                              flag = true;
-                              flags = false;
-                              // print('shippingVisibility: $shippingVisibility');
-                            });
-                            break;
-                          case '751002':
-                            setState(() {
-                              flag = true;
-                              flags = false;
-                              // print('shippingVisibility: $shippingVisibility');
-                            });
-                            break;
-                          case '751003':
-                            setState(() {
-                              flag = true;
-                              flags = false;
-                              // print('shippingVisibility: $shippingVisibility');
-                            });
-                            break;
-                          case '751022':
-                            setState(() {
-                              flag = true;
-                              flags = false;
-                              // print('shippingVisibility: $shippingVisibility');
-                            });
-                            break;
-                          case '751019':
-                            setState(() {
-                              flag = true;
-                              flags = false;
-                              // print('shippingVisibility: $shippingVisibility');
-                            });
-                            break;
-                          case '751020':
-                            setState(() {
-                              flag = true;
-                              flags = false;
-                              // print('shippingVisibility: $shippingVisibility');
-                            });
-                            break;
-                          case '751009':
-                            setState(() {
-                              flag = true;
-                              flags = false;
-                              // print('shippingVisibility: $shippingVisibility');
-                            });
-                            break;
-                          case '752101':
-                            setState(() {
-                              flag = true;
-                              flags = false;
-                              // print('shippingVisibility: $shippingVisibility');
-                            });
-                            break;
-                          case '751022':
-                            setState(() {
-                              flag = true;
-                              flags = false;
-                              // print('shippingVisibility: $shippingVisibility');
-                            });
-                            break;
 
+                        // for(int i =0; i< pinCodes.length; i++) {
+                        //   if(pinCodes[i] == pincodeController.text) {
+                        //     print('same');
+                        //     setState(() {
+                        //       flag = true;
+                        //       flags = false;
+                        //     });
+                        //     break;
+                        //   }
+                        //   print('not same');
+                        //   setState(() {
+                        //     flag = false;
+                        //     flags = false;
+                        //   });
+                        // }
 
-                          default:
-                            setState(() {
-                              flag = false;
-                              flags = false;
-                              // print('shippingVisibility: $shippingVisibility');
-                            });
-                            break;
+                        bool found = pinCodes.contains(pincodeController.text);
+                        if(found) {
+                          print('Same');
+                          setState(() {
+                            flag = true;
+                            flags = false;
+                            // print('shippingVisibility: $shippingVisibility');
+                          });
+                        } else {
+                          setState(() {
+                            flag = false;
+                            flags = false;
+                            // print('shippingVisibility: $shippingVisibility');
+                          });
                         }
                       },
                       // color: product.color,
@@ -374,8 +332,7 @@ class _ProductDetailState extends BasePageState<ProductDetail> {
                           ),
                           onPressed: () {
                             Provider.of<CartModel>(context,
-                                        listen: false)
-                                        ;
+                                        listen: false);
                             cart.add(widget.product);
                             Provider.of<CartModel>(context, listen: false)
                                 .addCartProduct(

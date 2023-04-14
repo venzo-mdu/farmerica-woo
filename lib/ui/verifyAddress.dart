@@ -19,7 +19,9 @@ class VerifyAddress extends BasePage {
       address,
       country,
       mobile,
-      mail;
+      mail,
+      giftFrom,
+      giftMsg;
   final String deliveryDate;
   final String deliveryTime;
 
@@ -41,7 +43,9 @@ class VerifyAddress extends BasePage {
       this.state,
       this.cartProducts,
       this.deliveryDate,
-      this.deliveryTime});
+      this.deliveryTime,
+      this.giftMsg,
+      this.giftFrom});
   @override
   _VerifyAddressState createState() => _VerifyAddressState();
 }
@@ -57,9 +61,14 @@ class _VerifyAddressState extends BasePageState<VerifyAddress> {
     // basePage.title = "Checkout Page";
     // basePage.selected = 2;
   }
+  bool showDropDownValue = true;
 
   @override
   Widget body(BuildContext context) {
+    if(widget.deliveryTime == null) {
+      showDropDownValue = false;
+    }
+
     // print(widget.product);
     return SingleChildScrollView(
       child: Padding(
@@ -77,10 +86,13 @@ class _VerifyAddressState extends BasePageState<VerifyAddress> {
                       flex: 1,
                       child: FormHelper.fieldLabel("Delivery Date"),
                     ),
-                    Flexible(
-                      fit: FlexFit.tight,
-                      flex: 1,
-                      child: FormHelper.fieldLabel("Delivery Time"),
+                    Visibility(
+                      visible: showDropDownValue,
+                      child: Flexible(
+                        fit: FlexFit.tight,
+                        flex: 1,
+                        child: FormHelper.fieldLabel("Delivery Time"),
+                      ),
                     )
                   ],
                 ),
@@ -97,12 +109,15 @@ class _VerifyAddressState extends BasePageState<VerifyAddress> {
                         child: FormHelper.fieldLabelValu(context, widget.deliveryDate),
                       ),
                     ),
-                    Flexible(
-                      fit: FlexFit.tight,
-                      flex: 1,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: FormHelper.fieldLabelValu(context, widget.deliveryTime),
+                    Visibility(
+                      visible: showDropDownValue,
+                      child: Flexible(
+                        fit: FlexFit.tight,
+                        flex: 1,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: FormHelper.fieldLabelValu(context, widget.deliveryTime),
+                        ),
                       ),
                     ),
                   ],
@@ -231,6 +246,47 @@ class _VerifyAddressState extends BasePageState<VerifyAddress> {
                     ),
                   ],
                 ),
+                Row(
+                  children: [
+                    Flexible(
+                      fit: FlexFit.tight,
+                      flex: 1,
+                      child: Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: FormHelper.fieldLabel("Gift From"),
+                      ),
+                    ),
+                    Flexible(
+                      fit: FlexFit.tight,
+                      flex: 1,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: FormHelper.fieldLabel("Gift Msg"),
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    Flexible(
+                      fit: FlexFit.tight,
+                      flex: 1,
+                      child: Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: FormHelper.fieldLabelValu(context, widget.giftFrom),
+                      ),
+                    ),
+                    Flexible(
+                      fit: FlexFit.tight,
+                      flex: 1,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child:
+                        FormHelper.fieldLabelValu(context, widget.giftMsg),
+                      ),
+                    ),
+                  ],
+                ),
                 SizedBox(
                   height: 20,
                 ),
@@ -254,7 +310,9 @@ class _VerifyAddressState extends BasePageState<VerifyAddress> {
                                   mail: widget.mail,
                                   deliveryDate: widget.deliveryDate,
                                   deliveryTime: widget.deliveryTime,
-                                  mobile: "",
+                                  giftFrom: widget.giftFrom,
+                                  giftMsg: widget.giftMsg,
+                                  mobile: widget.mobile,
                                   product: widget.product,
                                 )));
                   }),

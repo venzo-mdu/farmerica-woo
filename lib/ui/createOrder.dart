@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
-import 'dart:convert';
 import 'package:safira_woocommerce_app/form_helper.dart';
 import 'package:safira_woocommerce_app/models/CartRequest.dart';
 import 'package:safira_woocommerce_app/models/Customers.dart';
@@ -29,14 +28,16 @@ class _CreateOrderState extends BasePageState<CreateOrder> {
   String first,
       last,
       city,
-      state,
+      state = 'Odisha',
       postcode,
       apartmnt,
       flat,
       address,
-      country,
+      country = 'India',
       mobile,
-      mail;
+      mail,
+      giftFrom,
+      giftMsg;
   int selected = 2;
   String title = "Create Order";
   String dropDownValue;
@@ -83,6 +84,7 @@ class _CreateOrderState extends BasePageState<CreateOrder> {
     '06:00 PM - 09:00 PM',
   ];
   List<String> timeDropDownValues = [];
+  bool showTime = true;
 
   @override
   void initState() {
@@ -91,6 +93,7 @@ class _CreateOrderState extends BasePageState<CreateOrder> {
     lastName = widget.details.lastName;
     emailId = widget.details.email;
     // phoneNumber = widget.details.billing.phone;
+    print('Test: ${widget.shippingFee}');
     getUserData();
     print('getUserData(): ${getUserData()}');
   }
@@ -99,6 +102,9 @@ class _CreateOrderState extends BasePageState<CreateOrder> {
 
   @override
   Widget body(BuildContext context) {
+    if(userData == null) {
+      return Center(child: CircularProgressIndicator());
+    }
 
     print(widget.product);
     return SingleChildScrollView(
@@ -138,18 +144,20 @@ class _CreateOrderState extends BasePageState<CreateOrder> {
                         DateTime timeLimit = DateTime(now.year, now.month, now.day, 17, 0);
 
                         if (widget.shippingFee == 200) {
+                          selectedDate = intialdate ?? DateTime.now();
+
                           final DateTime picked = await showDatePicker(
                               context: context,
                               initialDate: selectedDate,
                               initialDatePickerMode: DatePickerMode.day,
                               firstDate: DateTime.now(),
                               lastDate: DateTime(2101));
-                          selectedDate = intialdate ?? DateTime.now();
+
 
                           if (picked != null && picked != selectedDate) {
                             selectedDate = picked;
                             isCurrentDaySelected = selectedDate.year ==
-                                    DateTime.now().year &&
+                                DateTime.now().year &&
                                 selectedDate.month == DateTime.now().month &&
                                 selectedDate.day == DateTime.now().day;
                             if (isCurrentDaySelected == true) {
@@ -158,7 +166,7 @@ class _CreateOrderState extends BasePageState<CreateOrder> {
                               if (intialdate.isAfter(timeLimit)) {
                                 Fluttertoast.showToast(
                                     msg:
-                                        "Please order before 5PM to deliver the product in same day midnight. Kindly change the date.",
+                                    "Please order before 5PM to deliver the product in same day midnight. Kindly change the date.",
                                     toastLength: Toast.LENGTH_SHORT,
                                     gravity: ToastGravity.BOTTOM,
                                     timeInSecForIosWeb: 3,
@@ -168,14 +176,21 @@ class _CreateOrderState extends BasePageState<CreateOrder> {
                               }
                             }
                           }
+                          if (picked != null) {
+                            setState(() {
+                              datePickerController.text =
+                                  DateFormat.yMd().format(picked);
+                            });
+                          }
                         } else if(widget.shippingFee == 75) {
+                          selectedDate = intialdate ?? DateTime.now();
                           final DateTime picked = await showDatePicker(
                               context: context,
                               initialDate: selectedDate,
                               initialDatePickerMode: DatePickerMode.day,
                               firstDate: DateTime.now(),
                               lastDate: DateTime(2101));
-                          selectedDate = intialdate ?? DateTime.now();
+
 
                           if (picked != null && picked != selectedDate) {
                             selectedDate = picked;
@@ -199,7 +214,14 @@ class _CreateOrderState extends BasePageState<CreateOrder> {
                               }
                             }
                           }
-                        } else {
+                          if (picked != null) {
+                            setState(() {
+                              datePickerController.text =
+                                  DateFormat.yMd().format(picked);
+                            });
+                          }
+                        }
+                        else if (widget.shippingFee == 0){
                           DateTime picked = await showDatePicker(
                             context: context,
                             initialDate: intialdate,
@@ -213,10 +235,12 @@ class _CreateOrderState extends BasePageState<CreateOrder> {
                           DateTime timeLimit13 = DateTime(now.year, now.month, now.day, 13, 0);
                           DateTime timeLimit08 = DateTime(now.year, now.month, now.day, 08, 0);
                           DateTime timeLimit18 = DateTime(now.year, now.month, now.day, 18, 0);
+
+                          DateTime timeLimit21 = DateTime(now.year, now.month, now.day, 21, 0);
                           final today = DateTime(now.year, now.month, now.day);
                           final pickedDay = DateTime(picked.year, picked.month, picked.day);
 
-                         timeDropDownValues = List.from(timeDropDownValuesT);
+                          timeDropDownValues = List.from(timeDropDownValuesT);
                           if(intialdate.isAfter(timeLimit08) && pickedDay == today) {
                             timeDropDownValues.remove('08:00 AM - 01:00 PM');
                           }
@@ -226,31 +250,22 @@ class _CreateOrderState extends BasePageState<CreateOrder> {
                           if(intialdate.isAfter(timeLimit18) && pickedDay == today) {
                             timeDropDownValues.remove('06:00 PM - 09:00 PM');
                           }
+                          if(intialdate.isAfter(timeLimit21) && pickedDay == today) {
+                              showTime = false;
+                              setState(() {});
+                            Fluttertoast.showToast(
+                              msg: "Free delivery for the day is closed.",
+                              toastLength: Toast.LENGTH_SHORT,
+                              gravity: ToastGravity.BOTTOM,
+                              timeInSecForIosWeb: 5,
+                              backgroundColor: Colors.black,
+                              textColor: Colors.white,
+                              fontSize: 16.0,
+                            );
 
-
-
-
-                          final startTime06 = DateTime(now.year, now.month, now.day, 18, 0);
-                          final endTime09 = DateTime(now.year, now.month, now.day, 21, 0);
-                          final currentTime = DateTime.now();
-                          if(currentTime.isAfter(startTime06) || currentTime.isBefore(endTime09)) {
-                            print('object: $startTime06');
-
+                          }else if(pickedDay == today.add(Duration(days: 1))){
+                            showTime = true;
                           }
-
-
-
-                          // if(int.parse(datetime) <= 18 && int.parse(datetime) > 13) {
-                          //   print('object: 6');
-                          //   // dropDownValue = dropDownValue[];
-                          // } else if(int.parse(datetime) <= 21 && int.parse(datetime) > 18) {
-                          //   print('object: 9');
-                          // } else {
-                          //   print('object: 8');
-                          // }
-
-
-
                           if (picked != null) {
                             setState(() {
                               datePickerController.text =
@@ -258,34 +273,35 @@ class _CreateOrderState extends BasePageState<CreateOrder> {
                             });
                           }
                         }
+
                       },
                     ),
                   )
                 ],
               ),
               widget.shippingFee == 0 && datePickerController.text.isNotEmpty
-                  ? Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('Delivery Time'),
-                        DropdownButton<String>(
-                          value: dropDownValue,
-                          items: timeDropDownValues.map((String value) {
-                            return DropdownMenuItem<String>(
-                              value: value,
-                              child: Text(value),
-                            );
-                          }).toList(),
+                  ? (showTime ? Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Delivery Time'),
+                  DropdownButton<String>(
+                    value: dropDownValue,
+                    items: timeDropDownValues.map((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
 
 
-                          onChanged: (onChangedValue) {
-                            setState(() {
-                              dropDownValue = onChangedValue;
-                            });
-                          },
-                        )
-                      ],
-                    )
+                    onChanged: (onChangedValue) {
+                      setState(() {
+                        dropDownValue = onChangedValue;
+                      });
+                    },
+                  )
+                ],
+              ) : Container())
                   : Container(),
               Row(
                 children: [
@@ -416,7 +432,7 @@ class _CreateOrderState extends BasePageState<CreateOrder> {
                     fit: FlexFit.tight,
                     flex: 1,
                     child: TextFormField(
-                      initialValue: "",
+                      initialValue: 'India',
                       decoration: InputDecoration(
                         hintText: "Country",
                       ),
@@ -442,7 +458,7 @@ class _CreateOrderState extends BasePageState<CreateOrder> {
                     fit: FlexFit.tight,
                     flex: 1,
                     child: TextFormField(
-                      initialValue: "",
+                      initialValue: "Odisha",
                       decoration: InputDecoration(
                         hintText: "State",
                       ),
@@ -613,18 +629,82 @@ class _CreateOrderState extends BasePageState<CreateOrder> {
                   ),
                 ],
               ),
+              SizedBox(height: 10),
+              Row(
+                children: [
+                  Flexible(
+                    fit: FlexFit.tight,
+                    flex: 1,
+                    child: FormHelper.fieldLabel("Gift Message"),
+                  ),
+                  Flexible(
+                    fit: FlexFit.tight,
+                    flex: 1,
+                    child: FormHelper.fieldLabel("Gift from"),
+                  )
+                ],
+              ),
+              Row(
+                children: [
+                  Flexible(
+                    fit: FlexFit.tight,
+                    flex: 1,
+                    child: TextFormField(
+                      initialValue: giftFrom,
+                      decoration: InputDecoration(
+                        hintText: "Gift From",
+                      ),
+                      maxLines: 1,
+                      keyboardType: TextInputType.text,
+                      onChanged: (String value) {
+                        giftFrom = value;
+                        print(giftMsg);
+                      },
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter Gift receiver name';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  Flexible(
+                    fit: FlexFit.tight,
+                    flex: 1,
+                    child: TextFormField(
+                      initialValue: giftMsg,
+                      decoration: InputDecoration(
+                        hintText: "Gift Message",
+                      ),
+                      maxLines: 1,
+                      keyboardType: TextInputType.text,
+                      onChanged: (String value) {
+                        giftMsg = value;
+                        print(first);
+                      },
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter some Gift Message name';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                ],
+              ),
               Center(
                 child: FormHelper.saveButton("Next", () {
                   if (_formKey.currentState.validate()) {
-                    if(dropDownValue == null) {
+
+                    if(datePickerController.text == null) {
                       Fluttertoast.showToast(
-                          msg: "Pick the another day for Delivery",
-                          toastLength: Toast.LENGTH_SHORT,
-                          gravity: ToastGravity.BOTTOM,
-                          timeInSecForIosWeb: 5,
-                          backgroundColor: Colors.black,
-                          textColor: Colors.white,
-                          fontSize: 16.0,
+                        msg: "Please Chosen the Delivery Date",
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.BOTTOM,
+                        timeInSecForIosWeb: 5,
+                        backgroundColor: Colors.black,
+                        textColor: Colors.white,
+                        fontSize: 16.0,
                       );
                     } else {
                       Navigator.push(
@@ -646,6 +726,8 @@ class _CreateOrderState extends BasePageState<CreateOrder> {
                                 mail: emailId,
                                 deliveryDate: datePickerController.text,
                                 deliveryTime: dropDownValue,
+                                giftFrom: giftFrom,
+                                giftMsg: giftMsg,
                               )));
                     }
 

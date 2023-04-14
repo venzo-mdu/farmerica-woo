@@ -178,6 +178,7 @@ class _SavedAddressState extends BasePageState<SavedAddress> {
                             } else {
                               return "Enter valid Mail Id";
                             }
+                            return null;
                           },
                           decoration: InputDecoration(
                               hintText: "${customer.email}",
@@ -230,7 +231,7 @@ class _SavedAddressState extends BasePageState<SavedAddress> {
                           },
                           decoration: InputDecoration(
                               hintText: "Phone Number:",
-                                  // "${customer.billing.phone}",
+                              // "${customer.billing.phone}",
                               hintStyle: TextStyle(
                                 color: Colors.black,
                                 fontSize: 14,
@@ -281,7 +282,7 @@ class _SavedAddressState extends BasePageState<SavedAddress> {
                           },
                           decoration: InputDecoration(
                               hintText: "Address - 1",
-                                  // "${customer.billing.address1}",
+                              // "${customer.billing.address1}",
                               hintStyle: TextStyle(
                                 color: Colors.black,
                                 fontSize: 14,
@@ -331,7 +332,7 @@ class _SavedAddressState extends BasePageState<SavedAddress> {
                           },
                           decoration: InputDecoration(
                               hintText: "Address - 2",
-                                  // "${customer.billing.address2}",
+                              // "${customer.billing.address2}",
                               hintStyle: TextStyle(
                                 color: Colors.black,
                                 fontSize: 14,
@@ -381,7 +382,7 @@ class _SavedAddressState extends BasePageState<SavedAddress> {
                           },
                           decoration: InputDecoration(
                               hintText: "Town",
-                                  // "${customer.billing.city}",
+                              // "${customer.billing.city}",
                               hintStyle: TextStyle(
                                 color: Colors.black,
                                 fontSize: 14,
@@ -431,7 +432,7 @@ class _SavedAddressState extends BasePageState<SavedAddress> {
                           },
                           decoration: InputDecoration(
                               hintText: "Pin-Code",
-                                  // "${customer.billing.postcode}",
+                              // "${customer.billing.postcode}",
                               hintStyle: TextStyle(
                                 color: Colors.black,
                                 fontSize: 14,
@@ -458,6 +459,7 @@ class _SavedAddressState extends BasePageState<SavedAddress> {
                   if (_formKey.currentState.validate()) {
                     Customers customers = await api_services
                         .updateCustomers(
+                        id: widget.customer.id,
                         firstName: first,
                         lastName: last,
                         email: mail,
@@ -466,7 +468,7 @@ class _SavedAddressState extends BasePageState<SavedAddress> {
                         address_2: appointment,
                         city: town,
                         postcode: pinCode,
-                        id: widget.customer.id)
+                    )
                         .then((value) {
                       Fluttertoast.showToast(
                           msg: "Update Successfully",

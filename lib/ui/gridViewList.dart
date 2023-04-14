@@ -91,7 +91,7 @@ class _GridViewListState extends State<GridViewList> {
                                   1,
                                   widget.product[id].name,
                                   widget.product[id].price,
-                                  widget.product[id].images[0].src
+                                  widget.product[id].images[0].src,
                               );
                               // .addCartProduct(widget.product);
                               Fluttertoast.showToast(

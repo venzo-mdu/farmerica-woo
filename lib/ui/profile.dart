@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:image_picker/image_picker.dart';
+import 'package:safira_woocommerce_app/ui/CartPage.dart';
 import 'package:safira_woocommerce_app/ui/deleteAccount.dart';
 import 'package:safira_woocommerce_app/models/Customers.dart';
 import 'package:safira_woocommerce_app/models/Products.dart';
@@ -236,7 +237,6 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
     SharedServices sharedServices = SharedServices();
     Api_Services api_services = Api_Services();
     return Scaffold(
-        // appBar: AppBar(),
         body: SingleChildScrollView(
             padding: EdgeInsets.symmetric(vertical: 20),
             child: Column(children: [

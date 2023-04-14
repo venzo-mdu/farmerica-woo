@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:safira_woocommerce_app/Config.dart';
 import 'package:safira_woocommerce_app/models/CartRequest.dart';
@@ -17,6 +18,7 @@ import 'package:http/http.dart' as http;
 
 // ignore: camel_case_types
 class Api_Services {
+  final client = HttpClient();
   WooCommerceAPI api;
 
   Api_Services() {
@@ -26,12 +28,14 @@ class Api_Services {
         consumerSecret: Config.secret);
   }
 
-  Future<Customers> createCustomer(
-      {String firstName,
-      String lastName,
-      String email,
-      String username}) async {
-    var response = await api.postAsync("${Config.urlfor}" "${Config.customerUrl}", {
+  Future<Customers> createCustomer({
+    String firstName,
+    String lastName,
+    String email,
+    String username,
+  }) async {
+    var response =
+        await api.postAsync("${Config.urlfor}" "${Config.customerUrl}", {
       "email": email,
       "first_name": firstName,
       "last_name": lastName,
@@ -49,7 +53,8 @@ class Api_Services {
       String email,
       String username}) async {
     http.Response response = await http.post(
-        Uri.parse('https://www.farmerica.in/wp-json/wc/v3/customers?consumer_key=ck_eedc4b30808be5c1110691e5b29f16280ebd3b72&consumer_secret=cs_2313913bc74d5e096c91d308745b50afee52e61c'),
+        Uri.parse(
+            'https://www.farmerica.in/wp-json/wc/v3/customers?consumer_key=ck_eedc4b30808be5c1110691e5b29f16280ebd3b72&consumer_secret=cs_2313913bc74d5e096c91d308745b50afee52e61c'),
         body: {
           "email": email,
           "first_name": firstName,
@@ -99,7 +104,7 @@ class Api_Services {
   }
 
   Future getUsernameByMail(String mail) async {
-    var url= "${Config.urlfor}${Config.customerUrl}?email=$mail";
+    var url = "${Config.urlfor}${Config.customerUrl}?email=$mail";
     // var url = "${Config.customerUrl}" "customers?email=$mail";
     // print('getUsernameByMail: $url');
     String username;
@@ -126,7 +131,6 @@ class Api_Services {
     var response = await http.post(
       Uri.parse(url),
       body: {"username": username, "password": password},
-
     );
     // print('objectPassword: $username');
     // print('objectPassword: $password');
@@ -186,7 +190,7 @@ class Api_Services {
   }
 
   Future getProductsById(int id) async {
-    var url =  "${Config.url}" "${Config.urlfor}" "${Config.productUrl}/$id";
+    var url = "${Config.url}" "${Config.urlfor}" "${Config.productUrl}/$id";
     // print('getProductsById: $url');
     var response = await api.getAsync(url);
 
@@ -208,7 +212,10 @@ class Api_Services {
   }
 
   Future<List<Product>> getProducts(int id) async {
-    var url = "${Config.urlfor}" "${Config.productUrl}?category=$id&per_page=100" "&consumer_key=${Config.key}" "&consumer_secret=${Config.secret}";
+    var url = "${Config.urlfor}"
+        "${Config.productUrl}?category=$id&per_page=100"
+        "&consumer_key=${Config.key}"
+        "&consumer_secret=${Config.secret}";
 
     var response = await api.getAsync(url);
     // print(response);
@@ -218,8 +225,8 @@ class Api_Services {
     // print('getProducts: ${productList.length}');
     for (var item in response) {
       // print('getProductss: ${Product.fromJson(item)}');
-      if(Product.fromJson(item).catalogVisibility == 'visible') {
-      // print('objectItem: $item');
+      if (Product.fromJson(item).catalogVisibility == 'visible') {
+        // print('objectItem: $item');
         productList.add(Product.fromJson(item));
       }
     }
@@ -243,7 +250,7 @@ class Api_Services {
     var url = "${Config.urlfor}"
         "${Config.productUrl}"
         "?categories=$id";
-        // "${Config.parentforCategory}$id";
+    // "${Config.parentforCategory}$id";
     // print('getCategoryById: $url');
     var response = await api.getAsync(url);
     List<ParentCategory> categoryList = [];
@@ -307,14 +314,17 @@ class Api_Services {
       String city,
       String postcode,
       int id}) async {
-
-    print('email-$email, fName-$firstName, lName-$lastName, phone-$phone, address-1-$address_1, address-2-$address_2, city-$city, pincode-$postcode');
+    print(
+        'email-$email, fName-$firstName, lName-$lastName, phone-$phone, address-1-$address_1, address-2-$address_2, city-$city, pincode-$postcode');
 
     var headers = {
       'Content-Type': 'application/json',
       // 'Cookie': 'cxssh_status=off; mailpoet_page_view=%7B%22timestamp%22%3A1680481400%7D'
     };
-    var request = http.Request('PUT', Uri.parse('https://www.farmerica.in/wp-json/wc/v3/customers/100?consumer_key=ck_eedc4b30808be5c1110691e5b29f16280ebd3b72&consumer_secret=cs_2313913bc74d5e096c91d308745b50afee52e61c'));
+    var request = http.Request(
+        'PUT',
+        Uri.parse(
+            'https://www.farmerica.in/wp-json/wc/v3/customers/$id?consumer_key=ck_eedc4b30808be5c1110691e5b29f16280ebd3b72&consumer_secret=cs_2313913bc74d5e096c91d308745b50afee52e61c'));
     request.body = json.encode({
       "email": email,
       "first_name": firstName,
@@ -334,19 +344,14 @@ class Api_Services {
     var streamedResponse = await request.send();
     var response = await http.Response.fromStream(streamedResponse);
 
-
     if (response.statusCode == 200) {
       // print(await response.stream.bytesToString());
-      var result = json.decode(response.body) as Map<String,dynamic>;
+      var result = json.decode(response.body) as Map<String, dynamic>;
       var customerDetails = Customers.fromJson(result);
       print(customerDetails.email);
-    }
-    else {
+    } else {
       print(response.reasonPhrase);
     }
-
-
-
 
     // var url = "${Config.urlfor}" "${Config.customerUrl}/$id?consumer_key=${Config.key}&consumer_secret=${Config.secret}";
     // print(url);
@@ -370,69 +375,240 @@ class Api_Services {
     // // print(customerDetails.email);
   }
 
-  Future<Orders> createOrder({
-    String first,
-    last,
-    city,
-    state,
-    postcode,
-    apartmnt,
-    flat,
-    mobile,
-    mail,
-    address,
-    country,
-    paymentMethod,
-    paymentMethodTitle,
-    deliveryDate,
-    deliveryTime,
-    bool setPaid,
-    int id,
+  // Future<Orders> createOrder({
+  //   String first,
+  //   String last,
+  //   String city,
+  //   String state,
+  //   String postcode,
+  //   String apartmnt,
+  //   String flat,
+  //   String mobile,
+  //   String mail,
+  //   String address,
+  //   String country,
+  //   String paymentMethod,
+  //   String paymentMethodTitle,
+  //   String delivery_type,
+  //   String delivery_time,
+  //   bool setPaid,
+  //   int id,
+  //   String gift_from,
+  //   String gift_message,
+  //
+  //   List<CartProducts> cartProducts,
+  // }) async {
+  //   final url = Uri.parse(
+  //     '${Config.url}/wp-json/wc/v3/orders?consumer_key=${Config.key}&consumer_secret=${Config.secret}',
+  //   );
+  //   print('orderURL: $url');
+  //   final parameters = <String, dynamic> {
+  //     "payment_method": paymentMethod,
+  //     "payment_method_title": paymentMethodTitle,
+  //     "customer_id": 1,
+  //     "set_paid": setPaid,
+  //     "billing": {
+  //       "first_name": first,
+  //       "last_name": last,
+  //       "address_1": address,
+  //       "address_2": "",
+  //       "city": city,
+  //       "state": state,
+  //       "postcode": postcode,
+  //       "country": country,
+  //       "email": mail,
+  //       "phone": mobile,
+  //     },
+  //     "shipping": {
+  //       "first_name": first,
+  //       "last_name": last,
+  //       "address_1": address,
+  //       "address_2": "",
+  //       "city": city,
+  //       "state": state,
+  //       "postcode": postcode,
+  //       "country": country,
+  //     },
+  //     "meta_data" : [
+  //       {
+  //         "key": delivery_type.toString(),
+  //         "value": delivery_time.toString(),
+  //       },
+  //       {
+  //         "key": gift_from.toString(),
+  //         "value": gift_message.toString(),
+  //       }
+  //     ],
+  //     "line_items": cartProducts
+  //   };
+  //
+  //   final request = await client.postUrl(url);
+  //   request.headers.set("Content-Type", "application/json; charset=utf-8");
+  //   request.write(jsonEncode(parameters));
+  //   print('orderURL: ${jsonEncode(parameters)}');
+  //   final response = await request.close();
+  //   print('orderResponse: $response');
+  //   final jsonStrings = await response.transform(utf8.decoder).toList();
+  //   final jsonString = jsonStrings.join();
+  //   final json = jsonDecode(jsonString) as Map<String, dynamic>;
+  //   final order = Orders.fromJson(json);
+  //   print('objectOrder: $order');
+  //   return order;
+  // }
+  ///
+
+  Future createOrder({
+    String payment_method,
+    String payment_method_title,
+    String firstName,
+    String lastName,
+    String addressOne,
+    String addressTwo,
+    String city,
+    String country,
+    String state,
+    String postcode,
+    String email,
+    String phone,
+    String total,
+    int product_id,
+    int quantity,
+    String delivery_type,
+    String delivery_time,
+    String gift_from,
+    String gift_message,
     List<CartProducts> cartProducts,
   }) async {
-    // CreateOrderModel model = CreateOrderModel();
-    var url = "${Config.urlfor}" "${Config.orderUrl}" "?consumer_key=${Config.key}&consumer_secret=${Config.secret}";
-    print(url);
-    var body = jsonEncode({
-      "payment_method": paymentMethod,
-      "payment_method_title": paymentMethodTitle,
-      "customer_id": 1,
-      "set_paid": setPaid,
-      "billing": {
-        "first_name": first,
-        "last_name": last,
-        "address_1": address,
-        "address_2": "",
-        "city": city,
-        "state": state,
-        "postcode": postcode,
-        "country": country,
-        "email": mail,
-        "phone": mobile,
-
+    final url = Uri.parse(
+      '${Config.url}/wp-json/wc/v3/orders?consumer_key=${Config.key}&consumer_secret=${Config.secret}',
+    );
+    final parameters = <String, dynamic>{
+      'payment_method_title': 'Cash on Delivery',
+      'payment_method': 'cp',
+      'billing': {
+        'first_name': firstName,
+        'last_name': lastName,
+        'address_1': addressOne,
+        'address_2': addressTwo,
+        'city': city,
+        'country': country,
+        'state': state,
+        'postcode': postcode,
+        'email': email,
+        'phone': phone,
       },
-      "shipping": {
-        "first_name": first,
-        "last_name": last,
-        "address_1": address,
-        "address_2": "",
-        "city": city,
-        "state": state,
-        "postcode": postcode,
-        "country": country,
+      'shipping': {
+        'first_name': firstName,
+        'last_name': lastName,
+        'address_1': addressOne,
+        'address_2': addressTwo,
+        'city': city,
+        'country': country,
+        'state': state,
+        'postcode': postcode,
+        'email': email,
+        'phone': phone,
       },
-      "delivery_details" : {
-        "deliveryDate": deliveryDate,
-        "deliveryTime": deliveryTime,
-      },
-      "line_items": cartProducts
-    });
-    // print(body);
-    var response = await api.postAsync(url, jsonDecode(body));
-    Orders order = Orders.fromJson(response);
-    // print(order);
+      'line_items': [
+        {
+          'product_id': product_id,
+          "quantity": quantity,
+        },
+      ],
+      // "line_items": cartProducts,
+      'meta_data': [
+        {"key": "delivery_date", "value": delivery_type},
+        {
+          "key": "delivery_time",
+          "value": delivery_time,
+        },
+        {"key": "gift_from", "value": gift_from},
+        {"key": "gift_message", "value": gift_message}
+      ],
+    };
+    final request = await client.postUrl(url);
+    request.headers.set("Content-Type", "application/json; charset=utf-8");
+    request.write(jsonEncode(parameters));
+    final response = await request.close();
+    final jsonStrings = await response.transform(utf8.decoder).toList();
+    final jsonString = jsonStrings.join();
+    final json = jsonDecode(jsonString) as Map<String, dynamic>;
+    final order = Orders.fromJson(json);
     return order;
   }
+
+  // Future<Orders> createOrder({
+  //   String first,
+  //   last,
+  //   city,
+  //   state,
+  //   postcode,
+  //   apartmnt,
+  //   flat,
+  //   mobile,
+  //   mail,
+  //   address,
+  //   country,
+  //   paymentMethod,
+  //   paymentMethodTitle,
+  //   delivery_type,
+  //   delivery_time,
+  //   bool setPaid,
+  //   int id,
+  //   String gift_from,
+  //   String gift_message,
+  //
+  //   List<CartProducts> cartProducts,
+  // }) async {
+  //   // CreateOrderModel model = CreateOrderModel();
+  //   var url = "${Config.urlfor}" "${Config.orderUrl}?consumer_key=${Config.key}&consumer_secret=${Config.secret}";
+  //   print('orderUrl: $url');
+  //   var body = jsonEncode({
+  //     "payment_method": paymentMethod,
+  //     "payment_method_title": paymentMethodTitle,
+  //     "customer_id": 1,
+  //     "set_paid": setPaid,
+  //     "billing": {
+  //       "first_name": first,
+  //       "last_name": last,
+  //       "address_1": address,
+  //       "address_2": "",
+  //       "city": city,
+  //       "state": state,
+  //       "postcode": postcode,
+  //       "country": country,
+  //       "email": mail,
+  //       "phone": mobile,
+  //     },
+  //     "shipping": {
+  //       "first_name": first,
+  //       "last_name": last,
+  //       "address_1": address,
+  //       "address_2": "",
+  //       "city": city,
+  //       "state": state,
+  //       "postcode": postcode,
+  //       "country": country,
+  //     },
+  //     "meta_data" : [
+  //       {
+  //         "key": delivery_type.toString(),
+  //         "value": delivery_time.toString(),
+  //       },
+  //       {
+  //         "key": gift_from.toString(),
+  //         "value": gift_message.toString(),
+  //       }
+  //     ],
+  //     "line_items": cartProducts
+  //   });
+  //   print('orderBody: $body');
+  //   var response = await api.postAsync(url, jsonDecode(body));
+  //   Orders order = Orders.fromJson(response);
+  //   print('Response: ${response}');
+  //   print('orderPOST: $order');
+  //   return order;
+  // }
 
   getProduct(List<CartProducts> cartProducts) async {
     int i = 0;
@@ -449,6 +625,7 @@ class Api_Services {
 
     return products;
   }
+
   Future loginCustomer(String email, String password) async {
     var response = await api.getAsync(Config.categoriesUrl);
     LoginResponse login = LoginResponse();
@@ -497,3 +674,21 @@ class Api_Services {
   //
 
 }
+
+// class MetaDatas {
+//   String key;
+//   String value;
+//
+//   MetaDatas({this.key, this.value});
+//
+//   MetaDatas.fromJson(Map<String, dynamic> json) {
+//     key = json['key'];
+//     value = json['value'].toString();
+//   }
+//   Map<String, dynamic> toJson() {
+//     final Map<String, dynamic> data = Map<String, dynamic>();
+//     data['key'] = this.key;
+//     data['value'] = this.value;
+//     return data;
+//   }
+// }

@@ -11,7 +11,7 @@ import 'package:safira_woocommerce_app/ui/widgets/checkout_widget.dart';
 
 class CheckoutScreen extends BasePage {
   o.Orders state;
-  List product;
+  List<Product> product;
   CheckoutScreen({this.state, this.product});
   @override
   _CheckoutScreenState createState() => _CheckoutScreenState();
@@ -30,6 +30,7 @@ class _CheckoutScreenState extends BasePageState<CheckoutScreen> {
               // title: 'Checkout',
               body: CheckoutWrapper(
             state: widget.state,
+            product: widget.product,
           )),
         ));
   }
@@ -45,7 +46,7 @@ class CheckoutWrapper extends BasePage {
 
 class _CheckoutWrapperState extends BasePageState<CheckoutWrapper> {
   // BasePage basePage = BasePage();
-  PageView getPageView(List<Widget> widgets) {
+  PageView getPageView(List widgets) {
     return PageView(
         physics: NeverScrollableScrollPhysics(),
         controller: _viewController,
@@ -54,7 +55,7 @@ class _CheckoutWrapperState extends BasePageState<CheckoutWrapper> {
 
   //State createState() => OpenFlutterWrapperState();
   PageController _viewController;
-  void changePage({@required ViewChangeType changeType, int index}) {
+  void changePage({ViewChangeType changeType, int index}) {
     switch (changeType) {
       case ViewChangeType.Forward:
         _viewController.nextPage(
@@ -76,34 +77,29 @@ class _CheckoutWrapperState extends BasePageState<CheckoutWrapper> {
   @override
   void initState() {
     super.initState();
-    // basePage.title = "Checkout Page";
-    // basePage.selected = 2;
+    print('Wrapper: ${widget.product}');
+
+
   }
 
   int selected = 2;
   String title = "Order ";
   @override
   Widget body(BuildContext context) {
-    // print("as+${widget.product}");
-    return MaterialApp(
-      theme: OpenFlutterEcommerceTheme.of(context),
-      debugShowCheckedModeBanner: false,
-      home: SafeArea(
-          child: Scaffold(
-              // background: null,
-              // title: 'Checkout',
-              body: getPageView(<Widget>[
-        CartView(
-            changeView: changePage,
-            state: widget.state,
-            product: widget.product),
-        PaymentMethodView(changeView: changePage, state: widget.state),
-        ShippingAddressView(changeView: changePage),
-        AddShippingAddressView(changeView: changePage),
-        Success1View(changeView: changePage, state: widget.state),
-        Success2View(changeView: changePage, state: widget.state),
-      ]))),
-    );
+    print("as+${widget.product}");
+    return SafeArea(
+        child: Scaffold(
+            // background: null,
+            // title: 'Checkout',
+            body: getPageView(<Widget>[
+              CartView(
+                  changeView: changePage, state: widget.state, product: widget.product),
+              PaymentMethodView(changeView: changePage, state: widget.state),
+              ShippingAddressView(changeView: changePage),
+              AddShippingAddressView(changeView: changePage),
+              Success1View(changeView: changePage, state: widget.state),
+              Success2View(changeView: changePage, state: widget.state),
+            ])));
   }
 }
 
@@ -281,8 +277,8 @@ class _Success2ViewState extends State<Success2View> {
             Padding(
                 padding: EdgeInsets.all(AppSizes.sidePadding * 2),
                 child: Text(
-                    'Your order will be delivered soon. Thank you for choosing our app!',
-                    // style: _theme.textTheme.display1,
+                  'Your order will be delivered soon. Thank you for choosing our app!',
+                  // style: _theme.textTheme.display1,
                 )),
             OpenFlutterButton(
               title: 'CONTINUE SHOPPING',
@@ -329,8 +325,8 @@ class _Success1ViewState extends State<Success1View> {
                 Padding(
                     padding: EdgeInsets.all(AppSizes.sidePadding),
                     child: Text(
-                        'Your order will be delivered soon. Thank you for choosing our app!',
-                        // style: _theme.textTheme.display1,
+                      'Your order will be delivered soon. Thank you for choosing our app!',
+                      // style: _theme.textTheme.display1,
                     )),
                 OpenFlutterButton(
                   title: 'Continue shopping',
@@ -346,7 +342,7 @@ class _Success1ViewState extends State<Success1View> {
 class CartView extends StatefulWidget {
   final Function changeView;
   final o.Orders state;
-  final List<Product> product;
+  final List product;
   CartView({Key key, this.changeView, this.state, this.product})
       : super(key: key);
 
@@ -355,7 +351,7 @@ class CartView extends StatefulWidget {
 }
 
 class _CartViewState extends State<CartView> {
-  List<Product> demoCarts;
+  List demoCarts;
   @override
   void initState() {
     demoCarts = widget.product;
@@ -364,20 +360,35 @@ class _CartViewState extends State<CartView> {
 
   @override
   Widget build(BuildContext context) {
-    List<Product> cart = [];
+    List cart = [];
     var _theme = Theme.of(context);
     var width = MediaQuery.of(context).size.width - AppSizes.sidePadding * 2;
-    o.Orders state = widget.state;
+     dynamic state = widget.state; //o.Orders
     // print("am+${widget.product}");
-
-    for (var item in demoCarts) {
-      for (var it in state.lineItems) {
+    // print("am+${state.lineItems}");
+    print("am+${widget.state.lineItems}");
+    print("am+${state.toString()}");
+    ////
+    for (var i = 0; i < demoCarts.length; i++) {
+      var item = demoCarts[i];
+      for (var j = 0; j < widget.state.lineItems.length; j++) {
+        var it = widget.state.lineItems[j];
         if (it.productId == item.id) {
-          // print(item);
           cart.add(item);
         }
       }
     }
+
+    // for (var item in demoCarts) {
+    //   for (var it in state.lineItems) {
+    //     print('CheckoutDate: $it => ${state.lineItems}');
+    //
+    //     if (it.productId == item.id) {
+    //       print(item);
+    //       cart.add(item);
+    //     }
+    //   }
+    // }
     return SingleChildScrollView(
         child: Column(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -466,9 +477,8 @@ class _CartViewState extends State<CartView> {
                 }),
             child: RichText(
               text: TextSpan(
-                  text:
-                      state.billing.firstName + " - " + state.billing.lastName,
-                  // style: _theme.textTheme.display3.copyWith(color: _theme.primaryColor),
+                text: state.billing.firstName + " - " + state.billing.lastName,
+                // style: _theme.textTheme.display3.copyWith(color: _theme.primaryColor),
               ),
               maxLines: 2,
             )),
@@ -481,8 +491,8 @@ class _CartViewState extends State<CartView> {
                 }),
             child: RichText(
               text: TextSpan(
-                  text: state.billing.address1,
-                  // style: _theme.textTheme.display3.copyWith(color: _theme.primaryColor),
+                text: state.billing.address1,
+                // style: _theme.textTheme.display3.copyWith(color: _theme.primaryColor),
               ),
               maxLines: 2,
             )),
@@ -495,12 +505,12 @@ class _CartViewState extends State<CartView> {
                 }),
             child: RichText(
               text: TextSpan(
-                  text: state.billing.city +
-                      ", " +
-                      state.billing.state +
-                      " ," +
-                      state.billing.country,
-                  // style: _theme.textTheme.display3.copyWith(color: _theme.primaryColor)
+                text: state.billing.city +
+                    ", " +
+                    state.billing.state +
+                    " ," +
+                    state.billing.country,
+                // style: _theme.textTheme.display3.copyWith(color: _theme.primaryColor)
               ),
               maxLines: 2,
             )),
@@ -605,8 +615,8 @@ Widget _buildShippingAddress(ThemeData _theme, double width, bool checked) {
       child: Column(children: <Widget>[
         RichText(
           text: TextSpan(
-              text: '3 Newbridge Court Chino Hills, CA 91709, United States',
-              // style: _theme.textTheme.display3.copyWith(color: _theme.primaryColor)
+            text: '3 Newbridge Court Chino Hills, CA 91709, United States',
+            // style: _theme.textTheme.display3.copyWith(color: _theme.primaryColor)
           ),
           maxLines: 2,
         ),
@@ -750,8 +760,9 @@ class OpenFlutterPaymentCard extends StatelessWidget {
             ),
             Container(
               padding: EdgeInsets.only(left: AppSizes.sidePadding),
-              child: Text(cardNumber,
-                  // style: _theme.textTheme.display3.copyWith(color: _theme.primaryColor)
+              child: Text(
+                cardNumber,
+                // style: _theme.textTheme.display3.copyWith(color: _theme.primaryColor)
               ),
             )
           ],

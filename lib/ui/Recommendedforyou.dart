@@ -99,7 +99,7 @@ class _RecommendationsState extends State<Recommendations> {
                               product[id].id, 1,
                                 widget.product[id].name,
                                 widget.product[id].price,
-                                widget.product[id].images[0].src
+                                widget.product[id].images[0].src,
                             );
                             Fluttertoast.showToast(
                                 msg:

@@ -297,7 +297,7 @@ class _DashboardState extends State<Dashboard> {
                           Globals.globalInt = 68;
                           response = await api_services.getProducts(68);
                           print('vegetable: $response');
-                          Navigator.of(context).push(MaterialPageRoute(
+                          Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
                               builder: (context) => Grocery(
                                     product: response,
                                   )));
@@ -307,7 +307,7 @@ class _DashboardState extends State<Dashboard> {
                           Globals.globalInt = 86;
                           response = await api_services.getProducts(86);
                           print('healthy: $response');
-                          Navigator.of(context).push(MaterialPageRoute(
+                          Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
                               builder: (context) => Grocery(
                                     product: response,
                                   )));
@@ -317,7 +317,7 @@ class _DashboardState extends State<Dashboard> {
                           Globals.globalInt = 45;
                           response = await api_services.getProducts(45);
                           print('category45: $response');
-                          Navigator.of(context).push(MaterialPageRoute(
+                          Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
                               builder: (context) =>
                                   Grocery(
                                     // catergories: widget.category,
@@ -334,13 +334,14 @@ class _DashboardState extends State<Dashboard> {
             //     child: Recommendations(
             //       product: product,
             //     )),
-            Container(height: 35, child: UpperHeading("Best Sellers Products")),
+            // Container(height: 35, child: UpperHeading("Best Sellers Products")),
             // Container(
             //   height: 180,
             //   padding: EdgeInsets.symmetric(horizontal: 15),
             //   child: ProductsHorizontal(product: widget.product),
             // )
           ],
-        )));
+        ))
+    );
   }
 }

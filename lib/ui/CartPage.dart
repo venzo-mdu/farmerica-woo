@@ -8,6 +8,7 @@ import 'package:safira_woocommerce_app/models/Customers.dart';
 import 'package:safira_woocommerce_app/models/Products.dart' as p;
 import 'package:safira_woocommerce_app/models/Products.dart';
 import 'package:safira_woocommerce_app/ui/BasePage.dart';
+import 'package:safira_woocommerce_app/ui/categories.dart';
 import 'package:safira_woocommerce_app/ui/createOrder.dart';
 import "package:provider/provider.dart";
 import 'package:flutter_svg/flutter_svg.dart';
@@ -44,22 +45,7 @@ var totalprice = 0;
 class _CartScreenState extends BasePageState<CartScreen> {
   int counter = 1;
   int arraySize = 1;
-  List counterArray = [
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-  ];
+  List counterArray = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
 
   double subTotals = 0.0;
 
@@ -82,7 +68,6 @@ class _CartScreenState extends BasePageState<CartScreen> {
 
   bool intFlag = false;
   TextEditingController _couponCodeController = TextEditingController();
-
 
   @override
   void initState() {
@@ -165,81 +150,84 @@ class _CartScreenState extends BasePageState<CartScreen> {
     return Consumer<CartModel>(builder: (context, cartModel, child) {
       print('CartModel157: ${cartModel.cartProducts.length}');
       if (cartModel.cartProducts.length == 0) {
-        return Center(
-            child:
-                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          Icon(
-            Icons.hourglass_empty,
-            size: 30,
-          ),
-          Text(
-            "Your Cart is empty",
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
-        ]));
+        return Scaffold(
+          body: Center(
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                Icon(
+                  Icons.hourglass_empty,
+                  size: 30,
+                ),
+                Text(
+                  "Your Cart is empty",
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+              ])),
+        );
       } else {
         // if(intFlag == false ) {
         totalSubtotal = 0;
         // print('demoCarts.length: ${demoCarts.length}');
         // for (var item in demoCarts) {
-          for (dynamic it in cartModel.cartProducts) {
-            // if (it.product_id == item.id) {
-            print('objectIT: ${it.runtimeType}');
-            // price, name, images[0].src
-              cartItem.add({
-                'name': it.name,
-                'price': it.price,
-                'images': it.image,
-                'id': it.product_id,
-              });
-              // cart.add(it);
-            print('productID: ${it.name}');
-            print('productID: ${it.price.runtimeType}');
-            print('productID: ${subTotals.runtimeType}');
+        for (dynamic it in cartModel.cartProducts) {
+          // if (it.product_id == item.id) {
+          print('objectIT: ${it.runtimeType}');
+          // price, name, images[0].src
+          cartItem.add({
+            'name': it.name,
+            'price': it.price,
+            'images': it.image,
+            'id': it.product_id,
+          });
+          // cart.add(it);
+          print('productID: ${it.name}');
+          print('productID: ${it.price.runtimeType}');
+          print('productID: ${subTotals.runtimeType}');
 
-              addtoCart.add(AddtoCart(addtoCart: 1));
-              if (intFlag == false) {
-                subTotals += double.parse(it.price);
-                finalTotal += double.parse(it.price);
-              }
-              arraySize++;
-              // }
-              // }
-              // List<int> counterArray = new List.filled(arraySize, null, growable: false);
-              // for(int i=0; i<arraySize; i++) {
-              //   counterArray[i]=1;
-              // }
-              // cart.forEach((element) {
-              //   print('element165: ${element.price}');
-              //
-              //   for (var item in demoCarts) {
-              //     print('insideElement: ${element.id}');
-              //     print('insideItem: ${item.id}');
-              //     if(item.id == element.id) {
-              //       totalSubtotal += double.parse(element.price);
-              //       finalTotal += double.parse(element.price);
-              //     }
-              //   }
-              //
-              //     print('dummyCount :${element.price.length}');
-              //   print('element165runtime: ${element.price.runtimeType}');
-              //   // totalSubtotal += double.parse(element.price);
-              //   // finalTotal += double.parse(element.price);
-              //   // totalSubtotal += totalIndexPrice;
-              //
-              //
-              //
-              //   print('totalIndexPrice167: ${totalIndexPrice.runtimeType}');
-              //   print('totalIndexPrice167: ${totalIndexPrice}');
-              // });
-
-            // }
-            intFlag = true;
+          addtoCart.add(AddtoCart(addtoCart: 1));
+          if (intFlag == false) {
+            subTotals += double.parse(it.price);
+            finalTotal += double.parse(it.price);
           }
+          arraySize++;
+          // }
+          // }
+          // List<int> counterArray = new List.filled(arraySize, null, growable: false);
+          // for(int i=0; i<arraySize; i++) {
+          //   counterArray[i]=1;
+          // }
+          // cart.forEach((element) {
+          //   print('element165: ${element.price}');
+          //
+          //   for (var item in demoCarts) {
+          //     print('insideElement: ${element.id}');
+          //     print('insideItem: ${item.id}');
+          //     if(item.id == element.id) {
+          //       totalSubtotal += double.parse(element.price);
+          //       finalTotal += double.parse(element.price);
+          //     }
+          //   }
+          //
+          //     print('dummyCount :${element.price.length}');
+          //   print('element165runtime: ${element.price.runtimeType}');
+          //   // totalSubtotal += double.parse(element.price);
+          //   // finalTotal += double.parse(element.price);
+          //   // totalSubtotal += totalIndexPrice;
+          //
+          //
+          //
+          //   print('totalIndexPrice167: ${totalIndexPrice.runtimeType}');
+          //   print('totalIndexPrice167: ${totalIndexPrice}');
+          // });
+
+          // }
+          intFlag = true;
+        }
         print('CartLength: ${cartItem.length}');
-          for(dynamic i in cartItem) {
-            print('cartLenth: $i');
-          }
+        for (dynamic i in cartItem) {
+          print('cartLenth: $i');
+        }
         // }
 
         return Scaffold(
@@ -254,6 +242,7 @@ class _CartScreenState extends BasePageState<CartScreen> {
                     itemCount: cartItem.length, //
                     itemBuilder: (context, index) {
                       checkOutVariable = index;
+
                       ///
                       // int pr = cart[index].price as int;
                       // totalIndexPrice = cart[index].price;
@@ -271,13 +260,14 @@ class _CartScreenState extends BasePageState<CartScreen> {
                         padding: EdgeInsets.symmetric(vertical: 10),
                         child: GestureDetector(
                             child: Dismissible(
-                                // cart[index]['images']
+                              // cart[index]['images']
                               key: Key(cartItem[index]['id'].toString()),
                               direction: DismissDirection.endToStart,
                               onDismissed: (direction) {
                                 setState(() {
                                   cartItem.removeAt(index);
-                                  cartModel.removeCartProduct(cartItem[index].id);
+                                  cartModel
+                                      .removeCartProduct(cartItem[index].id);
                                 });
                               },
                               background: Container(
@@ -336,7 +326,8 @@ class _CartScreenState extends BasePageState<CartScreen> {
                                             SizedBox(height: 10),
                                             Text.rich(
                                               TextSpan(
-                                                text: "\₹${cartItem[index]['price']}",
+                                                text:
+                                                    "\₹${cartItem[index]['price']}",
                                                 style: TextStyle(
                                                     fontWeight: FontWeight.w600,
                                                     color: Color(0xFFFF7643)),
@@ -377,7 +368,8 @@ class _CartScreenState extends BasePageState<CartScreen> {
                                                         //     'counterArray343: ${cart[i].price}');
 
                                                         subTotals += int.parse(
-                                                            cartItem[i]['price']) *
+                                                                cartItem[i]
+                                                                    ['price']) *
                                                             counterArray[i];
                                                       }
                                                       finalTotal = shippingFee +
@@ -400,7 +392,8 @@ class _CartScreenState extends BasePageState<CartScreen> {
                                                         //     'counterArray343: ${cart[i].price}');
 
                                                         subTotals += int.parse(
-                                                            cartItem[i]['price']) *
+                                                                cartItem[i]
+                                                                    ['price']) *
                                                             counterArray[i];
                                                       }
                                                       finalTotal = shippingFee +
@@ -441,13 +434,9 @@ class _CartScreenState extends BasePageState<CartScreen> {
                             ),
                             onTap: () {}),
                       );
-
                     },
                   ),
                 ),
-
-
-
                 Container(
                   padding: EdgeInsets.symmetric(
                     vertical: 15,
@@ -535,7 +524,9 @@ class _CartScreenState extends BasePageState<CartScreen> {
                                     onChanged: (shipping value) {
                                       setState(() {
                                         finalTotal = 0;
-                                        for (int i = 0; i < cartItem.length; i++) {
+                                        for (int i = 0;
+                                            i < cartItem.length;
+                                            i++) {
                                           finalTotal +=
                                               int.parse(cartItem[i]['price']) *
                                                   counterArray[i];
@@ -556,7 +547,9 @@ class _CartScreenState extends BasePageState<CartScreen> {
                                     onChanged: (shipping value) {
                                       setState(() {
                                         finalTotal = 0;
-                                        for (int i = 0; i < cartItem.length; i++) {
+                                        for (int i = 0;
+                                            i < cartItem.length;
+                                            i++) {
                                           finalTotal +=
                                               int.parse(cartItem[i]['price']) *
                                                   counterArray[i];
@@ -583,7 +576,9 @@ class _CartScreenState extends BasePageState<CartScreen> {
                                     onChanged: (shipping value) {
                                       setState(() {
                                         finalTotal = 0;
-                                        for (int i = 0; i < cartItem.length; i++) {
+                                        for (int i = 0;
+                                            i < cartItem.length;
+                                            i++) {
                                           finalTotal +=
                                               int.parse(cartItem[i]['price']) *
                                                   counterArray[i];
@@ -665,17 +660,21 @@ class _CartScreenState extends BasePageState<CartScreen> {
                               ),
                               onPressed: () {
                                 print('shippingFee: $shippingFee');
-                                print('widget.details.id: ${cartItem[checkOutVariable]['id'].toString()}');
+                                print(
+                                    'widget.details.id: ${cartItem[checkOutVariable]['id'].toString()}');
                                 print('cart: $cartItem}');
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => CreateOrder(
                                               shippingFee: shippingFee,
-                                              id: cartItem[0]['id'], // widget.details.id,
-                                              cartProducts: cartModel.cartProducts,
-                                              product: cartItem,//cart[checkOutVariable],
-                                            details: widget.details,
+                                              id: cartItem[0]
+                                                  ['id'], // widget.details.id,
+                                              cartProducts:
+                                                  cartModel.cartProducts,
+                                              product:
+                                                  cartItem, //cart[checkOutVariable],
+                                              details: widget.details,
                                             )));
                               },
                             ),
