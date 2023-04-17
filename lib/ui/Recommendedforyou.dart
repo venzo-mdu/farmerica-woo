@@ -34,14 +34,14 @@ class _RecommendationsState extends State<Recommendations> {
 
   @override
   Widget build(BuildContext context) {
-    print("am+${product.toString()}");
+    // print("am+${product.toString()}");
     if (product == null) {
-      print('products: $product');
+      // print('products: $product');
       return Center(
         child: CircularProgressIndicator(),
       );
     } else {
-      print(product);
+      // print(product);
       return ListView.builder(
           itemCount: product.length - 13,
           scrollDirection: Axis.horizontal,
@@ -95,7 +95,12 @@ class _RecommendationsState extends State<Recommendations> {
                             });
 
                             Provider.of<CartModel>(context, listen: false)
-                                .addCartProduct(product[id].id, 1);
+                                .addCartProduct(
+                              product[id].id, 1,
+                                widget.product[id].name,
+                                widget.product[id].price,
+                                widget.product[id].images[0].src,
+                            );
                             Fluttertoast.showToast(
                                 msg:
                                     "${product[id].name} successfully added to cart",
@@ -119,7 +124,7 @@ class _RecommendationsState extends State<Recommendations> {
                   ),
                 ),
                 onTap: () {
-                  print('productRate: ${product[id].salePrice}');
+                  // print('productRate: ${product[id].salePrice}');
                   Navigator.push(
                       context,
                       MaterialPageRoute(

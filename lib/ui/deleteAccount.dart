@@ -19,7 +19,7 @@ class _DeleteAccountState extends State<DeleteAccount> {
 
   @override
   Widget build(BuildContext context) {
-    print(widget.customers.id);
+    // print(widget.customers.id);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xff00AA55),

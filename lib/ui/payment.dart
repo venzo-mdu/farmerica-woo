@@ -11,8 +11,10 @@ import 'package:safira_woocommerce_app/ui/UpiPay.dart';
 import 'package:safira_woocommerce_app/ui/checkoutPage.dart';
 import 'package:safira_woocommerce_app/ui/homepage.dart';
 import 'package:safira_woocommerce_app/ui/success.dart';
+import 'package:safira_woocommerce_app/ui/widgets/cashondelivery.dart';
 import 'package:safira_woocommerce_app/utils/RazorPaymentService.dart';
 import 'package:upi_india/upi_india.dart';
+import 'package:safira_woocommerce_app/utils/RazorPaymentService.dart';
 
 class PaymentGateway extends BasePage {
   final String first,
@@ -25,9 +27,14 @@ class PaymentGateway extends BasePage {
       mobile,
       mail,
       address,
-      country;
+      country,
+      giftFrom,
+      giftMsg;
+  final String deliveryDate;
+  final String deliveryTime;
+
   final int id;
-  List<Product> product = [];
+  List product = [];
   List<CartProducts> cartProducts;
   PaymentGateway(
       {this.address,
@@ -43,156 +50,272 @@ class PaymentGateway extends BasePage {
       this.mobile,
       this.postcode,
       this.cartProducts,
-      this.state});
+      this.state,
+      this.deliveryDate,
+      this.deliveryTime,
+      this.giftFrom,
+      this.giftMsg});
 
   @override
   _PaymentGatewayState createState() => _PaymentGatewayState();
 }
 
 class _PaymentGatewayState extends BasePageState<PaymentGateway> {
-  Future<UpiResponse> _transaction;
-  UpiIndia _upiIndia = UpiIndia();
-  List<UpiApp> apps;
-  bool setPaid;
-  String title, method;
-  Api_Services api_services = Api_Services();
-  RazorPaymentService razorPaymentService = RazorPaymentService();
-  //BasePage basePage = BasePage();
+  // UpiIndia _upiIndia = UpiIndia();
+  // List<UpiApp> apps;
+  // bool setPaid;
+  // String title, method;
+  // Api_Services api_services = Api_Services();
+  // RazorPaymentService razorPaymentService = RazorPaymentService();
+  // UpiApp _selectedApp;
+
   @override
   void dispose() {
+    // razorPaymentService.clears();
     super.dispose();
-    razorPaymentService.clears();
   }
 
   @override
   void initState() {
-    // basePage.title = "My Cart";
-    // basePage.selected = 2;
-    razorPaymentService.initPaymentGateway(context);
-    _upiIndia.getAllUpiApps(mandatoryTransactionId: false).then((value) {
-      setState(() {
-        apps = value;
-      });
-    }).catchError((e) {
-      apps = [];
-    });
+    // razorPaymentService.initPaymentGateway(context);
+    // _upiIndia = UpiIndia();
+    // // _initiatePayment();
+    // _upiIndia.getAllUpiApps(mandatoryTransactionId: false).then((value) {
+    //   setState(() {
+    //     apps = value;
+    //   });
+    // }).catchError((e) {
+    //   apps = [];
+    // });
     super.initState();
   }
 
-  Future<UpiResponse> initiateTransaction(UpiApp app) async {
-    return _upiIndia.startTransaction(
-      app: app,
-      receiverUpiId: "8337976828@ybl",
-      receiverName: 'Md Azharuddin',
-      transactionRefId: 'TestingUpiIndiaPlugin',
-      transactionNote: 'Not actual. Just an example.',
-      amount: 1.00,
-    );
-  }
+  // Future<void> _initiatePayment() async {
+  //   print('CartProducts: ${widget.cartProducts}');
+  //
+  //   apps = await _upiIndia.getAllUpiApps();
+  //   _selectedApp = await showDialog(
+  //     context: context,
+  //     builder: (_) => AlertDialog(
+  //       title: Text('Select an UPI app'),
+  //       content: SingleChildScrollView(
+  //         child: ListBody(
+  //           children: apps.map((app) => RadioListTile<UpiApp>(
+  //             title: Text(app.name),
+  //             value: app,
+  //             groupValue: _selectedApp,
+  //             onChanged: (value) {
+  //               setState(() {
+  //                 _selectedApp = value;
+  //               });
+  //             },
+  //           )).toList(),
+  //         ),
+  //       ),
+  //       actions: [
+  //         TextButton(
+  //             onPressed: (){
+  //               Navigator.of(context).pop(_selectedApp);
+  //             },
+  //             child: Text('Okay'),
+  //         )
+  //       ],
+  //     )
+  //   );
+  //
+  //
+  //
+  //   // final upiPayment = Upipayment(
+  //   //     app: _selectedApp!,
+  //   //     receiverUpiId: widget.receiverUpiId,
+  //   //     transactionRef: widget.orderId.toString(),
+  //   //     transactionNote: 'Payment for Order #${widget.id}',
+  //   //     amount: widget.cartProducts[0].price,
+  //   // );
+  //
+  //
+  //
+  //
+  //   await _upiIndia.startTransaction(
+  //       app: _selectedApp,
+  //       receiverUpiId: 'KARTHEEC2011@OKHDFCBANK',
+  //       receiverName: 'KARTHEEC2011',
+  //       transactionRefId: 'Payment for order #${widget.id}',
+  //     amount: 1500.00,
+  //   );
+  // }
 
-  int selected = 2;
+  ///
+  // Future<UpiResponse> initiateTransaction(UpiApp app) async {
+  //   return _upiIndia.startTransaction(
+  //     app: app,
+  //     receiverUpiId: "KARTHEEC2011@OKHDFCBANK",
+  //     receiverName: 'KARTHEEC2011',
+  //     transactionRefId: 'TestingUpiIndiaPlugin',
+  //     transactionNote: 'Not actual. Just an example.',
+  //     amount: 1.00,
+  //   );
+  // }
+
+  // int selected = 2;
   // String title = "";
   @override
   Widget body(BuildContext context) {
-    print("paym+${widget.product}");
     List<PayCard> _getPaymentCards() {
       List<PayCard> cards = [];
 
-      cards.add(new PayCard(
-          title: "Razor pay",
-          description: "Pay bill using card",
-          image: "assets/paycard.png",
-          setPaid: true,
-          onPressed: () async {
-            razorPaymentService.getPayment(context);
-
-            Orders orders = await api_services.createOrder(
-                first: widget.first,
-                setPaid: true,
-                paymentMethod: "Razor pay",
-                paymentMethodTitle: "Pay bill using card",
-                last: widget.last,
-                address: widget.address,
-                apartmnt: widget.apartmnt,
-                city: widget.city,
-                country: widget.country,
-                id: widget.id,
-                postcode: widget.postcode,
-                cartProducts: widget.cartProducts,
-                state: widget.state,
-                flat: widget.flat,
-                mail: widget.mail,
-                mobile: widget.mobile);
-            // .then((value) => Navigator.push(
-            //     context,
-            //     MaterialPageRoute(
-            //         builder: (context) =>
-            //             CheckoutWrapper(
-            //               state: value,
-            //               product: widget.product,
-            //             ))));
-          }));
-
-      cards.add(new PayCard(
-          title: "Upi pay",
-          description: "Pay bill using UpiPay",
-          image: "assets/paycard.png",
-          setPaid: true,
-          onPressed: () async {
-            print("aahh");
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => UpiPay()));
-            Orders orders = await api_services.createOrder(
-                first: widget.first,
-                setPaid: true,
-                paymentMethod: "Upi pay",
-                paymentMethodTitle: "Pay after recieving",
-                last: widget.last,
-                address: widget.address,
-                apartmnt: widget.apartmnt,
-                city: widget.city,
-                country: widget.country,
-                id: widget.id,
-                postcode: widget.postcode,
-                cartProducts: widget.cartProducts,
-                state: widget.state,
-                flat: widget.flat,
-                mail: widget.mail,
-                mobile: widget.mobile);
-
-            setState(() {});
-          }));
+      // cards.add(PayCard(
+      //     title: "QR Scan",
+      //     description: "Pay bill using card",
+      //     image: "assets/paycard.png",
+      //     setPaid: true,
+      //     onPressed: () async {
+      //       razorPaymentService.getPayment(context);
+      //
+      //       Orders orders = await api_services.createOrder(
+      //           first: widget.first,
+      //           setPaid: true,
+      //           paymentMethod: "QR Scan",
+      //           paymentMethodTitle: "Pay bill using card",
+      //           last: widget.last,
+      //           address: widget.address,
+      //           apartmnt: widget.apartmnt,
+      //           city: widget.city,
+      //           country: widget.country,
+      //           id: widget.id,
+      //           postcode: widget.postcode,
+      //           cartProducts: widget.cartProducts,
+      //           state: widget.state,
+      //           flat: widget.flat,
+      //           mail: widget.mail,
+      //           mobile: widget.mobile,
+      //           delivery_type: widget.deliveryDate,
+      //           delivery_time: widget.deliveryTime,
+      //           gift_from: widget.giftFrom,
+      //           gift_message: widget.giftMsg,
+      //       )
+      //       .then((value) => Navigator.push(
+      //           context,
+      //           MaterialPageRoute(
+      //               builder: (context) =>
+      //                   CheckoutWrapper(
+      //                     state: value,
+      //                     product: widget.product,
+      //                   ))));
+      //     }));
+      ///
+      // cards.add(new PayCard(
+      //     title: "QR Scan",
+      //     description: "Pay bill using QR Scan",
+      //     image: "assets/paycard.png",
+      //     setPaid: true,
+      //     onPressed: () async {
+      //       print("QR Scan");
+      //       Navigator.push(
+      //           context, MaterialPageRoute(builder: (context) => UpiPay()));
+      //       Orders orders = await api_services.createOrder(
+      //           first: widget.first,
+      //           setPaid: true,
+      //           paymentMethod: "QR Scan",
+      //           paymentMethodTitle: "Pay after recieving",
+      //           last: widget.last,
+      //           address: widget.address,
+      //           apartmnt: widget.apartmnt,
+      //           city: widget.city,
+      //           country: widget.country,
+      //           id: widget.id,
+      //           postcode: widget.postcode,
+      //           cartProducts: widget.cartProducts,
+      //           state: widget.state,
+      //           flat: widget.flat,
+      //           mail: widget.mail,
+      //           mobile: widget.mobile);
+      //
+      //       setState(() {});
+      //     }));
+      ///
       cards.add(new PayCard(
           title: "Cash on Delivery",
-          description: "Pay after recieving ",
+          description: "via Cash on delivery",
           image: "assets/paycard.png",
-          setPaid: false,
-          onPressed: () async {
-            Orders orders = await api_services
-                .createOrder(
-                    first: widget.first,
-                    setPaid: false,
-                    paymentMethod: "Cash on Delivery",
-                    paymentMethodTitle: "Pay after recieving",
-                    last: widget.last,
-                    address: widget.address,
-                    apartmnt: widget.apartmnt,
-                    city: widget.city,
-                    country: widget.country,
-                    id: widget.id,
-                    postcode: widget.postcode,
-                    cartProducts: widget.cartProducts,
-                    state: widget.state,
-                    flat: widget.flat,
-                    mail: widget.mail,
-                    mobile: widget.mobile)
-                .then((value) => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => CheckoutWrapper(
-                              state: value,
-                              product: widget.product,
-                            ))));
+          setPaid: true,
+          // Create order - POST
+          onPressed: () {
+
+            print('object: ${widget.giftMsg}');
+            print('object: ${widget.giftFrom}');
+            Future<Orders> createOrder() async {
+              final orders = await api_services.createOrder(
+
+                firstName: widget.first,
+                lastName: widget.last,
+                addressOne: widget.address,
+                addressTwo: widget.apartmnt,
+                city: widget.city,
+                country: widget.country,
+                email: widget.mail,
+                phone: widget.mobile,
+                postcode: widget.postcode,
+                // state: 'Odissa',
+                // total: '1000',
+                payment_method_title: 'Cash on Delivery',
+                payment_method: 'Pay after recieving',
+                quantity: widget.cartProducts[0].quantity,    //orderData.orders[0].products[0].quantity,
+                product_id: widget.cartProducts[0].product_id,    //orderData.orders[0].products[0].id,
+                delivery_type: widget.deliveryDate,
+                delivery_time: widget.deliveryTime,
+                gift_from: widget.giftFrom,
+                gift_message: widget.giftMsg,
+                // cartProducts: widget.cartProducts,
+
+
+                  // delivery_type: widget.deliveryDate,
+                  // delivery_time: widget.deliveryTime,
+                  // gift_from: widget.giftFrom,
+                  // gift_message: widget.giftMsg,
+              );
+
+              print('orders: ${orders.customerId}');
+            }
+            createOrder();
+
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => CashOnDelivery()));
+
+            // Orders orders = await api_services
+            //     .createOrder(
+            //         first: widget.first,
+            //         setPaid: false,
+            //         paymentMethod: "Cash on Delivery",
+            //         paymentMethodTitle: "Pay after recieving",
+            //         last: widget.last,
+            //         address: widget.address,
+            //         apartmnt: widget.apartmnt,
+            //         city: widget.city,
+            //         country: widget.country,
+            //         id: widget.id,
+            //         postcode: widget.postcode,
+            //         cartProducts: widget.cartProducts,
+            //         state: widget.state,
+            //         flat: widget.flat,
+            //         mail: widget.mail,
+            //         mobile: widget.mobile,
+            //         delivery_type: widget.deliveryDate,
+            //         delivery_time: widget.deliveryTime,
+            //         gift_from: widget.giftFrom,
+            //         gift_message: widget.giftMsg)
+            //     .then((value) {
+            //   print('ValurCheckout: ${value.metaData}');
+            //   return Navigator.push(
+            //       context,
+            //       MaterialPageRoute(
+            //           builder: (context) => CheckoutWrapper(
+            //                 state: value,
+            //                 product: widget.product,
+            //               )));
+            // });
           }));
       return cards;
     }
@@ -246,30 +369,35 @@ class _PaymentGatewayState extends BasePageState<PaymentGateway> {
           ],
         ),
       ),
+
+      ///
+      // body: Center(
+      //   child: CircularProgressIndicator(),
+      // ),
     );
   }
 
-  AppBar buildAppBar(BuildContext context) {
-    return AppBar(
-      elevation: 0,
-      backgroundColor: Colors.grey.shade200,
-      title: Text(
-        "PAYMENT",
-        style: TextStyle(
-          fontSize: 20,
-          color: Colors.black87,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-      centerTitle: true,
-      leading: GestureDetector(
-          onTap: () => {Navigator.pop(context)},
-          child: Icon(
-            CupertinoIcons.back,
-            color: Colors.black38,
-          )),
-    );
-  }
+  // AppBar buildAppBar(BuildContext context) {
+  //   return AppBar(
+  //     elevation: 0,
+  //     backgroundColor: Colors.grey.shade200,
+  //     title: Text(
+  //       "PAYMENT",
+  //       style: TextStyle(
+  //         fontSize: 20,
+  //         color: Colors.black87,
+  //         fontWeight: FontWeight.bold,
+  //       ),
+  //     ),
+  //     centerTitle: true,
+  //     leading: GestureDetector(
+  //         onTap: () => {Navigator.pop(context)},
+  //         child: Icon(
+  //           CupertinoIcons.back,
+  //           color: Colors.black38,
+  //         )),
+  //   );
+  // }
 }
 
 class PayCard {

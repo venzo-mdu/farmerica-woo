@@ -1,18 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:intl/intl.dart';
 import 'package:safira_woocommerce_app/form_helper.dart';
 import 'package:safira_woocommerce_app/models/CartRequest.dart';
 import 'package:safira_woocommerce_app/models/Customers.dart';
 import 'package:safira_woocommerce_app/models/Products.dart';
+import 'package:safira_woocommerce_app/networks/ApiServices.dart';
 import 'package:safira_woocommerce_app/ui/BasePage.dart';
 import 'package:safira_woocommerce_app/ui/verifyAddress.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:string_validator/string_validator.dart';
 // import 'package:intl/intl.dart';
 
 class CreateOrder extends BasePage {
   List<CartProducts> cartProducts;
-  List<Product> product = [];
+  List product = [];
   final int id;
-  CreateOrder({this.cartProducts, this.product, this.id});
+  var shippingFee;
+  var details;
+  CreateOrder({this.cartProducts, this.product, this.id, this.shippingFee, this.details});
   @override
   _CreateOrderState createState() => _CreateOrderState();
 }
@@ -23,27 +29,91 @@ class _CreateOrderState extends BasePageState<CreateOrder> {
   String first,
       last,
       city,
-      state,
+      state = 'Odisha',
       postcode,
       apartmnt,
       flat,
       address,
-      country,
+      country = 'India',
       mobile,
-      mail;
+      mail,
+      giftFrom,
+      giftMsg;
   int selected = 2;
   String title = "Create Order";
+  String dropDownValue;
   // BasePage basePage = BasePage();
+  DateTime intialdate = DateTime.now();
+  DateTime selectedDate;
+  bool isCurrentDaySelected = false;
+
+  String firstName;
+  String lastName;
+  String emailId;
+  String phoneNumber;
+
+  String address1;
+  String address2;
+  String townCity;
+  String pinsCode;
+  getPinCode() async {
+    SharedPreferences pinCodePrefs = await SharedPreferences.getInstance();
+    setState(() {
+      pinsCode = pinCodePrefs.getString('pinCode') ?? '';
+    });
+  }
+
+  Api_Services api_services = Api_Services();
+
+  getUser() async {
+    Customers customer = await api_services.getCustomersByMail(emailId);
+    return customer;
+  }
+
+  var userData;
+  getUserData() async {
+    userData = await getUser();
+    setState((){
+      phoneNumber = userData.billing.phone;
+      address1 = userData.billing.address1;
+      address2 = userData.billing.address2;
+      townCity = userData.billing.city;
+      // pinsCode = userData.billing.postcode;
+    });
+
+      print('userData: ${phoneNumber}');
+      print('userData: ${address1}');
+  }
+
+  List<String> timeDropDownValuesT = [
+    '08:00 AM - 01:00 PM',
+    '01:00 PM - 06:00 PM',
+    '06:00 PM - 09:00 PM',
+  ];
+  List<String> timeDropDownValues = [];
+  bool showTime = true;
+
   @override
   void initState() {
+    getPinCode();
     super.initState();
-    // basePage.title = "Checkout Page";
-    // basePage.selected = 2;
+    firstName = widget.details.firstName;
+    lastName = widget.details.lastName;
+    emailId = widget.details.email;
+    // phoneNumber = widget.details.billing.phone;
+    print('Test: ${widget.shippingFee}');
+    getUserData();
+    print('getUserData(): ${getUserData()}');
   }
+
   TextEditingController datePickerController = TextEditingController();
 
   @override
   Widget body(BuildContext context) {
+    if(userData == null) {
+      return Center(child: CircularProgressIndicator());
+    }
+
     print(widget.product);
     return SingleChildScrollView(
       child: Container(
@@ -66,27 +136,150 @@ class _CreateOrderState extends BasePageState<CreateOrder> {
                     child: TextFormField(
                       keyboardType: TextInputType.datetime,
                       controller: datePickerController,
-                      inputFormatters: [
-
-                      ],
                       decoration: InputDecoration(
-                        labelText: "Dates",
-                        hintText: "Dates",
+                        labelText: 'Dates',
+                        hintText: DateFormat.yMd().format(DateTime.now()),
                       ),
-                      onChanged: (value) {},
+                      onChanged: (value) async {},
+                      // validator: (value) {
+                      //   if (value == null) {
+                      //     return "Select the Delivery Date";
+                      //   }
+                      //   return null;
+                      // },
                       onTap: () async {
+                        DateTime now = DateTime.now();
+                        DateTime timeLimit = DateTime(now.year, now.month, now.day, 17, 0);
 
-                        DateTime dateTime = DateTime.now();
-                        final DateTime picked = await showDatePicker(
+                        if (widget.shippingFee == 200) {
+                          selectedDate = intialdate ?? DateTime.now();
+
+                          final DateTime picked = await showDatePicker(
+                              context: context,
+                              initialDate: selectedDate,
+                              initialDatePickerMode: DatePickerMode.day,
+                              firstDate: DateTime.now(),
+                              lastDate: DateTime(2101));
+
+
+                          if (picked != null && picked != selectedDate) {
+                            selectedDate = picked;
+                            isCurrentDaySelected = selectedDate.year ==
+                                DateTime.now().year &&
+                                selectedDate.month == DateTime.now().month &&
+                                selectedDate.day == DateTime.now().day;
+                            if (isCurrentDaySelected == true) {
+                              print(DateTime.now());
+
+                              if (intialdate.isAfter(timeLimit)) {
+                                Fluttertoast.showToast(
+                                    msg:
+                                    "Please order before 5PM to deliver the product in same day midnight. Kindly change the date.",
+                                    toastLength: Toast.LENGTH_SHORT,
+                                    gravity: ToastGravity.BOTTOM,
+                                    timeInSecForIosWeb: 3,
+                                    backgroundColor: Colors.black,
+                                    textColor: Colors.white,
+                                    fontSize: 16.0);
+                              }
+                            }
+                          }
+                          if (picked != null) {
+                            setState(() {
+                              datePickerController.text =
+                                  DateFormat.yMd().format(picked);
+                            });
+                          }
+                        } else if(widget.shippingFee == 75) {
+                          selectedDate = intialdate ?? DateTime.now();
+                          final DateTime picked = await showDatePicker(
+                              context: context,
+                              initialDate: selectedDate,
+                              initialDatePickerMode: DatePickerMode.day,
+                              firstDate: DateTime.now(),
+                              lastDate: DateTime(2101));
+
+
+                          if (picked != null && picked != selectedDate) {
+                            selectedDate = picked;
+                            isCurrentDaySelected = selectedDate.year ==
+                                DateTime.now().year &&
+                                selectedDate.month == DateTime.now().month &&
+                                selectedDate.day == DateTime.now().day;
+                            if (isCurrentDaySelected == true) {
+                              print(DateTime.now());
+                              DateTime timeLimit = DateTime(now.year, now.month, now.day, 17, 0);
+                              if (intialdate.isAfter(timeLimit)) {
+                                Fluttertoast.showToast(
+                                    msg:
+                                    "Early morning delivery is not available for today. Kindly change the date",
+                                    toastLength: Toast.LENGTH_SHORT,
+                                    gravity: ToastGravity.BOTTOM,
+                                    timeInSecForIosWeb: 3,
+                                    backgroundColor: Colors.black,
+                                    textColor: Colors.white,
+                                    fontSize: 16.0);
+                              }
+                            }
+                          }
+                          if (picked != null) {
+                            setState(() {
+                              datePickerController.text =
+                                  DateFormat.yMd().format(picked);
+                            });
+                          }
+                        }
+                        else if (widget.shippingFee == 0){
+                          DateTime picked = await showDatePicker(
                             context: context,
-                            initialDate: dateTime,
+                            initialDate: intialdate,
                             initialDatePickerMode: DatePickerMode.day,
                             firstDate: DateTime.now(),
-                            lastDate: DateTime(2101));
-                        if (picked != null) {
-                          dateTime = picked;
-                          //assign the chosen date to the controller
-                          // datePickerController.text = DateFormat.yMd().format(dateTime);
+                            lastDate: DateTime(2101),
+                          );
+                          // String datetime = DateFormat('H').format(DateTime.now());
+                          print('objectPicked: ${picked}');
+
+                          DateTime timeLimit13 = DateTime(now.year, now.month, now.day, 13, 0);
+                          DateTime timeLimit08 = DateTime(now.year, now.month, now.day, 08, 0);
+                          DateTime timeLimit18 = DateTime(now.year, now.month, now.day, 18, 0);
+
+                          DateTime timeLimit21 = DateTime(now.year, now.month, now.day, 21, 0);
+                          final today = DateTime(now.year, now.month, now.day);
+                          final pickedDay = DateTime(picked.year, picked.month, picked.day);
+
+                          timeDropDownValues = List.from(timeDropDownValuesT);
+                          if(intialdate.isAfter(timeLimit08) && pickedDay == today) {
+                            timeDropDownValues.remove('08:00 AM - 01:00 PM');
+                          }
+                          if(intialdate.isAfter(timeLimit13) && pickedDay == today) {
+                            timeDropDownValues.remove('01:00 PM - 06:00 PM');
+                          }
+                          if(intialdate.isAfter(timeLimit18) && pickedDay == today) {
+                            timeDropDownValues.remove('06:00 PM - 09:00 PM');
+                          }
+                          if(intialdate.isAfter(timeLimit21) && pickedDay == today) {
+                              showTime = false;
+                              setState(() {});
+                            Fluttertoast.showToast(
+                              msg: "Free delivery for the day is closed.",
+                              toastLength: Toast.LENGTH_SHORT,
+                              gravity: ToastGravity.BOTTOM,
+                              timeInSecForIosWeb: 5,
+                              backgroundColor: Colors.black,
+                              textColor: Colors.white,
+                              fontSize: 16.0,
+                            );
+
+                          }else if(pickedDay == today.add(Duration(days: 1))){
+                            showTime = true;
+                          }
+                          if (picked != null) {
+                            setState(() {
+                              datePickerController.text =
+                                  DateFormat.yMd().format(picked);
+                            });
+                          }
                         }
 
                       },
@@ -94,28 +287,30 @@ class _CreateOrderState extends BasePageState<CreateOrder> {
                   )
                 ],
               ),
-              Row(
+              widget.shippingFee == 0 && datePickerController.text.isNotEmpty
+                  ? (showTime ? Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  Text('Delivery Time'),
                   DropdownButton<String>(
-                    items: <String>[
-                      '08:00 AM - 01:00 PM',
-                      '01:00 PM - 06:00 PM',
-                      '06:00 PM - 09:00 PM',
-                    ].map((String value) {
+                    value: dropDownValue,
+                    items: timeDropDownValues.map((String value) {
                       return DropdownMenuItem<String>(
                         value: value,
                         child: Text(value),
                       );
                     }).toList(),
-                    onChanged: (_) {
-                      setState(() {
 
+
+                    onChanged: (onChangedValue) {
+                      setState(() {
+                        dropDownValue = onChangedValue;
                       });
                     },
                   )
                 ],
-              ),
-
+              ) : Container())
+                  : Container(),
               Row(
                 children: [
                   Flexible(
@@ -136,16 +331,14 @@ class _CreateOrderState extends BasePageState<CreateOrder> {
                     fit: FlexFit.tight,
                     flex: 1,
                     child: TextFormField(
-                      initialValue: "",
+                      initialValue: firstName,
                       decoration: InputDecoration(
                         hintText: "First Name",
-                        labelText: "First Name",
-                        helperText: "Fist Name",
                       ),
                       maxLines: 1,
                       keyboardType: TextInputType.text,
                       onChanged: (String value) {
-                        first = value;
+                        firstName = value;
                         print(first);
                       },
                       validator: (value) {
@@ -164,18 +357,16 @@ class _CreateOrderState extends BasePageState<CreateOrder> {
                     fit: FlexFit.loose,
                     flex: 1,
                     child: TextFormField(
-                      initialValue: "",
+                      initialValue: lastName,
                       decoration: InputDecoration(
                         hintText: "Last Name",
-                        labelText: "Last Name",
-                        helperText: "Last Name",
                       ),
                       maxLines: 1,
                       keyboardType: TextInputType.text,
-                      onChanged: (String value) {
-                        print(value);
-                        last = value;
-                      },
+                      // onChanged: (String value) {
+                      //   print(value);
+                      //   last = value;
+                      // },
                       validator: (value) {
                         bool valid = isAlpha(value);
                         if (valid) {
@@ -192,16 +383,14 @@ class _CreateOrderState extends BasePageState<CreateOrder> {
               ),
               FormHelper.fieldLabel("Address"),
               TextFormField(
-                initialValue: "",
+                initialValue: userData.billing.address1,
                 decoration: InputDecoration(
                   hintText: "Address",
-                  labelText: "Address",
-                  helperText: "Address",
                 ),
                 maxLines: 2,
                 keyboardType: TextInputType.text,
                 onChanged: (String value) {
-                  address = value;
+                  flat = value;
                   print(address);
                 },
                 validator: (value) {
@@ -213,11 +402,9 @@ class _CreateOrderState extends BasePageState<CreateOrder> {
               ),
               FormHelper.fieldLabel("Apartmnt ,Flat"),
               TextFormField(
-                initialValue: "",
+                initialValue: address2,
                 decoration: InputDecoration(
                   hintText: "Apartmnt ,Flat",
-                  labelText: "Apartmnt ,Flat",
-                  helperText: "Apartmnt ,Flat",
                 ),
                 maxLines: 1,
                 keyboardType: TextInputType.text,
@@ -253,11 +440,9 @@ class _CreateOrderState extends BasePageState<CreateOrder> {
                     fit: FlexFit.tight,
                     flex: 1,
                     child: TextFormField(
-                      initialValue: "",
+                      initialValue: 'India',
                       decoration: InputDecoration(
                         hintText: "Country",
-                        labelText: "Country",
-                        helperText: "Country",
                       ),
                       maxLines: 1,
                       keyboardType: TextInputType.text,
@@ -281,11 +466,9 @@ class _CreateOrderState extends BasePageState<CreateOrder> {
                     fit: FlexFit.tight,
                     flex: 1,
                     child: TextFormField(
-                      initialValue: "",
+                      initialValue: "Odisha",
                       decoration: InputDecoration(
                         hintText: "State",
-                        labelText: "State",
-                        helperText: "State",
                       ),
                       maxLines: 1,
                       keyboardType: TextInputType.text,
@@ -327,11 +510,9 @@ class _CreateOrderState extends BasePageState<CreateOrder> {
                     fit: FlexFit.tight,
                     flex: 1,
                     child: TextFormField(
-                      initialValue: "",
+                      initialValue: townCity,
                       decoration: InputDecoration(
                         hintText: "City",
-                        labelText: "City",
-                        helperText: "City",
                       ),
                       maxLines: 1,
                       keyboardType: TextInputType.text,
@@ -355,11 +536,9 @@ class _CreateOrderState extends BasePageState<CreateOrder> {
                     fit: FlexFit.tight,
                     flex: 1,
                     child: TextFormField(
-                      initialValue: "",
+                      initialValue: pinsCode,
                       decoration: InputDecoration(
                         hintText: "PostCode",
-                        labelText: "PostCode",
-                        helperText: "Post Code",
                       ),
                       maxLines: 1,
                       keyboardType: TextInputType.number,
@@ -404,11 +583,9 @@ class _CreateOrderState extends BasePageState<CreateOrder> {
                     fit: FlexFit.tight,
                     flex: 1,
                     child: TextFormField(
-                      initialValue: "",
+                      initialValue: phoneNumber,
                       decoration: InputDecoration(
                         hintText: "Mobile",
-                        labelText: "Mobile",
-                        helperText: "Mobile",
                       ),
                       maxLines: 1,
                       keyboardType: TextInputType.number,
@@ -428,6 +605,7 @@ class _CreateOrderState extends BasePageState<CreateOrder> {
                         } else if (valid) {
                           return "Enter 10 digit No.";
                         }
+                        return null;
                       },
                     ),
                   ),
@@ -435,11 +613,9 @@ class _CreateOrderState extends BasePageState<CreateOrder> {
                     fit: FlexFit.tight,
                     flex: 1,
                     child: TextFormField(
-                      initialValue: "",
+                      initialValue: emailId,
                       decoration: InputDecoration(
                         hintText: "Mail Id",
-                        labelText: "Mail Id",
-                        helperText: "Mail Id",
                       ),
                       maxLines: 1,
                       keyboardType: TextInputType.emailAddress,
@@ -461,27 +637,108 @@ class _CreateOrderState extends BasePageState<CreateOrder> {
                   ),
                 ],
               ),
+              SizedBox(height: 10),
+              Row(
+                children: [
+                  Flexible(
+                    fit: FlexFit.tight,
+                    flex: 1,
+                    child: FormHelper.fieldLabel("Gift Message"),
+                  ),
+                  Flexible(
+                    fit: FlexFit.tight,
+                    flex: 1,
+                    child: FormHelper.fieldLabel("Gift from"),
+                  )
+                ],
+              ),
+              Row(
+                children: [
+                  Flexible(
+                    fit: FlexFit.tight,
+                    flex: 1,
+                    child: TextFormField(
+                      initialValue: giftFrom,
+                      decoration: InputDecoration(
+                        hintText: "Gift From",
+                      ),
+                      maxLines: 1,
+                      keyboardType: TextInputType.text,
+                      onChanged: (String value) {
+                        giftFrom = value;
+                        print(giftMsg);
+                      },
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter Gift receiver name';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  Flexible(
+                    fit: FlexFit.tight,
+                    flex: 1,
+                    child: TextFormField(
+                      initialValue: giftMsg,
+                      decoration: InputDecoration(
+                        hintText: "Gift Message",
+                      ),
+                      maxLines: 1,
+                      keyboardType: TextInputType.text,
+                      onChanged: (String value) {
+                        giftMsg = value;
+                        print(first);
+                      },
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter some Gift Message name';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                ],
+              ),
               Center(
                 child: FormHelper.saveButton("Next", () {
                   if (_formKey.currentState.validate()) {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => VerifyAddress(
-                                  product: widget.product,
-                                  id: widget.id,
-                                  first: first,
-                                  last: last,
-                                  address: address,
-                                  apartmnt: apartmnt,
-                                  state: state,
-                                  city: city,
-                                  country: country,
-                                  postcode: postcode,
-                                  cartProducts: widget.cartProducts,
-                                  mobile: mobile,
-                                  mail: mail,
-                                )));
+
+                    if(datePickerController.text == null) {
+                      Fluttertoast.showToast(
+                        msg: "Please Chosen the Delivery Date",
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.BOTTOM,
+                        timeInSecForIosWeb: 5,
+                        backgroundColor: Colors.black,
+                        textColor: Colors.white,
+                        fontSize: 16.0,
+                      );
+                    } else {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => VerifyAddress(
+                                product: widget.product,
+                                id: widget.id,
+                                first: firstName,
+                                last: lastName,
+                                address: address1,
+                                apartmnt: address2,
+                                state: state,
+                                city: townCity,
+                                country: country,
+                                postcode: pinsCode,
+                                cartProducts: widget.cartProducts,
+                                mobile: phoneNumber,
+                                mail: emailId,
+                                deliveryDate: datePickerController.text,
+                                deliveryTime: dropDownValue,
+                                giftFrom: giftFrom,
+                                giftMsg: giftMsg,
+                              )));
+                    }
+
                   }
                 }),
               )

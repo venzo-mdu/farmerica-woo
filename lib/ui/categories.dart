@@ -14,7 +14,6 @@ import 'package:safira_woocommerce_app/ui/Recommendedforyou.dart';
 
 import 'package:safira_woocommerce_app/ui/gertProductfromapi.dart';
 import 'package:safira_woocommerce_app/ui/grocery.dart';
-import 'package:safira_woocommerce_app/ui/vegetable.dart';
 import 'package:http/http.dart' as http;
 
 class CategoryPage extends BasePage {
@@ -35,6 +34,12 @@ class _CategoryPageState extends BasePageState<CategoryPage> {
   /** */
   Api_Services api_services = Api_Services();
   BasePage basePage = BasePage();
+  List<String> categoryView = [
+    'Fruits',
+    'Vegetable',
+    'Salad',
+    'Our Farm Product',
+  ];
 
   // getData() async {
   //   WooCommerceAPI api;
@@ -93,10 +98,10 @@ class _CategoryPageState extends BasePageState<CategoryPage> {
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
     List<p.ParentCategory> catergories = widget.catergories;
-    print('catergories.length: ${catergories.length}');
-    print("ww");
-    print(widget.catergories);
-    return categories.length == null
+    // print('catergories.length: ${catergories.length}');
+    // print("ww");
+    // print(widget.catergories);
+    return catergories.length == null
         ? Center(
             child: CircularProgressIndicator(),
           )
@@ -107,40 +112,38 @@ class _CategoryPageState extends BasePageState<CategoryPage> {
               color: Colors.white,
               height: MediaQuery.of(context).size.height,
               width: MediaQuery.of(context).size.width,
-              child: GridView.builder(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 4,
-                  crossAxisSpacing: 3,
-                ),
+              child: ListView.builder(
                 scrollDirection: Axis.vertical,
-                itemCount: catergories.length,
+                itemCount: categoryView.length,
                 shrinkWrap: true,
                 itemBuilder: (context, i) {
-                  final category = catergories[i];
-                  final padding = (i == 0) ? 10.0 : 0.0;
+                  // final category = catergories[i];
+                  // final padding = (i == 0) ? 10.0 : 0.0;
                   return GestureDetector(
-                    onTap: () {
+                    onTap: () async {
                       if (i == 0) {
-                        print(i);
-                        print('widget.productCategory: ${widget.product}');
-
+                        // print(i);
+                        // print('widget.productCategory: ${widget.product}');
+                        var response = await api_services.getProducts(68);
                         Navigator.push(
                             context,
                             new MaterialPageRoute(
                                 builder: (context) => Grocery(
-                                      product: widget.product,
+                                      product: response, //widget.product,
                                     )));
                       }
                       if (i == 1) {
-                        print(i);
+                        // print(i);
+                        var response = await api_services.getProducts(68);
                         Navigator.push(
                             context,
                             new MaterialPageRoute(
-                                builder: (context) => Vegetable(
-                                      product: widget.product,
+                                builder: (context) => Grocery(
+                                      product: response, //widget.product,
                                     )));
                       }
                       if (i == 2) {
+                        var response = await api_services.getProducts(68);
                         Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -149,28 +152,28 @@ class _CategoryPageState extends BasePageState<CategoryPage> {
                                 //   product: widget.product,
                                 // ),
                                 builder: (context) =>
-                                    Recommendations(product: widget.product)));
+                                    Grocery(
+                                      product: response, // widget.product,
+                                    )));
                       }
                     },
-                    child: new Container(
-                      margin: EdgeInsets.only(left: padding),
-                      height: width * 0.2,
-                      child: new Column(
-                        children: <Widget>[
-                          new Image.network(
-                            // category.image.src.toString() ??
-                            'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/2048px-No_image_available.svg.png',
-                            height: width * 0.18,
-                          ),
-                          new Text(
-                            category.name,
-                            style: new TextStyle(
-                                fontSize: width * 0.035,
-                                fontWeight: FontWeight.bold),
-                            textAlign: TextAlign.left,
-                          )
-                        ],
-                      ),
+                    child: Container(
+                      // margin: EdgeInsets.only(left: padding),
+                      height: width * 0.18,
+                      child: ListTile(
+                        leading: Image.network(
+                          // category.image.src.toString() ??
+                          'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/2048px-No_image_available.svg.png',
+                          height: width * 0.18,
+                        ),
+                        title: Text(
+                          categoryView[i],
+                          style: new TextStyle(
+                              fontSize: width * 0.035,
+                              fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.left,
+                        ),
+                      )
                     ),
                   );
                 },

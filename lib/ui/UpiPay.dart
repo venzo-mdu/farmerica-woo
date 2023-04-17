@@ -38,8 +38,8 @@ class _UpiPayState extends State<UpiPay> {
   Future<UpiResponse> initiateTransaction(UpiApp app) async {
     return _upiIndia.startTransaction(
       app: app,
-      receiverUpiId: "8337976828@ybl",
-      receiverName: 'Md Azharuddin',
+      receiverUpiId: "KARTHEEC2011-1@OKHDFCBANK",
+      receiverName: 'KARTHEEC2011',
       transactionRefId: 'TestingUpiIndiaPlugin',
       transactionNote: 'Not actual. Just an example.',
       amount: 1.00,
@@ -109,16 +109,16 @@ class _UpiPayState extends State<UpiPay> {
   void _checkTxnStatus(String status) {
     switch (status) {
       case UpiPaymentStatus.SUCCESS:
-        print('Transaction Successful');
+        // print('Transaction Successful');
         break;
       case UpiPaymentStatus.SUBMITTED:
-        print('Transaction Submitted');
+        // print('Transaction Submitted');
         break;
       case UpiPaymentStatus.FAILURE:
-        print('Transaction Failed');
+        // print('Transaction Failed');
         break;
       default:
-        print('Received an Unknown transaction status');
+        // print('Received an Unknown transaction status');
     }
   }
 

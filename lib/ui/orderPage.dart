@@ -26,20 +26,22 @@ class _OrderPageState extends BasePageState<OrderPage> {
   // BasePage basePage = BasePage();
   Api_Services api_services = Api_Services();
   Future<List<Orders>> getList() async {
-    print(widget.id);
-    orderList = await api_services.getOrdersByUserId(widget.id.toString());
-    print(orderList);
+    // print('objectWidgetID');
+    // print(widget.id);
+    orderList = await api_services.getOrdersByUserId(widget.id);
+    // print('orderList33');
+    // print(orderList);
     setState(() {
       loading = false;
     });
-    print(orderList);
+    // print(orderList);
     return orderList;
   }
 
   @override
   void initState() {
     super.initState();
-    getList();
+    // getList();
     // basePage.title = "My Cart";
     // basePage.selected = 2;
     controller = ScrollController();
@@ -53,7 +55,9 @@ class _OrderPageState extends BasePageState<OrderPage> {
         }
       }
 
-      setState(() {});
+      setState(() {
+        getList();
+      });
     });
   }
 
@@ -71,7 +75,7 @@ class _OrderPageState extends BasePageState<OrderPage> {
                 itemBuilder: (BuildContext context, inxt) {
                   return GestureDetector(
                       onTap: () {
-                        print(orderList[inxt]);
+                        // print(orderList[inxt]);
                         Navigator.push(
                           context,
                           CupertinoPageRoute(

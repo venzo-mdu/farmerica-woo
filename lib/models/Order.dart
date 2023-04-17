@@ -15,6 +15,8 @@ class Orders {
   String discountTax;
   String shippingTotal;
   String shippingTax;
+  String deliveryDate;
+  String deliveryTime;
   String cartTax;
   String total;
   String totalTax;
@@ -56,6 +58,8 @@ class Orders {
       this.discountTax,
       this.shippingTotal,
       this.shippingTax,
+      this.deliveryDate,
+      this.deliveryTime,
       this.cartTax,
       this.total,
       this.totalTax,
@@ -97,6 +101,8 @@ class Orders {
     discountTax = json['discount_tax'];
     shippingTotal = json['shipping_total'];
     shippingTax = json['shipping_tax'];
+    deliveryDate = json['deliveryDate'];
+    deliveryTime = json['deliveryTime'];
     cartTax = json['cart_tax'];
     total = json['total'];
     totalTax = json['total_tax'];
@@ -119,25 +125,25 @@ class Orders {
     dateCompletedGmt = json['date_completed_gmt'];
     cartHash = json['cart_hash'];
     if (json['meta_data'] != null) {
-      metaData = List<MetaData>();
+      metaData = <MetaData>[];
       json['meta_data'].forEach((v) {
-        metaData.add(new MetaData.fromJson(v));
+        metaData.add(MetaData.fromJson(v));
       });
     }
     if (json['line_items'] != null) {
-      lineItems = new List<LineItems>();
+      lineItems = <LineItems>[];
       json['line_items'].forEach((v) {
         lineItems.add(new LineItems.fromJson(v));
       });
     }
     if (json['tax_lines'] != null) {
-      taxLines = new List<TaxLines>();
+      taxLines = <TaxLines>[];
       json['tax_lines'].forEach((v) {
         taxLines.add(new TaxLines.fromJson(v));
       });
     }
     if (json['shipping_lines'] != null) {
-      shippingLines = new List<ShippingLines>();
+      shippingLines = <ShippingLines>[];
       json['shipping_lines'].forEach((v) {
         shippingLines.add(new ShippingLines.fromJson(v));
       });
@@ -163,6 +169,8 @@ class Orders {
     data['discount_tax'] = this.discountTax;
     data['shipping_total'] = this.shippingTotal;
     data['shipping_tax'] = this.shippingTax;
+    data['deliveryDate'] = this.deliveryDate;
+    data['deliveryTime'] = this.deliveryTime;
     data['cart_tax'] = this.cartTax;
     data['total'] = this.total;
     data['total_tax'] = this.totalTax;
@@ -321,11 +329,11 @@ class MetaData {
   MetaData.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     key = json['key'];
-    value = json['value'];
+    value = json['value'].toString();
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = Map<String, dynamic>();
     data['id'] = this.id;
     data['key'] = this.key;
     data['value'] = this.value;

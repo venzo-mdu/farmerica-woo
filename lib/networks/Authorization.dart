@@ -47,6 +47,7 @@ class WooCommerceAPI {
     var token = "";
     var url = this.url + endpoint;
     var containsQueryParams = url.contains("?");
+    print('getURL: $url');
 
     // If website is HTTPS based, no need for OAuth, just return the URL with CS and CK as query params
     if (this.isHttps == true) {
@@ -132,10 +133,12 @@ class WooCommerceAPI {
           parameterString +
           "&oauth_signature=" +
           Uri.encodeQueryComponent(finalSignature);
+      print('requestUrl: $requestUrl');
     }
 
-  print('network: $requestUrl');
+  // print('network: $requestUrl');
 
+    print('requestUrl: $requestUrl');
     return requestUrl;
   }
 
@@ -143,14 +146,14 @@ class WooCommerceAPI {
 
   Future<dynamic> getAsync(String endPoint, {Map data}) async {
 
-    print('endPoint: $endPoint');
-    print('endPointData: ${data}');
+    // print('endPoint: $endPoint');
+    // print('endPointData: ${data}');
     var url = this.getOAuthURL("GET", endPoint);
-    print('getAsync: $url');
+    // print('getAsync: $url');
     // print(url);
     final response = await http.get(Uri.parse(url));
-    print('responseBody');
-    print(response.body);
+    // print('responseBody');
+    // print(response.body);
     return json.decode(response.body);
   }
 
@@ -173,15 +176,15 @@ class WooCommerceAPI {
 
   Future<dynamic> deleteAsync(String endPoint, {Map data}) async {
     var url = this.getOAuthURL("DELETE", endPoint);
-    print(url);
+    // print(url);
     final response = await http.delete(url);
     // print(response.body);
     return json.decode(response.body);
   }
 
   Future<dynamic> putAsync(String endPoint, Map data) async {
-    var url = this.getOAuthURL("POST", endPoint);
-    print(url);
+    var url = this.getOAuthURL("PUT", endPoint);
+    // print(url);
     var client = new http.Client();
     Map<String, String> headers = HashMap();
     headers.update(

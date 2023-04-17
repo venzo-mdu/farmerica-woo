@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:convert';
+import 'dart:ffi';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -8,11 +8,14 @@ import 'package:safira_woocommerce_app/models/Customers.dart';
 import 'package:safira_woocommerce_app/models/Products.dart' as p;
 import 'package:safira_woocommerce_app/models/Products.dart';
 import 'package:safira_woocommerce_app/ui/BasePage.dart';
+import 'package:safira_woocommerce_app/ui/categories.dart';
 import 'package:safira_woocommerce_app/ui/createOrder.dart';
 import "package:provider/provider.dart";
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:safira_woocommerce_app/Providers/CartProviders.dart';
 import 'package:safira_woocommerce_app/ui/productDetails.dart';
+import 'package:safira_woocommerce_app/models/global.dart' as Globals;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AddtoCart {
   int addtoCart;
@@ -37,8 +40,16 @@ enum shipping {
 
 var totalprice = 0;
 
+// int arraySize = 1;
+// List<int> counterArray = new List.filled(arraySize, null, growable: false);
+
 class _CartScreenState extends BasePageState<CartScreen> {
   int counter = 1;
+  int arraySize = 1;
+  List counterArray = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
+
+  double subTotals = 0.0;
+
   List<AddtoCart> addtoCart = [];
   List<Product> product;
   Product cart;
@@ -47,40 +58,49 @@ class _CartScreenState extends BasePageState<CartScreen> {
   String title = "My Cart";
   var totalIndexPrice;
   double totalIndexPrices = 0.0;
-  // double totalSubtotal = 0.0;
+  // var totalSubtotal = 0.0;
   double totalSubtotal = 0.0;
   int dummyCount = 0;
   double finalTotal = 0.0;
-  List _list = [
-    'Free shipping',
-    'Midnight Delivery 11pm to 12am',
-    'Early morning Delivery 6.30am to 7am'
-  ];
 
   Timer timer;
+  var shippingFee = 0;
+  int checkOutVariable;
 
-  @override
-  void initState() {
+  bool intFlag = false;
+  TextEditingController _couponCodeController = TextEditingController();
 
-    // print('objectProLength: ${widget.product.length} and ${widget.product[totalprice].price}');
-
-    print("Test: ${widget.product.length}");
-    print("TestCart: ${cart.toString().length}");
-    print("TestCart: ${cart}");
-
-    print("arr: ${widget.product.length}");
-    super.initState();
-  }
-
-  void increment() {
+  String showPinCode;
+  getPinCode() async {
+    SharedPreferences pinCodePrefs = await SharedPreferences.getInstance();
     setState(() {
-      counter++;
+      showPinCode = pinCodePrefs.getString('pinCode') ?? '';
     });
   }
 
-  void decrement() {
+  @override
+  void initState() {
+    getPinCode();
+    // print('CartLength85: ${widget.product.length}');
+    super.initState();
+  }
+
+  void increment(int index) {
+    setState(() {
+      counter++;
+      counterArray[index]++;
+    });
+  }
+
+  calc() async {
+    // totalIndexPrices += double.parse(cart[index].price);
+    // totalSubtotal += double.parse(totalIndexPrice.toString());
+  }
+
+  void decrement(int index) {
     setState(() {
       counter--;
+      counterArray[index]--;
     });
   }
 
@@ -95,7 +115,7 @@ class _CartScreenState extends BasePageState<CartScreen> {
             child: ListBody(
               children: [
                 TextFormField(
-                  // controller: _couponCodeController,
+                  controller: _couponCodeController,
                   decoration: InputDecoration(
                     hintText: 'Enter your Coupon Code',
                   ),
@@ -126,398 +146,557 @@ class _CartScreenState extends BasePageState<CartScreen> {
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
+    getList() async {
+      categories = await api_services.getCategoryById(Globals.globalInt);
+      response = await api_services.getProducts(Globals.globalInt);
+    }
 
     List<p.Product> demoCarts = widget.product;
-    List<p.Product> cart = [];
-    double total = 0;
+    // List<p.Product> cart = [];
+    List cartItem = [];
 
+    // print('demoCarts: ${demoCarts.toList().toString()}');
 
     return Consumer<CartModel>(builder: (context, cartModel, child) {
+      print('CartModel157: ${cartModel.cartProducts.length}');
       if (cartModel.cartProducts.length == 0) {
-        return Center(
-            child:
-            Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-              Icon(
-                Icons.hourglass_empty,
-                size: 30,
-              ),
-              Text(
-                "Your Cart is empty",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-            ]));
-      } else {
-        for (var item in demoCarts) {
-          for (var it in cartModel.cartProducts) {
-            if (it.product_id == item.id) {
-              cart.add(item);
-              addtoCart.add(AddtoCart(addtoCart: 1));
-            }
-          }
-        }
         return Scaffold(
-            body: SingleChildScrollView(
+          body: Center(
               child: Column(
-                children: [
-                  Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: 450,
-                    color: Colors.white,
-                    child: ListView.builder(
-                      itemCount: cart.length,
-                      itemBuilder: (context, index) {
-                        // int pr = cart[index].price as int;
-                        totalIndexPrice = cart[index].price;
-                        print('objectTotal: ${totalIndexPrice}');
-                        total = double.parse(cart[index].price);
-                        totalIndexPrices += double.parse(cart[index].price);
-                        print('totalIndexPrice: $totalIndexPrices');
-                        print('totalIndexPrice: ${cart[index].price}');
-                        print('totalIndexPrice: ${[index]}');
-                        totalSubtotal += double.parse(totalIndexPrice.toString());
-                        print('total Sub total: ${totalSubtotal}');
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                Icon(
+                  Icons.hourglass_empty,
+                  size: 30,
+                ),
+                Text(
+                  "Your Cart is empty",
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+              ])),
+        );
+      } else {
+        // if(intFlag == false ) {
+        totalSubtotal = 0;
+        // print('demoCarts.length: ${demoCarts.length}');
+        // for (var item in demoCarts) {
+        for (dynamic it in cartModel.cartProducts) {
+          // if (it.product_id == item.id) {
+          print('objectIT: ${it.runtimeType}');
+          // price, name, images[0].src
+          cartItem.add({
+            'name': it.name,
+            'price': it.price,
+            'images': it.image,
+            'id': it.product_id,
+          });
+          // cart.add(it);
+          print('productID: ${it.name}');
+          print('productID: ${it.price.runtimeType}');
+          print('productID: ${subTotals.runtimeType}');
 
-                        print('final: ${totalSubtotal.toString()}');
+          addtoCart.add(AddtoCart(addtoCart: 1));
+          if (intFlag == false) {
+            subTotals += double.parse(it.price);
+            finalTotal += double.parse(it.price);
+          }
+          arraySize++;
+          // }
+          // }
+          // List<int> counterArray = new List.filled(arraySize, null, growable: false);
+          // for(int i=0; i<arraySize; i++) {
+          //   counterArray[i]=1;
+          // }
+          // cart.forEach((element) {
+          //   print('element165: ${element.price}');
+          //
+          //   for (var item in demoCarts) {
+          //     print('insideElement: ${element.id}');
+          //     print('insideItem: ${item.id}');
+          //     if(item.id == element.id) {
+          //       totalSubtotal += double.parse(element.price);
+          //       finalTotal += double.parse(element.price);
+          //     }
+          //   }
+          //
+          //     print('dummyCount :${element.price.length}');
+          //   print('element165runtime: ${element.price.runtimeType}');
+          //   // totalSubtotal += double.parse(element.price);
+          //   // finalTotal += double.parse(element.price);
+          //   // totalSubtotal += totalIndexPrice;
+          //
+          //
+          //
+          //   print('totalIndexPrice167: ${totalIndexPrice.runtimeType}');
+          //   print('totalIndexPrice167: ${totalIndexPrice}');
+          // });
 
-                        return Padding(
-                          padding: EdgeInsets.symmetric(vertical: 10),
-                          child: GestureDetector(
-                              child: Dismissible(
-                                key: Key(cart[index].id.toString()),
-                                direction: DismissDirection.endToStart,
-                                onDismissed: (direction) {
-                                  setState(() {
-                                    cart.removeAt(index);
-                                    cartModel.removeCartProduct(cart[index].id);
-                                  });
-                                },
-                                background: Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 20),
-                                  decoration: BoxDecoration(
-                                    // color: Color(0xFFFFE6E6),
-                                    color: Colors.purple,
-                                    borderRadius: BorderRadius.circular(15),
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Spacer(),
-                                      SvgPicture.asset(
-                                        "assets/Trash.svg",
-                                      ),
-                                    ],
-                                  ),
+          // }
+          intFlag = true;
+        }
+        print('CartLength: ${cartItem.length}');
+        for (dynamic i in cartItem) {
+          print('cartLenth: $i');
+        }
+        // }
+
+        return Scaffold(
+          body: SingleChildScrollView(
+            child: Column(
+              children: [
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: 450,
+                  color: Colors.white,
+                  child: ListView.builder(
+                    itemCount: cartItem.length, //
+                    itemBuilder: (context, index) {
+                      checkOutVariable = index;
+
+                      ///
+                      // int pr = cart[index].price as int;
+                      // totalIndexPrice = cart[index].price;
+                      // print('objectTotal: ${totalIndexPrice}');
+                      // total = double.parse(cart[index].price);
+                      // totalIndexPrices += double.parse(cart[index].price);
+                      // print('totalIndexPrice: $totalIndexPrices');
+                      // print('totalIndexPrice: ${cart[index].price}');
+                      // print('totalIndexPrice: ${[index]}');
+                      // totalSubtotal += double.parse(totalIndexPrice.toString());
+                      // print('total Sub total: ${totalSubtotal}');
+                      // print('final: ${totalSubtotal.toString()}');
+                      ///
+                      return Padding(
+                        padding: EdgeInsets.symmetric(vertical: 10),
+                        child: GestureDetector(
+                            child: Dismissible(
+                              // cart[index]['images']
+                              key: Key(cartItem[index]['id'].toString()),
+                              direction: DismissDirection.endToStart,
+                              onDismissed: (direction) {
+                                setState(() {
+                                  cartItem.removeAt(index);
+                                  cartModel
+                                      .removeCartProduct(cartItem[index].id);
+                                });
+                              },
+                              background: Container(
+                                padding: EdgeInsets.symmetric(horizontal: 20),
+                                decoration: BoxDecoration(
+                                  // color: Color(0xFFFFE6E6),
+                                  color: Colors.purple,
+                                  borderRadius: BorderRadius.circular(15),
                                 ),
-                                child: GestureDetector(
-                                  child: Column(
-                                    children: [
-                                      Row(
-                                        children: [
-                                          SizedBox(
-                                            width: 84,
-                                            child: AspectRatio(
-                                              aspectRatio: 0.88,
-                                              child: Container(
-                                                padding: EdgeInsets.all(5),
-                                                decoration: BoxDecoration(
-                                                  color: Color(0xFFF5F6F9),
-                                                  borderRadius:
-                                                  BorderRadius.circular(15),
-                                                ),
-                                                child: Image.network(
-                                                    cart[index].images[0].src),
+                                child: Row(
+                                  children: [
+                                    Spacer(),
+                                    SvgPicture.asset(
+                                      "assets/Trash.svg",
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              child: GestureDetector(
+                                child: Column(
+                                  children: [
+                                    Row(
+                                      children: [
+                                        SizedBox(
+                                          width: 84,
+                                          child: AspectRatio(
+                                            aspectRatio: 0.88,
+                                            child: Container(
+                                              padding: EdgeInsets.all(5),
+                                              decoration: BoxDecoration(
+                                                color: Color(0xFFF5F6F9),
+                                                borderRadius:
+                                                    BorderRadius.circular(15),
                                               ),
+                                              child: Image.network(
+                                                  cartItem[index]['images']),
                                             ),
                                           ),
-                                          SizedBox(
-                                            width: 5,
-                                            height: 100,
-                                          ),
-                                          Column(
-                                            crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                cart[index].name,
+                                        ),
+                                        SizedBox(
+                                          width: 5,
+                                          height: 100,
+                                        ),
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              cartItem[index]['name'],
+                                              style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: width * 0.04),
+                                              maxLines: 2,
+                                            ),
+                                            // price, name, images[0].src // cart[index]['images']
+                                            SizedBox(height: 10),
+                                            Text.rich(
+                                              TextSpan(
+                                                text:
+                                                    "\₹${cartItem[index]['price']}",
                                                 style: TextStyle(
-                                                    color: Colors.black,
-                                                    fontSize: width * 0.04),
-                                                maxLines: 2,
-                                              ),
-                                              SizedBox(height: 10),
-                                              Text.rich(
-                                                TextSpan(
-                                                  text: "\₹${cart[index].price}",
-                                                  style: TextStyle(
-                                                      fontWeight: FontWeight.w600,
-                                                      color: Color(0xFFFF7643)),
-                                                  children: [
-                                                    TextSpan(
-                                                        text: " ",
-                                                        style: Theme.of(context)
-                                                            .textTheme
-                                                            .bodyText1),
-                                                  ],
-                                                ),
-                                              ),
-                                              Row(
-                                                children: <Widget>[
-                                                  TextButton(
-                                                      onPressed: () {
-                                                        decrement();
-                                                        var amount = double.parse(
-                                                            totalIndexPrice) *
-                                                            counter;
-                                                        print('amt:${amount}');
-                                                        totalSubtotal = amount;
-                                                      },
-                                                      child: Text('-')),
-                                                  Text('$counter'),
-                                                  TextButton(
-                                                      onPressed: () {
-                                                        increment();
-                                                        var amount = double.parse(
-                                                            totalIndexPrice) *
-                                                            counter;
-                                                        // var shippingtotal=amount+
-                                                        print('amt:${amount}');
-                                                        totalSubtotal = amount;
-                                                        print(
-                                                            'totalIndex:${double.parse(totalIndexPrice)}');
-                                                        // print('amt:${double.parse(cart[index].price)}');
-                                                        // print('amt:${counter.runtimeType}');
-                                                      },
-                                                      child: Text('+')),
+                                                    fontWeight: FontWeight.w600,
+                                                    color: Color(0xFFFF7643)),
+                                                children: [
+                                                  TextSpan(
+                                                      text: " ",
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .bodyText1),
                                                 ],
                                               ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                  onTap: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => ProductDetail(
-                                              product: cart[index],
-                                            )));
-                                  },
-                                ),
-                              ),
-                              onTap: () {}),
-                        );
-                      },
-                    ),
-                  ),
+                                            ),
+                                            Row(
+                                              children: <Widget>[
+                                                TextButton(
+                                                    onPressed: () {
+                                                      decrement(index);
+                                                      // var amount= 0;
+                                                      // for(int i=0; i<cart.length;i++) {
+                                                      //   amount += int.parse(cart[i].price) * counterArray[i];
+                                                      // }
+                                                      // // var amount = double.parse(
+                                                      // //     totalIndexPrice) *
+                                                      // //     counter;
+                                                      // // print('amt:${amount}');
+                                                      //
+                                                      // totalSubtotal = amount as double;
+                                                      // print('totalSubtotal335: ${totalSubtotal}');
 
-                  Container(
-                    padding: EdgeInsets.symmetric(
-                      vertical: 15,
-                      horizontal: 30,
-                    ),
-                    // height: 174,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(30),
-                        topRight: Radius.circular(30),
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          offset: Offset(0, -15),
-                          blurRadius: 20,
-                          color: Color(0xFFDADADA).withOpacity(0.15),
-                        )
-                      ],
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          child: Column(
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(10),
-                                    child: Text(
-                                      'CART TOTALS',
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                                                      var amount = 0;
+                                                      subTotals = 0;
+                                                      for (int i = 0;
+                                                          i < cartItem.length;
+                                                          i++) {
+                                                        // print(
+                                                        //     'counterArray342: ${counterArray[i]}');
+                                                        // print(
+                                                        //     'counterArray343: ${cart[i].price}');
+
+                                                        subTotals += int.parse(
+                                                                cartItem[i]
+                                                                    ['price']) *
+                                                            counterArray[i];
+                                                      }
+                                                      finalTotal = shippingFee +
+                                                          subTotals;
+                                                    },
+                                                    child: Text('-')),
+                                                Text(
+                                                    '${counterArray[index].toString()}'),
+                                                TextButton(
+                                                    onPressed: () {
+                                                      increment(index);
+                                                      var amount = 0;
+                                                      subTotals = 0;
+                                                      for (int i = 0;
+                                                          i < cartItem.length;
+                                                          i++) {
+                                                        // print(
+                                                        //     'counterArray342: ${counterArray[i]}');
+                                                        // print(
+                                                        //     'counterArray343: ${cart[i].price}');
+
+                                                        subTotals += int.parse(
+                                                                cartItem[i]
+                                                                    ['price']) *
+                                                            counterArray[i];
+                                                      }
+                                                      finalTotal = shippingFee +
+                                                          subTotals;
+
+                                                      // var amount = double.parse(
+                                                      //     totalIndexPrice) *
+                                                      //     counter;
+                                                      // var shippingtotal=amount
+                                                      // print(
+                                                      //     'totalSubtotal353amt:$amount');
+                                                      // // totalSubtotal = amount as double;
+                                                      // print(
+                                                      //     'totalSubtotal355: $subTotals');
+                                                      // print(
+                                                      //     'totalIndex354:${double.parse(totalIndexPrice)}');
+                                                      // print('amt:${double.parse(cart[index].price)}');
+                                                      // print('amt:${counter.runtimeType}');
+                                                    },
+                                                    child: Text('+')),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ],
                                     ),
-                                  ),
-                                ],
-                              ),
-                              Divider(),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(10),
-                                    child: Text('Subtotal'),
-                                  ),
-                                  Text('₹${totalSubtotal.toString()}'),
-                                  Text('Count: ${dummyCount.toString()}'),
-
-                                ],
-                              ),
-                              Divider(),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text('Shipping'),
-                                  Text(shipping.Free_Shipping == _character
-                                      ? '₹0.00'
-                                      : shipping.Early_morning_Delivery_6am_to_7am ==
-                                      _character
-                                      ? '₹75.00'
-                                      : '₹200.00'),
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  // Text('Free shipping'),
-                                  Text('$_character'),
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  Text('Shipping to 751001, India'),
-                                ],
-                              ),
-                              Column(
-                                children: [
-                                  RadioListTile<shipping>(
-                                      title: Text("Free shipping"),
-                                      subtitle: Text('₹0.00'),
-                                      value: shipping.Free_Shipping,
-                                      groupValue: _character,
-                                      onChanged: (shipping value) {
-                                        setState(() {
-                                          _character = value;
-                                        });
-                                      }),
-                                  RadioListTile<shipping>(
-                                      title: Text("Midnight Delivery 11pm to 12am"),
-                                      subtitle: Text('₹200.00'),
-                                      value:
-                                      shipping.Midnight_Delivery_11pm_to_12am,
-                                      groupValue: _character,
-                                      onChanged: (shipping value) {
-                                        setState(() {
-                                          _character = value;
-                                          double a = 200;
-                                          finalTotal = totalSubtotal + a.toDouble();
-                                          print('total Sub total: ${totalSubtotal.toDouble()}');
-                                          print('finalTotal: ${finalTotal.toDouble()}');
-                                        });
-                                      }),
-                                  RadioListTile<shipping>(
-                                      title: Text(
-                                          "Early morning Delivery 6.30am to 7am"),
-                                      subtitle: Text('₹75.00'),
-                                      value: shipping
-                                          .Early_morning_Delivery_6am_to_7am,
-                                      groupValue: _character,
-                                      onChanged: (shipping value) {
-                                        setState(() {
-                                          _character = value;
-                                          double a = 75.0;
-                                          finalTotal = totalSubtotal + a.toDouble();
-                                          print('totalSubtotalruntimeType: ${totalSubtotal.runtimeType}');
-                                          print('finalTotal: ${finalTotal.toDouble()}');
-                                        });
-                                      }),
-                                ],
-                              ),
-                              Divider(),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(10),
-                                    child: Text('Total: '),
-                                  ),
-                                  Text('₹${finalTotal.toString()}'),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                        Row(
-                          children: [
-                            Container(
-                              padding: EdgeInsets.all(10),
-                              height: 40,
-                              width: 40,
-                              decoration: BoxDecoration(
-                                color: Color(0xFFF5F6F9),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: SvgPicture.asset("assets/receipt.svg"),
-                            ),
-                            Spacer(),
-                            GestureDetector(
-                                onTap: (){
-                                  _showAlertDialog();
-                                },
-                                child: Text("Add voucher code")
-                            ),
-                            const SizedBox(width: 10),
-                            Icon(
-                              Icons.arrow_forward_ios,
-                              size: 12,
-                              // color: ,
-                            )
-                          ],
-                        ),
-                        SizedBox(height: 20),
-                        Row(
-                          children: [
-
-                            SizedBox(
-                              width: 250,
-                              child: ElevatedButton(
-                                style: ButtonStyle(
-                                    backgroundColor:
-                                    MaterialStateProperty.all<Color>(
-                                        Colors.black),
-                                    shape: MaterialStateProperty.all<
-                                        RoundedRectangleBorder>(
-                                        RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(0),
-                                        ))),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(10),
-                                  child: Text("Check Out",
-                                      style: TextStyle(fontSize: 18)),
+                                  ],
                                 ),
-                                onPressed: () {
+                                onTap: () {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => CreateOrder(
-                                            id: widget.details.id,
-                                            cartProducts:
-                                            cartModel.cartProducts,
-                                            product: cart,
-                                          )));
+                                          builder: (context) => ProductDetail(
+                                                product: cartItem[index],
+                                              )));
                                 },
                               ),
                             ),
+                            onTap: () {}),
+                      );
+                    },
+                  ),
+                ),
+                Container(
+                  padding: EdgeInsets.symmetric(
+                    vertical: 15,
+                    horizontal: 30,
+                  ),
+                  // height: 174,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(30),
+                      topRight: Radius.circular(30),
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        offset: Offset(0, -15),
+                        blurRadius: 20,
+                        color: Color(0xFFDADADA).withOpacity(0.15),
+                      )
+                    ],
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(10),
+                                  child: Text(
+                                    'CART TOTALS',
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Divider(),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(10),
+                                  child: Text('Subtotal'),
+                                ),
+                                Text('₹$subTotals'),
+                              ],
+                            ),
+                            Divider(),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text('Shipping'),
+                                Text(shipping.Free_Shipping == _character
+                                    ? '₹0.00'
+                                    : shipping.Early_morning_Delivery_6am_to_7am ==
+                                            _character
+                                        ? '₹75.00'
+                                        : '₹200.00'),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                // Text('Free shipping'),
+                                Text('$_character'),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Text('Shipping to $showPinCode, India'),
+                              ],
+                            ),
+                            Column(
+                              children: [
+                                RadioListTile<shipping>(
+                                    title: Text("Free shipping"),
+                                    subtitle: Text('₹0.00'),
+                                    value: shipping.Free_Shipping,
+                                    groupValue: _character,
+                                    onChanged: (shipping value) {
+                                      setState(() {
+                                        finalTotal = 0;
+                                        for (int i = 0;
+                                            i < cartItem.length;
+                                            i++) {
+                                          finalTotal +=
+                                              int.parse(cartItem[i]['price']) *
+                                                  counterArray[i];
+                                        }
+                                        finalTotal = 0 + finalTotal;
+
+                                        shippingFee = 0;
+                                        _character = value;
+                                      });
+                                    }),
+                                RadioListTile<shipping>(
+                                    title:
+                                        Text("Midnight Delivery 11pm to 12am"),
+                                    subtitle: Text('₹200.00'),
+                                    value:
+                                        shipping.Midnight_Delivery_11pm_to_12am,
+                                    groupValue: _character,
+                                    onChanged: (shipping value) {
+                                      setState(() {
+                                        finalTotal = 0;
+                                        for (int i = 0;
+                                            i < cartItem.length;
+                                            i++) {
+                                          finalTotal +=
+                                              int.parse(cartItem[i]['price']) *
+                                                  counterArray[i];
+                                        }
+                                        finalTotal = 200 + finalTotal;
+
+                                        _character = value;
+                                        shippingFee = 200;
+                                        double a = 200;
+                                        // finalTotal = subTotals + a.toDouble();
+                                        // print(
+                                        //     'total Sub total: ${totalSubtotal.toDouble()}');
+                                        // print(
+                                        //     'finalTotal: ${finalTotal.toDouble()}');
+                                      });
+                                    }),
+                                RadioListTile<shipping>(
+                                    title: Text(
+                                        "Early morning Delivery 6.30am to 7am"),
+                                    subtitle: Text('₹75.00'),
+                                    value: shipping
+                                        .Early_morning_Delivery_6am_to_7am,
+                                    groupValue: _character,
+                                    onChanged: (shipping value) {
+                                      setState(() {
+                                        finalTotal = 0;
+                                        for (int i = 0;
+                                            i < cartItem.length;
+                                            i++) {
+                                          finalTotal +=
+                                              int.parse(cartItem[i]['price']) *
+                                                  counterArray[i];
+                                        }
+                                        finalTotal = 75 + finalTotal;
+
+                                        shippingFee = 75;
+                                        _character = value;
+                                        double a = 75.0;
+
+                                        // finalTotal = subTotals + a.toDouble();
+                                        // print(
+                                        //     'totalSubtotalruntimeType: ${totalSubtotal.runtimeType}');
+                                        // print(
+                                        //     'finalTotal: ${finalTotal.toDouble()}');
+                                      });
+                                    }),
+                              ],
+                            ),
+                            Divider(),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(10),
+                                  child: Text('Total: '),
+                                ),
+                                Text('₹${finalTotal.toString()}'),
+                              ],
+                            ),
                           ],
                         ),
-                      ],
-                    ),
-                  )
-                ],
-              ),
+                      ),
+                      Row(
+                        children: [
+                          Container(
+                            padding: EdgeInsets.all(10),
+                            height: 40,
+                            width: 40,
+                            decoration: BoxDecoration(
+                              color: Color(0xFFF5F6F9),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: SvgPicture.asset("assets/receipt.svg"),
+                          ),
+                          Spacer(),
+                          GestureDetector(
+                              onTap: () {
+                                _showAlertDialog();
+                              },
+                              child: Text("Add voucher code")),
+                          const SizedBox(width: 10),
+                          Icon(
+                            Icons.arrow_forward_ios,
+                            size: 12,
+                            // color: ,
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 20),
+                      Row(
+                        children: [
+                          SizedBox(
+                            width: 250,
+                            child: ElevatedButton(
+                              style: ButtonStyle(
+                                  backgroundColor:
+                                      MaterialStateProperty.all<Color>(
+                                          Colors.black),
+                                  shape: MaterialStateProperty.all<
+                                          RoundedRectangleBorder>(
+                                      RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(0),
+                                  ))),
+                              child: Padding(
+                                padding: const EdgeInsets.all(10),
+                                child: Text("Proceed to Checkout",
+                                    style: TextStyle(fontSize: 18)),
+                              ),
+                              onPressed: () {
+                                print('shippingFee: $shippingFee');
+                                print(
+                                    'widget.details.id: ${cartItem[checkOutVariable]['id'].toString()}');
+                                print('cart: $cartItem}');
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => CreateOrder(
+                                              shippingFee: shippingFee,
+                                              id: cartItem[0]
+                                                  ['id'], // widget.details.id,
+                                              cartProducts:
+                                                  cartModel.cartProducts,
+                                              product:
+                                                  cartItem, //cart[checkOutVariable],
+                                              details: widget.details,
+                                            )));
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                )
+              ],
             ),
+          ),
         );
       }
     });
@@ -543,53 +722,53 @@ class _BodyState extends State<Body> {
         padding: EdgeInsets.symmetric(horizontal: 20),
         child: 0 == 1
             ? Center(
-            child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.hourglass_empty,
-                    size: 30,
-                  ),
-                  Text(
-                    "Your Cart is empty",
-                    style:
-                    TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                ]))
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                    Icon(
+                      Icons.hourglass_empty,
+                      size: 30,
+                    ),
+                    Text(
+                      "Your Cart is empty",
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                  ]))
             : ListView.builder(
-          itemCount: demoCarts.length,
-          itemBuilder: (context, index) => Padding(
-            padding: EdgeInsets.symmetric(vertical: 10),
-            child: GestureDetector(
-                child: Dismissible(
-                  key: Key(demoCarts[index].id.toString()),
-                  direction: DismissDirection.endToStart,
-                  onDismissed: (direction) {
-                    setState(() {
-                      demoCarts.removeAt(index);
-                    });
-                  },
-                  background: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    decoration: BoxDecoration(
-                      color: Color(0xFFFFE6E6),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: Row(
-                      children: [
-                        Spacer(),
-                        // SvgPicture.asset("assets/icons/Trash.svg"),
-                      ],
-                    ),
-                  ),
-                  child: CartCard(
-                    cart: demoCarts[index],
-                    product: demoCarts,
-                  ),
+                itemCount: demoCarts.length,
+                itemBuilder: (context, index) => Padding(
+                  padding: EdgeInsets.symmetric(vertical: 10),
+                  child: GestureDetector(
+                      child: Dismissible(
+                        key: Key(demoCarts[index].id.toString()),
+                        direction: DismissDirection.endToStart,
+                        onDismissed: (direction) {
+                          setState(() {
+                            demoCarts.removeAt(index);
+                          });
+                        },
+                        background: Container(
+                          padding: EdgeInsets.symmetric(horizontal: 20),
+                          decoration: BoxDecoration(
+                            color: Color(0xFFFFE6E6),
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          child: Row(
+                            children: [
+                              Spacer(),
+                              // SvgPicture.asset("assets/icons/Trash.svg"),
+                            ],
+                          ),
+                        ),
+                        child: CartCard(
+                          cart: demoCarts[index],
+                          product: demoCarts,
+                        ),
+                      ),
+                      onTap: () {}),
                 ),
-                onTap: () {}),
-          ),
-        ));
+              ));
   }
 }
 
@@ -738,8 +917,8 @@ class _CartCardState extends State<CartCard> {
             context,
             MaterialPageRoute(
                 builder: (context) => ProductDetail(
-                  product: widget.cart,
-                )));
+                      product: widget.cart,
+                    )));
       },
     );
   }
@@ -854,13 +1033,13 @@ class CheckoutCard extends StatelessWidget {
                   child: ElevatedButton(
                     child: Text("Check Out"),
                     onPressed: () {
-                      print('cartProducts: $cartProducts');
+                      // print('cartProducts: $cartProducts');
                       Navigator.push(
                           context,
                           MaterialPageRoute(
                               builder: (context) => CreateOrder(
-                                cartProducts: cartProducts,
-                              )));
+                                    cartProducts: cartProducts,
+                                  )));
                     },
                   ),
                 ),

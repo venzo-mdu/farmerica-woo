@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:image_picker/image_picker.dart';
+import 'package:safira_woocommerce_app/ui/CartPage.dart';
 import 'package:safira_woocommerce_app/ui/deleteAccount.dart';
 import 'package:safira_woocommerce_app/models/Customers.dart';
 import 'package:safira_woocommerce_app/models/Products.dart';
@@ -16,6 +17,7 @@ import 'package:safira_woocommerce_app/ui/homepage.dart';
 import 'package:safira_woocommerce_app/ui/myaccounts.dart';
 import 'package:safira_woocommerce_app/ui/notificationPage.dart';
 import 'package:safira_woocommerce_app/ui/orderPage.dart';
+import 'package:safira_woocommerce_app/ui/savedaddress.dart';
 import 'package:safira_woocommerce_app/ui/success.dart';
 import 'package:safira_woocommerce_app/utils/notification.dart';
 import 'package:safira_woocommerce_app/utils/sharedServices.dart';
@@ -40,7 +42,7 @@ class _BodyState extends State<Body> {
             text: "My Account",
             icon: Icons.person,
             press: () {
-              print(widget.customer);
+              // print(widget.customer);
               Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -89,11 +91,11 @@ class _BodyState extends State<Body> {
             icon: Icons.add_business_outlined,
             press: () {},
           ),
-          ProfileMenu(
-            text: "Help Center",
-            icon: Icons.help_center,
-            press: () {},
-          ),
+          // ProfileMenu(
+          //   text: "Help Center",
+          //   icon: Icons.help_center,
+          //   press: () {},
+          // ),
           ProfileMenu(
             text: "Log Out",
             icon: Icons.logout,
@@ -121,7 +123,7 @@ class ProfileMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
       child: TextButton(
         // padding: EdgeInsets.all(20),
         // shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
@@ -135,8 +137,8 @@ class ProfileMenu extends StatelessWidget {
               size: 22,
             ),
             SizedBox(width: 20),
-            Expanded(child: Text(text)),
-            Icon(Icons.arrow_forward_ios),
+            Expanded(child: Text(text, style: TextStyle(color: Colors.black),)),
+            Icon(Icons.arrow_forward_ios, color: Colors.black,),
           ],
         ),
       ),
@@ -167,7 +169,7 @@ class _ProfilePicState extends State<ProfilePic> {
       if (pickedFile != null) {
         _image = File(pickedFile.path);
       } else {
-        print('No image selected.');
+        // print('No image selected.');
       }
     });
   }
@@ -235,15 +237,14 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
     SharedServices sharedServices = SharedServices();
     Api_Services api_services = Api_Services();
     return Scaffold(
-        // appBar: AppBar(),
         body: SingleChildScrollView(
             padding: EdgeInsets.symmetric(vertical: 20),
             child: Column(children: [
-              ProfilePic(),
-              SizedBox(height: 20),
+              // ProfilePic(),
+              // SizedBox(height: 20),
               ProfileMenu(
                 text: "My Account",
-                icon: Icons.person,
+                icon: Icons.person_outline,
                 press: () {
                   Navigator.push(
                       context,
@@ -253,9 +254,10 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
                               )));
                 },
               ),
+              Divider(color: Colors.grey, thickness: .5, endIndent: 30, indent: 30),
               ProfileMenu(
                   text: "Change Password",
-                  icon: Icons.lock,
+                  icon: Icons.lock_outline,
                   press: () {
                     Fluttertoast.showToast(
                         msg: "A link has been Sent to mail to change password",
@@ -266,19 +268,23 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
                         textColor: Colors.white,
                         fontSize: 16.0);
                   }),
+              Divider(color: Colors.grey, thickness: .5, endIndent: 30, indent: 30),
               ProfileMenu(
-                text: "Notifications",
-                icon: Icons.notifications,
+                text: "Saved Addresses",
+                icon: Icons.home_outlined,
                 press: () {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => NotificationPage()));
+                          builder: (context) => SavedAddress(
+                            customer: widget.customer,
+                          )));
                 },
               ),
+              Divider(color: Colors.grey, thickness: .5, endIndent: 30, indent: 30),
               ProfileMenu(
                 text: " My Orders",
-                icon: Icons.shopping_bag,
+                icon: Icons.shopping_bag_outlined,
                 press: () {
                   Navigator.push(
                       context,
@@ -290,9 +296,10 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
                               )));
                 },
               ),
+              Divider(color: Colors.grey, thickness: .5, endIndent: 30, indent: 30),
               ProfileMenu(
                 text: "Settings",
-                icon: Icons.settings,
+                icon: Icons.settings_outlined,
                 press: () {
                   Navigator.push(
                       context,
@@ -302,16 +309,13 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
                               )));
                 },
               ),
+              Divider(color: Colors.grey, thickness: .5, endIndent: 30, indent: 30),
               ProfileMenu(
                 text: "About Us",
                 icon: Icons.add_business_outlined,
                 press: () {},
               ),
-              ProfileMenu(
-                text: "Help Center",
-                icon: Icons.help_center,
-                press: () {},
-              ),
+              Divider(color: Colors.grey, thickness: .5, endIndent: 30, indent: 30),
               ProfileMenu(
                 text: "Log Out",
                 icon: Icons.logout,
@@ -319,7 +323,7 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
                   Navigator.pushReplacement(context,
                       MaterialPageRoute(builder: (context) => WelcomePage()));
                   sharedServices.logOut();
-                  print(sharedServices.loginDetails());
+                  // print(sharedServices.loginDetails());
                 },
               ),
             ])));

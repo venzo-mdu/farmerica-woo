@@ -73,7 +73,7 @@ class _SignUpPageState extends State<SignUpPage> {
               },
               onChanged: (text) {
                 mail = text;
-                print(mail);
+                // print(mail);
                 setState(() {});
               },
               decoration: InputDecoration(
@@ -114,7 +114,7 @@ class _SignUpPageState extends State<SignUpPage> {
               onChanged: (text) {
                 firstName = text;
                 setState(() {});
-                print(firstName);
+                // print(firstName);
               },
               decoration: InputDecoration(
                 contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
@@ -146,7 +146,7 @@ class _SignUpPageState extends State<SignUpPage> {
             TextFormField(
               onChanged: (text) {
                 lastName = text;
-                print(lastName);
+                // print(lastName);
                 setState(() {});
               },
               validator: (value) {
@@ -186,7 +186,7 @@ class _SignUpPageState extends State<SignUpPage> {
               keyboardType: TextInputType.text,
               onChanged: (text) {
                 username = text;
-                print(username);
+                // print(username);
               },
               validator: (value) {
                 if (value == null || value.isEmpty) {
@@ -272,7 +272,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                   title: "Farmerica",
                                   customer: customer,
                                 )));
-                    print(customer);
+                    // print(customer);
                   }
                 }
               },

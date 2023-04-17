@@ -37,7 +37,8 @@ class MyApp extends StatelessWidget {
         child: MaterialApp(
             debugShowCheckedModeBanner: false,
             theme: OpenFlutterEcommerceTheme.of(context),
-            home: AnimatedSplash()));
+            home: AnimatedSplash(),
+        ));
     // home: BasePage()));
   }
 }

@@ -8,7 +8,7 @@ class TokenResponses {
       {this.token, this.userEmail, this.userNicename, this.userDisplayName});
 
   TokenResponses.fromJson(Map<String, dynamic> json) {
-    token = json['token'];
+    token = json['data']['token'];
     userEmail = json['user_email'];
     userNicename = json[' user_nicename'];
     userDisplayName = json['user_display_name'];

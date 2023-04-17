@@ -36,10 +36,15 @@ class _AnimatedSplashState extends State<AnimatedSplash> {
         home: AnimatedSplashScreen(
             duration: 4000,
             splash: Center(
+              // child: Image(
+              //   image: NetworkImage(
+              //     'https://www.farmerica.in/wp-content/uploads/2023/01/farmerica-logo.png',
+              //   ),
+              // ),
               child: Text(
                 "Farmerica",
                 style: TextStyle(
-                    color: Colors.redAccent,
+                    color: Colors.green,
                     fontSize: 25,
                     fontWeight: FontWeight.bold),
               ),

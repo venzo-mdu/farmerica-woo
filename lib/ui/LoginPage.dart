@@ -81,7 +81,7 @@ class _LoginPageState extends State<LoginPage> {
                         autofocus: false,
                         onChanged: (text) {
                           mail = text;
-                          print(mail);
+                          // print(mail);
                           setState(() {});
                         },
                         validator: (text) {
@@ -182,6 +182,7 @@ class _LoginPageState extends State<LoginPage> {
                               } else {
                                 var token = await api_services.getToken(
                                     username, password);
+                                // print('objectToken: $token');
 
                                 if (token == null) {
                                   Fluttertoast.showToast(

@@ -22,19 +22,31 @@ class CartResponseModel {
 class CartProducts {
   int product_id;
   int quantity;
+  String price;
+  String name;
+  String image;
 
   CartProducts({
     this.product_id,
     this.quantity,
+    this.name,
+    this.price,
+    this.image
   });
   CartProducts.fromJson(Map<String, dynamic> json) {
     product_id = json['product_id'];
     quantity = json['quantity'];
+    name = json['name'];
+    price = json['price'];
+    image = json['image'];
   }
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = Map<String, dynamic>();
     data['product_id'] = this.product_id;
     data['quantity'] = this.quantity;
+    data['name'] = this.name;
+    data['price'] = this.price;
+    data['image'] = this.image;
 
     return data;
   }

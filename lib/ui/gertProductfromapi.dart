@@ -143,23 +143,23 @@ class _ProductsState extends BasePageState<Products> {
                                                       addtoCart = 1;
                                                     });
 
-                                                    Provider.of<CartModel>(
-                                                            context,
-                                                            listen: false)
-                                                        .addCartProduct(
-                                                            product[id].id, 1);
-                                                    Fluttertoast.showToast(
-                                                        msg:
-                                                            "${product[id].name} successfully added to cart",
-                                                        toastLength:
-                                                            Toast.LENGTH_SHORT,
-                                                        gravity:
-                                                            ToastGravity.BOTTOM,
-                                                        timeInSecForIosWeb: 1,
-                                                        backgroundColor:
-                                                            Colors.black,
-                                                        textColor: Colors.white,
-                                                        fontSize: 16.0);
+                                                    // Provider.of<CartModel>(
+                                                    //         context,
+                                                    //         listen: false)
+                                                    //     .addCartProduct(
+                                                    //         product[id].id, 1);
+                                                    // Fluttertoast.showToast(
+                                                    //     msg:
+                                                    //         "${product[id].name} successfully added to cart",
+                                                    //     toastLength:
+                                                    //         Toast.LENGTH_SHORT,
+                                                    //     gravity:
+                                                    //         ToastGravity.BOTTOM,
+                                                    //     timeInSecForIosWeb: 1,
+                                                    //     backgroundColor:
+                                                    //         Colors.black,
+                                                    //     textColor: Colors.white,
+                                                    //     fontSize: 16.0);
                                                   },
                                                   child:
                                                       new Text("View"),

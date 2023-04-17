@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 
 import 'package:safira_woocommerce_app/models/Products.dart';
 import 'package:safira_woocommerce_app/networks/ApiServices.dart';
-
 import 'package:safira_woocommerce_app/ui/productCategory.dart';
+import 'package:safira_woocommerce_app/models/global.dart' as Globals;
 
 import 'package:safira_woocommerce_app/ui/gertProductfromapi.dart';
 
@@ -22,9 +22,10 @@ class Carousal extends StatelessWidget {
     Api_Services api_services = Api_Services();
 
     List child = [
-      "https://www.farmerica.in/new/wp-content/uploads/2023/01/banner-1.jpg",
-      "https://www.farmerica.in/new/wp-content/uploads/2023/01/banner.jpg",
-      // "https://www.bigbasket.com/media/uploads/section_item/images/xhdpi/App-HP-HUL-1440x692-1may18.jpg",
+      'https://www.farmerica.in/wp-content/uploads/2023/03/mathers-day-banner.jpg',
+      "https://www.farmerica.in/wp-content/uploads/2023/03/exotic-vagetable-1.jpg",
+      "https://www.farmerica.in/wp-content/uploads/2023/03/fruits-basket-1.jpg",
+      "https://www.farmerica.in/wp-content/uploads/2023/03/Dry-fruits-banner-3.jpg",
       // "https://www.bigbasket.com/media/uploads/section_item/images/hdpi/HP-Bigdays_F_V_1440X692-6thMay.jpg",
       // "https://www.bigbasket.com/media/uploads/section_item/images/hdpi/HP-Bigdays_Staples_1440X692-6thMay.jpg",
     ];
@@ -32,12 +33,20 @@ class Carousal extends StatelessWidget {
     final slides = [];
 
     return CarouselSlider(
-      items: child
-          .map((item) => Image.network(
-                item,
-                fit: BoxFit.fill,
-              ))
-          .toList(),
+      items: child.map((item) {
+        return SizedBox(
+          width: double.infinity,
+          child: GestureDetector(
+            onTap: (){
+              print('CarouselSlider: $item');
+            },
+            child: Image.network(
+              item,
+              fit: BoxFit.fill,
+            ),
+          ),
+        );
+      }).toList(),
       carouselController: buttonCarouselController,
       options: CarouselOptions(
         autoPlay: true,
@@ -56,7 +65,8 @@ class Catergories extends StatelessWidget {
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
     return new Container(
-      height: width * 0.50,
+      height: 500,
+      // height: width * 0.50,
       color: Colors.white,
       child: GridView.builder(
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -75,7 +85,8 @@ class Catergories extends StatelessWidget {
               child: new Column(
                 children: <Widget>[
                   new Image.network(
-                    category["image"] ?? 'https://as2.ftcdn.net/v2/jpg/03/15/18/09/1000_F_315180932_rhiXFrJN27zXCCdrgx8V5GWbLd9zTHHA.jpg',
+                    category["image"] ??
+                        'https://as2.ftcdn.net/v2/jpg/03/15/18/09/1000_F_315180932_rhiXFrJN27zXCCdrgx8V5GWbLd9zTHHA.jpg',
                     height: width * 0.21,
                   ),
                   new Text(
@@ -430,7 +441,7 @@ class HorizontalListView extends StatelessWidget {
                   // color: Colors.blueAccent,
                   // textColor: Colors.white,
                   onPressed: () async {
-                    var response = await api_services.getCategory();
+                    var response = await api_services.getCategory(Globals.globalInt);
 
                     Navigator.push(
                         context,

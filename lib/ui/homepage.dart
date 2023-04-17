@@ -9,6 +9,8 @@ import 'package:safira_woocommerce_app/ui/CartPage.dart';
 import 'package:safira_woocommerce_app/ui/categories.dart';
 import 'package:safira_woocommerce_app/ui/dashboard.dart';
 import 'package:safira_woocommerce_app/ui/profile.dart';
+import 'package:safira_woocommerce_app/models/global.dart' as Globals;
+
 
 class MyHomePage extends BasePage {
   Customers customer;
@@ -48,11 +50,9 @@ class _MyHomePageState extends BasePageState<MyHomePage> {
   );
   List<ParentCategory> categories = [];
   getList() async {
-    categories = await api_services.getCategoryById(68);
-
-    response = await api_services.getProducts(68);
-
-    print('responseResponse: $response');
+    categories = await api_services.getCategoryById(Globals.globalInt);
+    response = await api_services.getProducts(Globals.globalInt);
+    // print('responseResponse: $response');
   }
 
   //  int selected = 2;
@@ -60,8 +60,9 @@ class _MyHomePageState extends BasePageState<MyHomePage> {
 
   @override
   void initState() {
+    print('homepage: ${widget}');
     super.initState();
-    getList();
+    // getList();
   }
 
   // List<Widget> _list = [
@@ -73,17 +74,17 @@ class _MyHomePageState extends BasePageState<MyHomePage> {
   //String title = "HomePage";
   @override
   Widget body(BuildContext context) {
-    getList();
+    // getList();
     Customers customer = widget.customer;
-    print('customer: $customer');
+    // print('customer: $customer');
     List<Widget> list = [
       Dashboard(),
       CategoryPage(
-        catergories: categories,
-        product: response,
+        // catergories: categories,
+        // product: response,
       ),
       CartScreen(
-        product: response,
+        // product: response,
       ),
       CompleteProfileScreen(
         customer: widget.customer,
