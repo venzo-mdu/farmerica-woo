@@ -28,9 +28,11 @@ class _GridViewListState extends State<GridViewList> {
     return SingleChildScrollView(
       child: Container(
         width: MediaQuery.of(context).size.width,
-        height: 5000,
+        height: MediaQuery.of(context).size.height * 1.75,
         child: GridView.builder(
+          physics: ScrollPhysics(),
           itemCount: widget.product.length,
+          // scrollDirection: Axis.vertical,
           itemBuilder: (BuildContext context, int id) {
             var width = MediaQuery.of(context).size.width;
             // print('Grid; ${widget.product.length}');

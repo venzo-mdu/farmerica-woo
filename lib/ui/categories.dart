@@ -38,6 +38,7 @@ class _CategoryPageState extends BasePageState<CategoryPage> {
     'Fruits',
     'Vegetable',
     'Salad',
+    'Our Farm Product',
   ];
 
   // getData() async {

@@ -8,6 +8,7 @@ import 'package:safira_woocommerce_app/models/Products.dart';
 import 'package:safira_woocommerce_app/networks/ApiServices.dart';
 import 'package:safira_woocommerce_app/ui/BasePage.dart';
 import 'package:safira_woocommerce_app/ui/verifyAddress.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:string_validator/string_validator.dart';
 // import 'package:intl/intl.dart';
 
@@ -55,6 +56,12 @@ class _CreateOrderState extends BasePageState<CreateOrder> {
   String address2;
   String townCity;
   String pinsCode;
+  getPinCode() async {
+    SharedPreferences pinCodePrefs = await SharedPreferences.getInstance();
+    setState(() {
+      pinsCode = pinCodePrefs.getString('pinCode') ?? '';
+    });
+  }
 
   Api_Services api_services = Api_Services();
 
@@ -71,7 +78,7 @@ class _CreateOrderState extends BasePageState<CreateOrder> {
       address1 = userData.billing.address1;
       address2 = userData.billing.address2;
       townCity = userData.billing.city;
-      pinsCode = userData.billing.postcode;
+      // pinsCode = userData.billing.postcode;
     });
 
       print('userData: ${phoneNumber}');
@@ -88,6 +95,7 @@ class _CreateOrderState extends BasePageState<CreateOrder> {
 
   @override
   void initState() {
+    getPinCode();
     super.initState();
     firstName = widget.details.firstName;
     lastName = widget.details.lastName;

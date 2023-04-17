@@ -272,76 +272,93 @@ class _DashboardState extends State<Dashboard> {
                 ],
               ),
             ),
-
             Container(
               width: MediaQuery.of(context).size.width,
-              height: 610,
+              height: MediaQuery.of(context).size.height * 1.25,
               padding: EdgeInsets.symmetric(horizontal: 15),
-              child: GridView.builder(
+              child: ListView.separated(
+                separatorBuilder: (context, index) {
+                  return SizedBox(height: 10);
+                },
                 itemCount: homeScreen.length,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: (orientation == Orientation.portrait) ? 2 : 3,
-                  crossAxisSpacing: 15,
-                  mainAxisSpacing: 0,
-                ),
                 itemBuilder: (context, index) {
                   return GestureDetector(
                       onTap: () async {
-
-                        // List<String> homeScreen = [
-                        //   'https://www.farmerica.in/wp-content/uploads/2023/03/exotic-vegetable-a-gift-basket.jpg',
-                        //   'https://www.farmerica.in/wp-content/uploads/2023/03/healthy-food-from-our-farm-1.jpg',
-                        // ];
-
-                        if (homeScreen[index].toString() == 'https://www.farmerica.in/wp-content/uploads/2023/03/exotic-vegetable-a-gift-basket.jpg') {
+                        if (homeScreen[index].toString() ==
+                            'https://www.farmerica.in/wp-content/uploads/2023/03/exotic-vegetable-a-gift-basket.jpg') {
                           Globals.globalInt = 68;
                           response = await api_services.getProducts(68);
                           print('vegetable: $response');
-                          Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
-                              builder: (context) => Grocery(
-                                    product: response,
-                                  )));
-                        }
-
-                        else if (homeScreen[index].toString() == 'https://www.farmerica.in/wp-content/uploads/2023/03/healthy-food-from-our-farm-1.jpg') {
+                          Navigator.of(context, rootNavigator: true)
+                              .push(MaterialPageRoute(
+                                  builder: (context) => Grocery(
+                                        product: response,
+                                      )));
+                        } else if (homeScreen[index].toString() ==
+                            'https://www.farmerica.in/wp-content/uploads/2023/03/healthy-food-from-our-farm-1.jpg') {
                           Globals.globalInt = 86;
                           response = await api_services.getProducts(86);
                           print('healthy: $response');
-                          Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
-                              builder: (context) => Grocery(
-                                    product: response,
-                                  )));
-                        }
-
-                        else {
+                          Navigator.of(context, rootNavigator: true)
+                              .push(MaterialPageRoute(
+                                  builder: (context) => Grocery(
+                                        product: response,
+                                      )));
+                        } else {
                           Globals.globalInt = 45;
                           response = await api_services.getProducts(45);
                           print('category45: $response');
-                          Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
-                              builder: (context) =>
-                                  Grocery(
-                                    // catergories: widget.category,
-                                    product: response,
-                                  )));
+                          Navigator.of(context, rootNavigator: true)
+                              .push(MaterialPageRoute(
+                                  builder: (context) => Grocery(
+                                        // catergories: widget.category,
+                                        product: response,
+                                      )));
                         }
                       },
                       child: Image.network(homeScreen[index]));
                 },
               ),
             ),
-            // Container(
-            //     height: 250,
-            //     child: Recommendations(
-            //       product: product,
-            //     )),
-            // Container(height: 35, child: UpperHeading("Best Sellers Products")),
-            // Container(
-            //   height: 180,
-            //   padding: EdgeInsets.symmetric(horizontal: 15),
-            //   child: ProductsHorizontal(product: widget.product),
-            // )
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+              child: RichText(
+                  textAlign: TextAlign.center,
+                  text: TextSpan(
+                      text: 'Best Sellers Products\n\n',
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                          fontSize: 24),
+                      children: <TextSpan>[
+                        TextSpan(
+                            text:
+                                'Hand-crafted with care and attention to packaging detail makes our gift packs best seller and perfect for any occasion. Send them as a thanks or congratulations gift, our gifts are sure to please.',
+                            style: TextStyle(
+                                fontWeight: FontWeight.w300, fontSize: 18))
+                      ])),
+            ),
+            Center(
+              heightFactor: 3.0,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xff00ab55),
+                  padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                  textStyle:
+                      TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                onPressed: () async {
+                  response = await api_services.getProducts(86);
+                  Navigator.of(context, rootNavigator: true)
+                      .push(MaterialPageRoute(
+                          builder: (context) => Grocery(
+                                product: response,
+                              )));
+                },
+                child: Text('VIEW MORE'),
+              ),
+            )
           ],
-        ))
-    );
+        )));
   }
 }

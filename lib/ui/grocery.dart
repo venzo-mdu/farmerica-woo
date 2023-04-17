@@ -9,16 +9,16 @@ import 'package:safira_woocommerce_app/ui/productDetails.dart';
 import 'package:safira_woocommerce_app/ui/widgets/component.dart';
 import 'package:provider/provider.dart';
 
-class Grocery extends BasePage {
+class Grocery extends StatefulWidget {
   Grocery({this.product});
 
   List<Product> product;
 
   @override
-  _GroceryState createState() => _GroceryState();
+  State<Grocery> createState() => _GroceryState();
 }
 
-class _GroceryState extends BasePageState<Grocery> {
+class _GroceryState extends State<Grocery> {
   int selected = 1;
   String title = "aa";
   int addtoCart = 0;
@@ -32,7 +32,7 @@ class _GroceryState extends BasePageState<Grocery> {
   }
 
   @override
-  Widget body(BuildContext context) {
+  Widget build(BuildContext context) {
     List<Product> product = widget.product;
 
     List dummyProduct = product;
@@ -113,6 +113,21 @@ class _GroceryState extends BasePageState<Grocery> {
             child: CircularProgressIndicator(),
           )
         : Scaffold(
+            appBar: AppBar(
+              elevation: 0,
+              backgroundColor: Color(0xff00ab55),
+              centerTitle: true,
+              title: Image.network(
+                'https://www.farmerica.in/wp-content/uploads/2023/01/farmerica-logo.png',
+                color: Colors.white,
+              ),
+              leading: IconButton(
+                onPressed: (){
+                  Navigator.pop(context);
+                },
+                icon: Icon(Icons.arrow_back_ios, color: Colors.white),
+              ),
+            ),
             body: SingleChildScrollView(
               child: Column(
                 children: [
@@ -144,7 +159,7 @@ class _GroceryState extends BasePageState<Grocery> {
                             // print('isSelectedDropDown: $isSelectedDropDown');
                             // print('isSelectedDropDown: ${isSelectedDropDown.runtimeType}');
                             // print('isSelectedDropDown: $value');
-
+                            isSelectedDropDown = value;
                             if(value == 'Sort by Low to High') {
                               setState(() {
                                 lowToHigh();

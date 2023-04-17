@@ -10,17 +10,18 @@ import 'package:safira_woocommerce_app/ui/CartPage.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:html/parser.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class ProductDetail extends BasePage {
+class ProductDetail extends StatefulWidget {
   ProductDetail({this.product});
 
   final p.Product product;
 
   @override
-  _ProductDetailState createState() => _ProductDetailState();
+  State<ProductDetail> createState() => _ProductDetailState();
 }
 
-class _ProductDetailState extends BasePageState<ProductDetail> {
+class _ProductDetailState extends State<ProductDetail> {
   int selected = 1;
   bool loa = true;
   String parsHtml(String as) {
@@ -34,7 +35,6 @@ class _ProductDetailState extends BasePageState<ProductDetail> {
   }
 
   String shortDes;
-  final pincode = 751001;
   final List<String> pinCodes = [
     '751001',
     '752103',
@@ -162,15 +162,17 @@ class _ProductDetailState extends BasePageState<ProductDetail> {
     '752054',
     '752050',
     '752050',
-    '753015',
+    '753015'
   ];
   var pincodeController = TextEditingController();
   bool flag = false;
   bool flags = true;
-  // BasePage basePage = BasePage();
+  SharedPreferences pinCodePrefs;
+
   @override
   void initState() {
     super.initState();
+    // getPinCode();
     // print(widget.product.shortDescription);
     shortDes = parsHtml(widget.product.shortDescription);
     // basePage.title = "Checkout Page";
@@ -179,7 +181,7 @@ class _ProductDetailState extends BasePageState<ProductDetail> {
   }
 
   @override
-  Widget body(BuildContext context) {
+  Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context).size;
     var screenHeight = (screenSize.height) / 2;
 
@@ -188,25 +190,22 @@ class _ProductDetailState extends BasePageState<ProductDetail> {
     List<Product> cart = [];
     String title = widget.product.name;
     return Scaffold(
-      // appBar: AppBar(
-      //   elevation: 0,
-      //    // backgroundColor: product.color,
-      //   backgroundColor: Colors.green,
-      //   title: Text(
-      //     widget.product.name,
-      //     style: TextStyle(fontSize: 22),
-      //   ),
-      //   centerTitle: true,
-      //   actions: [
-      //     Padding(
-      //       padding: EdgeInsets.only(right: 10),
-      //       child: Icon(
-      //         Icons.add_shopping_cart,
-      //         size: 30,
-      //       ),
-      //     )
-      //   ],
-      // ),
+      appBar: AppBar(
+        elevation: 0,
+         // backgroundColor: product.color,
+        backgroundColor: Colors.green,
+        title: Text(
+          widget.product.name,
+          style: TextStyle(fontSize: 22),
+        ),
+        centerTitle: true,
+        leading: IconButton(
+          onPressed: (){
+            Navigator.pop(context);
+          },
+          icon: Icon(Icons.arrow_back_ios, color: Colors.white),
+        ),
+      ),
       body: ListView(
         children: [
           // container for the image of the product
@@ -246,6 +245,7 @@ class _ProductDetailState extends BasePageState<ProductDetail> {
                     SizedBox(
                       width: 250,
                       child: TextFormField(
+                        // initialValue: 'hi' ?? pinCodePrefs.getString('pinCode'),
                         controller: pincodeController,
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
@@ -254,31 +254,21 @@ class _ProductDetailState extends BasePageState<ProductDetail> {
                               borderRadius:
                               BorderRadius.all(Radius.circular(0))),
                         ),
+                        validator: (String value){},
                       ),
                     ),
 
                     ElevatedButton(
-                      // shape: RoundedRectangleBorder(
-                      //   borderRadius: BorderRadius.circular(4.0),
-                      // ),
-                      style: ElevatedButton.styleFrom(backgroundColor: Color(0xffFBB241)),
-                      onPressed: () {
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(0xffffb240),
+                        padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                        textStyle:
+                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                      onPressed: () async {
+                        pinCodePrefs = await SharedPreferences.getInstance();
+                        pinCodePrefs.setString('pinCode', pincodeController.text);
 
-                        // for(int i =0; i< pinCodes.length; i++) {
-                        //   if(pinCodes[i] == pincodeController.text) {
-                        //     print('same');
-                        //     setState(() {
-                        //       flag = true;
-                        //       flags = false;
-                        //     });
-                        //     break;
-                        //   }
-                        //   print('not same');
-                        //   setState(() {
-                        //     flag = false;
-                        //     flags = false;
-                        //   });
-                        // }
 
                         bool found = pinCodes.contains(pincodeController.text);
                         if(found) {
@@ -297,14 +287,11 @@ class _ProductDetailState extends BasePageState<ProductDetail> {
                         }
                       },
                       // color: product.color,
-                      child: Container(
-                        padding: EdgeInsets.all(10),
-                        child: Text(
-                          "CHECK",
-                          style: TextStyle(
-                              fontSize: 15,
+                      child: Text(
+                        "CHECK",
+                        style: TextStyle(
+                            fontSize: 15,
 
-                          ),
                         ),
                       ),
                     ),
@@ -314,59 +301,78 @@ class _ProductDetailState extends BasePageState<ProductDetail> {
                 SizedBox(height: 10),
 
                 flag
-                    ? Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text('Shipping methods available for your location:'),
-                        Text('Free shipping'),
-                        Text('Midnight Delivery 11pm to 12am: 200.00'),
-                        Text('Early morning Delivery 6:30am to 7am : 75.00'),
-                        ElevatedButton(
-
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xff55C68A),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(4.0),
+                    ? Container(
+                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+                      decoration: BoxDecoration(
+                          color: Color(0xfff7f6f7)
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text('${String.fromCharCode(8226)} Shipping methods available for your location:'),
+                          Text('${String.fromCharCode(8226)} Free shipping'),
+                          Text('${String.fromCharCode(8226)} Midnight Delivery 11pm to 12am: 200.00'),
+                          Text('${String.fromCharCode(8226)} Early morning Delivery 6:30am to 7am : 75.00'),
+                          SizedBox(height: 15),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Color(0xff00ab55),
+                              padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                              textStyle:
+                              TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                             ),
-                          ),
-                          onPressed: () {
-                            Provider.of<CartModel>(context,
-                                        listen: false);
-                            cart.add(widget.product);
-                            Provider.of<CartModel>(context, listen: false)
-                                .addCartProduct(
-                                widget.product.id,
-                                1,
-                                widget.product.name,
-                                widget.product.price,
-                                widget.product.images[0].src
-                            );
-                            Fluttertoast.showToast(
-                                msg:
-                                "${widget.product.name} successfully added to cart",
-                                toastLength: Toast.LENGTH_SHORT,
-                                gravity: ToastGravity.BOTTOM,
-                                timeInSecForIosWeb: 1,
-                                backgroundColor: Colors.black,
-                                textColor: Colors.white,
-                                fontSize: 16.0);
-                          },
-                          // color: product.color,
-                          child: Padding(
-                            padding: EdgeInsets.all(10),
+                            onPressed: () {
+                              Provider.of<CartModel>(context,
+                                          listen: false);
+                              cart.add(widget.product);
+                              Provider.of<CartModel>(context, listen: false)
+                                  .addCartProduct(
+                                  widget.product.id,
+                                  1,
+                                  widget.product.name,
+                                  widget.product.price,
+                                  widget.product.images[0].src
+                              );
+                              Fluttertoast.showToast(
+                                  msg:
+                                  "${widget.product.name} successfully added to cart",
+                                  toastLength: Toast.LENGTH_SHORT,
+                                  gravity: ToastGravity.BOTTOM,
+                                  timeInSecForIosWeb: 1,
+                                  backgroundColor: Colors.black,
+                                  textColor: Colors.white,
+                                  fontSize: 16.0);
+                            },
+                            // color: product.color,
                             child: Text(
-                              "Buy Now",
+                              "BUY NOW",
                               style: TextStyle(fontSize: 15),
                             ),
                           ),
-                        ),
-
-                      ],
+                        ],
+                      ),
                     )
                     : Center(child: flags
-                      ? Text('Please enter a valid postcode / ZIP.', style: TextStyle(color: Colors.red))
-                      : Text('Delivery not available', style: TextStyle(color: Colors.red))),
+                      ? Container(
+                        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+                        decoration: BoxDecoration(
+                          color: Color(0xfff7f6f7)
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(Icons.info, color: Color(0xffb81c23)),
+                            SizedBox(width: 10),
+                            Text('Please enter a postcode / ZIP.', style: TextStyle(color: Colors.black)),
+                          ],
+                        ),
+                      )
+                      : Container(
+                          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+                          decoration: BoxDecoration(
+                              color: Color(0xfff7f6f7)
+                          ),
+                          child: Text('Delivery not available', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: Colors.black)))),
 
               ],
             ),

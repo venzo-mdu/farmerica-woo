@@ -127,7 +127,6 @@ class BasePageState<T extends BasePage> extends State<T> {
       )
     ];
 
-    // print("ll+${response.toString()}");
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xff00ab55),

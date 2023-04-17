@@ -314,6 +314,8 @@ class Api_Services {
       String city,
       String postcode,
       int id}) async {
+    print('userId: $id');
+    print('userId: $phone');
     print(
         'email-$email, fName-$firstName, lName-$lastName, phone-$phone, address-1-$address_1, address-2-$address_2, city-$city, pincode-$postcode');
 
@@ -324,7 +326,7 @@ class Api_Services {
     var request = http.Request(
         'PUT',
         Uri.parse(
-            'https://www.farmerica.in/wp-json/wc/v3/customers/$id?consumer_key=ck_eedc4b30808be5c1110691e5b29f16280ebd3b72&consumer_secret=cs_2313913bc74d5e096c91d308745b50afee52e61c'));
+            'https://www.farmerica.in/wp-json/wc/v3/customers/$id?consumer_key=ck_eedc4b30808be5c1110691e5b29f16280ebd3b72&consumer_secret=cs_2313913bc74d5e096c91d308745b50afee52e61c'));  //?consumer_key=ck_eedc4b30808be5c1110691e5b29f16280ebd3b72&consumer_secret=cs_2313913bc74d5e096c91d308745b50afee52e61c
     request.body = json.encode({
       "email": email,
       "first_name": firstName,

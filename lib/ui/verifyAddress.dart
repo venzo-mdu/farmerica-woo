@@ -292,29 +292,30 @@ class _VerifyAddressState extends BasePageState<VerifyAddress> {
                 ),
                 Center(
                   child: FormHelper.saveButton("Confirm", () {
+                    final route = MaterialPageRoute(
+                        builder: (context) => PaymentGateway(
+                          first: widget.first,
+                          last: widget.last,
+                          cartProducts: widget.cartProducts,
+                          id: widget.id,
+                          city: widget.city,
+                          country: widget.country,
+                          postcode: widget.postcode,
+                          address: widget.address,
+                          apartmnt: widget.apartmnt,
+                          state: widget.state,
+                          flat: widget.flat,
+                          mail: widget.mail,
+                          deliveryDate: widget.deliveryDate,
+                          deliveryTime: widget.deliveryTime,
+                          giftFrom: widget.giftFrom,
+                          giftMsg: widget.giftMsg,
+                          mobile: widget.mobile,
+                          product: widget.product,
+                        ));
                     Navigator.push(
                         context,
-                        MaterialPageRoute(
-                            builder: (context) => PaymentGateway(
-                                  first: widget.first,
-                                  last: widget.last,
-                                  cartProducts: widget.cartProducts,
-                                  id: widget.id,
-                                  city: widget.city,
-                                  country: widget.country,
-                                  postcode: widget.postcode,
-                                  address: widget.address,
-                                  apartmnt: widget.apartmnt,
-                                  state: widget.state,
-                                  flat: widget.flat,
-                                  mail: widget.mail,
-                                  deliveryDate: widget.deliveryDate,
-                                  deliveryTime: widget.deliveryTime,
-                                  giftFrom: widget.giftFrom,
-                                  giftMsg: widget.giftMsg,
-                                  mobile: widget.mobile,
-                                  product: widget.product,
-                                )));
+                        route);
                   }),
                 )
               ],

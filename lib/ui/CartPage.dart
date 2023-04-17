@@ -15,6 +15,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:safira_woocommerce_app/Providers/CartProviders.dart';
 import 'package:safira_woocommerce_app/ui/productDetails.dart';
 import 'package:safira_woocommerce_app/models/global.dart' as Globals;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AddtoCart {
   int addtoCart;
@@ -69,8 +70,17 @@ class _CartScreenState extends BasePageState<CartScreen> {
   bool intFlag = false;
   TextEditingController _couponCodeController = TextEditingController();
 
+  String showPinCode;
+  getPinCode() async {
+    SharedPreferences pinCodePrefs = await SharedPreferences.getInstance();
+    setState(() {
+      showPinCode = pinCodePrefs.getString('pinCode') ?? '';
+    });
+  }
+
   @override
   void initState() {
+    getPinCode();
     // print('CartLength85: ${widget.product.length}');
     super.initState();
   }
@@ -511,7 +521,7 @@ class _CartScreenState extends BasePageState<CartScreen> {
                             ),
                             Row(
                               children: [
-                                Text('Shipping to 751001, India'),
+                                Text('Shipping to $showPinCode, India'),
                               ],
                             ),
                             Column(
@@ -655,7 +665,7 @@ class _CartScreenState extends BasePageState<CartScreen> {
                                   ))),
                               child: Padding(
                                 padding: const EdgeInsets.all(10),
-                                child: Text("Check Out",
+                                child: Text("Proceed to Checkout",
                                     style: TextStyle(fontSize: 18)),
                               ),
                               onPressed: () {
