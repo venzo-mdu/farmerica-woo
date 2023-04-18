@@ -74,6 +74,41 @@ class _PaymentGatewayState extends BasePageState<PaymentGateway> {
     // razorPaymentService.clears();
     super.dispose();
   }
+  Future<Orders> createOrder() async {
+    final orders = await api_services.createOrder(
+
+      firstName: widget.first,
+      lastName: widget.last,
+      addressOne: widget.address,
+      addressTwo: widget.apartmnt,
+      city: widget.city,
+      country: widget.country,
+      email: widget.mail,
+      phone: widget.mobile,
+      postcode: widget.postcode,
+      state: widget.state,
+      // total: '1000',
+      payment_method_title: 'Cash on Delivery',
+      payment_method: 'Pay after recieving',
+      // quantity: widget.cartProducts[0].quantity,    //orderData.orders[0].products[0].quantity,
+      // product_id: widget.cartProducts[0].product_id,    //orderData.orders[0].products[0].id,
+      delivery_type: widget.deliveryDate,
+      delivery_time: widget.deliveryTime,
+      gift_from: widget.giftFrom,
+      gift_message: widget.giftMsg,
+      cartProducts: widget.cartProducts,
+
+
+      // delivery_type: widget.deliveryDate,
+      // delivery_time: widget.deliveryTime,
+      // gift_from: widget.giftFrom,
+      // gift_message: widget.giftMsg,
+    );
+
+
+    print('cartDataQty: ${widget.cartProducts[0].quantity}');
+    print('cartDate: ${widget.cartProducts[0].product_id}');
+  }
 
   @override
   void initState() {
@@ -244,39 +279,7 @@ class _PaymentGatewayState extends BasePageState<PaymentGateway> {
 
             print('object: ${widget.giftMsg}');
             print('object: ${widget.giftFrom}');
-            Future<Orders> createOrder() async {
-              final orders = await api_services.createOrder(
 
-                firstName: widget.first,
-                lastName: widget.last,
-                addressOne: widget.address,
-                addressTwo: widget.apartmnt,
-                city: widget.city,
-                country: widget.country,
-                email: widget.mail,
-                phone: widget.mobile,
-                postcode: widget.postcode,
-                // state: 'Odissa',
-                // total: '1000',
-                payment_method_title: 'Cash on Delivery',
-                payment_method: 'Pay after recieving',
-                quantity: widget.cartProducts[0].quantity,    //orderData.orders[0].products[0].quantity,
-                product_id: widget.cartProducts[0].product_id,    //orderData.orders[0].products[0].id,
-                delivery_type: widget.deliveryDate,
-                delivery_time: widget.deliveryTime,
-                gift_from: widget.giftFrom,
-                gift_message: widget.giftMsg,
-                // cartProducts: widget.cartProducts,
-
-
-                  // delivery_type: widget.deliveryDate,
-                  // delivery_time: widget.deliveryTime,
-                  // gift_from: widget.giftFrom,
-                  // gift_message: widget.giftMsg,
-              );
-
-              print('orders: ${orders.customerId}');
-            }
             createOrder();
 
             Navigator.push(
