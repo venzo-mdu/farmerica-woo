@@ -252,33 +252,34 @@ class _MyAccountState extends BasePageState<MyAccount> {
               ),
               OpenFlutterButton(
                   title: "Update",
-                  onPressed: () async {
-                    if (_formKey.currentState.validate()) {
-                      Customers customers = await api_services
-                          .updateCustomers(
-                              firstName: first,
-                              lastName: last,
-                              email: mail,
-                              id: widget.customer.id)
-                          .then((value) {
-                        Fluttertoast.showToast(
-                            msg: "Update Successfully",
-                            toastLength: Toast.LENGTH_SHORT,
-                            gravity: ToastGravity.BOTTOM,
-                            timeInSecForIosWeb: 1,
-                            backgroundColor: Colors.black,
-                            textColor: Colors.white,
-                            fontSize: 16.0);
-                        services.setLoginDetails(customer);
-                      });
-                      setState(() {
-                        b1 = false;
-                        b2 = false;
-                        b3 = false;
-                        b4 = false;
-                      });
-                    }
-                  })
+                  // onPressed: () async {
+                  //   if (_formKey.currentState.validate()) {
+                  //     Customers customers = await api_services
+                  //         .updateCustomers(
+                  //             firstName: first,
+                  //             lastName: last,
+                  //             email: mail,
+                  //             id: widget.customer.id)
+                  //         .then((value) {
+                  //       Fluttertoast.showToast(
+                  //           msg: "Update Successfully",
+                  //           toastLength: Toast.LENGTH_SHORT,
+                  //           gravity: ToastGravity.BOTTOM,
+                  //           timeInSecForIosWeb: 1,
+                  //           backgroundColor: Colors.black,
+                  //           textColor: Colors.white,
+                  //           fontSize: 16.0);
+                  //       services.setLoginDetails(customer);
+                  //     });
+                  //     setState(() {
+                  //       b1 = false;
+                  //       b2 = false;
+                  //       b3 = false;
+                  //       b4 = false;
+                  //     });
+                  //   }
+                  // }
+                )
             ],
           ),
         )

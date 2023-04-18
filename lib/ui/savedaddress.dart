@@ -28,6 +28,12 @@ class _SavedAddressState extends BasePageState<SavedAddress> {
     // TODO: implement initState
 
     super.initState();
+    print('DataCustomer: ${widget.customer.firstName}');
+    first = widget.customer.firstName;
+    last = widget.customer.lastName;
+    phone = widget.customer.billing.phone;
+    street = widget.customer.billing.address1;
+    appointment = widget.customer.billing.address2;
   }
 
   @override
@@ -62,26 +68,27 @@ class _SavedAddressState extends BasePageState<SavedAddress> {
                     SizedBox(width: 20),
                     Expanded(
                         child: TextFormField(
+                          controller: firstName,
                           autofocus: true,
                           enabled: b1,
                           onChanged: (valu) {
                             first = valu;
+
                           },
-                          validator: (value) {
-                            setState(() {
-                              first = widget.customer.firstName;
-                            });
-                            return null;
-                          },
+                          // validator: (value) {
+                          //   setState(() {
+                          //     first = widget.customer.firstName;
+                          //   });
+                          //   return null;
+                          // },
                           decoration: InputDecoration(
-                              hintText: " First Name: "
-                                  " ${customer.firstName}",
+                              hintText: " First Name: ${customer.firstName}",
                               hintStyle: TextStyle(
                                 color: Colors.black,
                                 fontSize: 14,
                                 // fontWeight: FontWeight.bold
                               )),
-                          controller: firstName,
+
                         )),
                     IconButton(
                         icon: Icon(Icons.edit),
@@ -117,12 +124,12 @@ class _SavedAddressState extends BasePageState<SavedAddress> {
                           onChanged: (valu) {
                             last = valu;
                           },
-                          validator: (value) {
-                            setState(() {
-                              last = widget.customer.lastName;
-                            });
-                            return null;
-                          },
+                          // validator: (value) {
+                          //   setState(() {
+                          //     last = widget.customer.lastName;
+                          //   });
+                          //   return null;
+                          // },
                           decoration: InputDecoration(
                               hintText: "Last Name:"
                                   "${customer.lastName}",
@@ -178,7 +185,7 @@ class _SavedAddressState extends BasePageState<SavedAddress> {
                             } else {
                               return "Enter valid Mail Id";
                             }
-                            return null;
+                            // return null;
                           },
                           decoration: InputDecoration(
                               hintText: "${customer.email}",
@@ -223,12 +230,12 @@ class _SavedAddressState extends BasePageState<SavedAddress> {
                           onChanged: (valu) {
                             phone = valu;
                           },
-                          validator: (value) {
-                            setState(() {
-                              phone = widget.customer.billing.phone;
-                            });
-                            return null;
-                          },
+                          // validator: (value) {
+                          //   setState(() {
+                          //     phone = widget.customer.billing.phone;
+                          //   });
+                          //   return null;
+                          // },
                           decoration: InputDecoration(
                               hintText: "Phone Number:",
                               // "${customer.billing.phone}",
@@ -274,12 +281,12 @@ class _SavedAddressState extends BasePageState<SavedAddress> {
                           onChanged: (valu) {
                             street = valu;
                           },
-                          validator: (value) {
-                            setState(() {
-                              street = widget.customer.billing.address1;
-                            });
-                            return null;
-                          },
+                          // validator: (value) {
+                          //   setState(() {
+                          //     street = widget.customer.billing.address1;
+                          //   });
+                          //   return null;
+                          // },
                           decoration: InputDecoration(
                               hintText: "Address - 1",
                               // "${customer.billing.address1}",
@@ -324,12 +331,12 @@ class _SavedAddressState extends BasePageState<SavedAddress> {
                           onChanged: (valu) {
                             appointment = valu;
                           },
-                          validator: (value) {
-                            setState(() {
-                              appointment = widget.customer.billing.address2;
-                            });
-                            return null;
-                          },
+                          // validator: (value) {
+                          //   setState(() {
+                          //     appointment = widget.customer.billing.address2;
+                          //   });
+                          //   return null;
+                          // },
                           decoration: InputDecoration(
                               hintText: "Address - 2",
                               // "${customer.billing.address2}",
@@ -374,12 +381,12 @@ class _SavedAddressState extends BasePageState<SavedAddress> {
                           onChanged: (valu) {
                             town = valu;
                           },
-                          validator: (value) {
-                            setState(() {
-                              town = widget.customer.billing.city;
-                            });
-                            return null;
-                          },
+                          // validator: (value) {
+                          //   setState(() {
+                          //     town = widget.customer.billing.city;
+                          //   });
+                          //   return null;
+                          // },
                           decoration: InputDecoration(
                               hintText: "Town",
                               // "${customer.billing.city}",
@@ -424,12 +431,12 @@ class _SavedAddressState extends BasePageState<SavedAddress> {
                           onChanged: (valu) {
                             pinCode = valu;
                           },
-                          validator: (value) {
-                            setState(() {
-                              pinCode = widget.customer.billing.postcode;
-                            });
-                            return null;
-                          },
+                          // validator: (value) {
+                          //   setState(() {
+                          //     pinCode = widget.customer.billing.postcode;
+                          //   });
+                          //   return null;
+                          // },
                           decoration: InputDecoration(
                               hintText: "Pin-Code",
                               // "${customer.billing.postcode}",
@@ -456,20 +463,23 @@ class _SavedAddressState extends BasePageState<SavedAddress> {
             OpenFlutterButton(
                 title: "Update",
                 onPressed: () async {
-                  print(lastName);
-                  print(lastName);
-                  print(lastName);
-                  print(lastName);
+                  // print('firstName.text; ${firstName.text}');
+
+                  print('first: ${first}');
+                  print('last: ${last}');
+                  print('phone: ${phone}');
+                  print('phone: ${street}');
+                  print('phone: ${appointment}');
                   if (_formKey.currentState.validate()) {
                     Customers customers = await api_services
                         .updateCustomers(
-                        id: widget.customer.id,
+                        // id: widget.customer.id,
                         firstName: first,
                         lastName: last,
                         email: mail,
                         phone: phone,
-                        address_1: street,
-                        address_2: appointment,
+                        address1: street,  //address_1
+                        address2: appointment,
                         city: town,
                         postcode: pinCode,
                     )
